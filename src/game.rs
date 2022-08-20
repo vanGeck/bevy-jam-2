@@ -1,13 +1,18 @@
 ﻿use crate::*;
 
-pub mod player;
 pub mod assets;
-
-pub use create_grid_system::*;
-
 mod components;
 mod create_grid_system;
+mod create_items_system;
 mod draw_grid_system;
+pub mod player;
+
+pub use assets::*;
+pub use components::*;
+pub use create_grid_system::*;
+pub use create_items_system::*;
+pub use draw_grid_system::*;
+
 
 pub struct GamePlugin;
 
@@ -16,14 +21,13 @@ impl Plugin for GamePlugin {
         app.add_system_set(
             SystemSet::on_enter(AppState::InGame)
                 .with_system(setup)
-                // .with_system(player::spawn_player)
                 .with_system(create_grid_system)
+                .with_system(create_items_system)
         );
 
         app.add_system_set(
             SystemSet::on_update(AppState::InGame)
                 .with_system(draw_win_lose_placeholder_menu)
-            // .with_system(player::rotate_player_placeholder)
         );
 
         app.add_system_set(

@@ -28,8 +28,8 @@ pub fn create_grid_system(mut commands: Commands, assets: Res<AssetHandles>) {
     for j in 0..GRID_HEIGHT {
         for i in 0..GRID_WIDTH {
             let index = xy_index(i, j);
-            let x_offset = ((i - (GRID_WIDTH / 2)) * TILE_SIZE) as f32;
-            let y_offset = ((j - (GRID_HEIGHT / 2)) * TILE_SIZE) as f32;
+            let tile_x_position = ((i - (GRID_WIDTH / 2)) * TILE_SIZE) as f32;
+            let tile_y_position = ((j - (GRID_HEIGHT / 2)) * TILE_SIZE) as f32;
 
             let tile_entity = commands.spawn().id();
             commands.entity(tile_entity)
@@ -38,10 +38,18 @@ pub fn create_grid_system(mut commands: Commands, assets: Res<AssetHandles>) {
                 .insert_bundle(
                     SpriteBundle {
                         texture: assets.green_square.clone(),
-                        transform: Transform::from_xyz(x_offset, y_offset, 0.),
+                        transform: Transform::from_xyz(tile_x_position, tile_y_position, 0.),
                         ..Default::default()
                     }
-                );
+                )
+                .with_children(|parent| {
+                    parent.spawn_bundle(SpriteBundle {
+                        texture: assets.selection_square.clone(),
+                        transform: Transform::from_xyz(0., 0., 1.),
+                        ..Default::default()
+                    });
+                });
+
 
             tiles.push(tile_entity);
         }

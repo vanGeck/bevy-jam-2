@@ -13,6 +13,9 @@ pub struct AssetHandles {
     #[asset(path = "sprites/1x1_coin.png")]
     pub one_x_one_coin: Handle<Image>,
 
+    #[asset(path = "sprites/3x2_croissant.png")]
+    pub three_x_two_croissant: Handle<Image>,
+
     #[asset(path = "sprites/green_square.png")]
     pub green_square: Handle<Image>,
 
