@@ -14,7 +14,7 @@ pub struct RotatePlayerAroundSelfPlaceholder {
 }
 
 pub fn spawn_player(mut cmd: Commands, assets: Res<AssetHandles>){
-    let player_tform = Transform::from_translation(Vec3::ZERO);
+    let player_transform = Transform::from_translation(Vec3::ZERO);
     
     let dimensions = Vec2::new(256.0, 256.0);
     
