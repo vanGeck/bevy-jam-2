@@ -12,6 +12,7 @@ pub use components::*;
 pub use create_grid_system::*;
 pub use create_items_system::*;
 pub use draw_grid_system::*;
+pub use player::*;
 
 
 pub struct GamePlugin;
@@ -23,11 +24,13 @@ impl Plugin for GamePlugin {
                 .with_system(setup)
                 .with_system(create_grid_system)
                 .with_system(create_items_system)
+            // .with_system(spawn_player)
         );
 
         app.add_system_set(
             SystemSet::on_update(AppState::InGame)
                 .with_system(draw_win_lose_placeholder_menu)
+            // .with_system(rotate_player_placeholder)
         );
 
         app.add_system_set(

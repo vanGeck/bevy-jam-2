@@ -1,6 +1,12 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use super::{AssetHandles, components::Grid, components::Shape};
+use heron::{CollisionLayers, CollisionShape, PhysicsLayer, RigidBody};
+use super::{
+    AssetHandles,
+    components::Grid,
+    components::Shape,
+    PhysLayer,
+};
 
 pub fn create_items_system(mut commands: Commands, assets: Res<AssetHandles>, mut query: Query<&mut Grid>) {
     let mut shape = commands.spawn().id();
@@ -15,6 +21,10 @@ pub fn create_items_system(mut commands: Commands, assets: Res<AssetHandles>, mu
                            vec![true, false, true],
             ],
         })
+        .insert(RigidBody::Sensor)
+        .insert(CollisionLayers::new(PhysLayer::Draggables, PhysLayer::World))
+        // Collider dimensions match texture dimensions (halved)
+        .insert(CollisionShape::Cuboid { half_extends: Vec3::new(48., 32., 1.), border_radius: None })
         .insert_bundle(
             SpriteBundle {
                 texture: assets.three_x_two_croissant.clone(),
