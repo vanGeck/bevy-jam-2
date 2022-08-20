@@ -1,8 +1,8 @@
-﻿use bevy::prelude::*;
+use crate::{AppState, PhysLayer};
+use bevy::prelude::*;
 use bevy::sprite::Rect;
 use heron::prelude::*;
 use heron::rapier_plugin::{PhysicsWorld, ShapeCastCollisionType};
-use crate::{AppState, PhysLayer};
 
 pub struct InputsPlugin;
 
@@ -17,7 +17,7 @@ impl Plugin for InputsPlugin {
                 .with_system(process_drag_attempt)
                 .with_system(process_fresh_drag)
                 .with_system(move_dragged_item)
-                .with_system(process_drag_end)
+                .with_system(process_drag_end),
         );
     }
 }
@@ -52,7 +52,8 @@ pub fn world_cursor_system(
         if let Some(screen_pos) = window.cursor_position() {
             let window_size = Vec2::new(window.width() as f32, window.height() as f32);
             let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE; // What the heck does ndc stand for?
-            let ndc_to_world = camera_transform.compute_matrix() * camera.projection_matrix().inverse();
+            let ndc_to_world =
+                camera_transform.compute_matrix() * camera.projection_matrix().inverse();
             let world_position = ndc_to_world.project_point3(ndc.extend(-1.0));
             let world_position: Vec2 = world_position.truncate();
 
@@ -69,17 +70,19 @@ pub fn process_drag_attempt(
     mouse_buttons: Res<Input<MouseButton>>,
     mouse_position: Res<MousePosition>,
     physics_world: PhysicsWorld,
-    mut commands: Commands) {
-    if !mouse_buttons.just_pressed(MouseButton::Left) { return; }
+    mut commands: Commands,
+) {
+    if !mouse_buttons.just_pressed(MouseButton::Left) {
+        return;
+    }
 
-    let hit = physics_world.ray_cast(
-        mouse_position.position.extend(20.0),
-        -Vec3::Z * 25.0,
-        false);
+    let hit = physics_world.ray_cast(mouse_position.position.extend(20.0), -Vec3::Z * 25.0, false);
 
     // Can't get info about other components without a query, so tag the object for one more processing step
     if let Some(collision) = hit {
-        commands.entity(collision.entity).insert(DragStart(collision.collision_point.truncate()));
+        commands
+            .entity(collision.entity)
+            .insert(DragStart(collision.collision_point.truncate()));
     }
 }
 
@@ -96,16 +99,18 @@ pub fn process_fresh_drag(
 
     if let Ok(e) = entity_query.get_single() {
         commands.entity(e).remove::<DragStart>();
-        commands.entity(e).insert(BeingDragged {
-            offset
-        });
+        commands.entity(e).insert(BeingDragged { offset });
     }
 }
 
 // Move the item respecting mouse offset, Z for moving items is set to 2.0 to avoid Z-fighting
-pub fn move_dragged_item(mouse_position: Res<MousePosition>, mut query: Query<(&mut Transform, &BeingDragged)>) {
+pub fn move_dragged_item(
+    mouse_position: Res<MousePosition>,
+    mut query: Query<(&mut Transform, &BeingDragged)>,
+) {
     if let Ok((mut dragged_entity_transform, being_dragged_component)) = query.get_single_mut() {
-        dragged_entity_transform.translation = mouse_position.position.extend(2.0) - being_dragged_component.offset.extend(0.0);
+        dragged_entity_transform.translation =
+            mouse_position.position.extend(2.0) - being_dragged_component.offset.extend(0.0);
     }
 }
 
@@ -116,7 +121,9 @@ pub fn process_drag_end(
     entity_query: Query<Entity, With<BeingDragged>>,
     mut transform_query: Query<&mut Transform, With<BeingDragged>>,
 ) {
-    if !mouse_buttons.just_released(MouseButton::Left) { return; }
+    if !mouse_buttons.just_released(MouseButton::Left) {
+        return;
+    }
 
     if let Ok(mut dragged_entity_transform) = transform_query.get_single_mut() {
         let mut dragged_entity_position = dragged_entity_transform.translation;
@@ -128,6 +135,3 @@ pub fn process_drag_end(
         commands.entity(dragged_entity).remove::<BeingDragged>();
     }
 }
-
-
-

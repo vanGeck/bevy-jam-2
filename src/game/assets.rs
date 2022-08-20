@@ -1,9 +1,9 @@
-﻿use bevy::prelude::*;
+use bevy::prelude::*;
 use bevy_asset_loader::asset_collection::AssetCollection;
 
 /*
- Put all game assets here. If there's too many, create structs for each category.
- */
+Put all game assets here. If there's too many, create structs for each category.
+*/
 
 #[derive(AssetCollection)]
 pub struct AssetHandles {
@@ -28,4 +28,3 @@ pub struct AssetHandles {
     #[asset(path = "sprites/yellow_square.png")]
     pub yellow_square: Handle<Image>,
 }
-

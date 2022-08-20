@@ -1,6 +1,6 @@
-use bevy::prelude::*;
 use crate::game::assets::AssetHandles;
 use crate::game::components::{Coordinate, Grid};
+use bevy::prelude::*;
 
 pub const GRID_WIDTH: i32 = 32;
 pub const GRID_HEIGHT: i32 = 16;
@@ -13,7 +13,8 @@ pub fn create_grid_system(mut commands: Commands, assets: Res<AssetHandles>) {
 
     let mut tiles: Vec<Entity> = Vec::new();
 
-    commands.entity(grid_entity)
+    commands
+        .entity(grid_entity)
         .insert(Grid {
             width: GRID_WIDTH,
             height: GRID_HEIGHT,
@@ -32,16 +33,15 @@ pub fn create_grid_system(mut commands: Commands, assets: Res<AssetHandles>) {
             let tile_y_position = ((j - (GRID_HEIGHT / 2)) * TILE_SIZE) as f32;
 
             let tile_entity = commands.spawn().id();
-            commands.entity(tile_entity)
+            commands
+                .entity(tile_entity)
                 .insert(Name::new("Tile"))
                 .insert(Coordinate { x: i, y: j })
-                .insert_bundle(
-                    SpriteBundle {
-                        texture: assets.green_square.clone(),
-                        transform: Transform::from_xyz(tile_x_position, tile_y_position, 0.),
-                        ..Default::default()
-                    }
-                )
+                .insert_bundle(SpriteBundle {
+                    texture: assets.green_square.clone(),
+                    transform: Transform::from_xyz(tile_x_position, tile_y_position, 0.),
+                    ..Default::default()
+                })
                 .with_children(|parent| {
                     parent.spawn_bundle(SpriteBundle {
                         texture: assets.selection_square.clone(),
@@ -49,7 +49,6 @@ pub fn create_grid_system(mut commands: Commands, assets: Res<AssetHandles>) {
                         ..Default::default()
                     });
                 });
-
 
             tiles.push(tile_entity);
         }

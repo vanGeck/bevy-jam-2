@@ -1,4 +1,4 @@
-﻿use crate::*;
+use crate::*;
 
 pub mod assets;
 mod components;
@@ -22,19 +22,15 @@ impl Plugin for GamePlugin {
             SystemSet::on_enter(AppState::InGame)
                 .with_system(setup)
                 .with_system(create_grid_system)
-                .with_system(create_items_system)
-            // .with_system(spawn_player)
+                .with_system(create_items_system), // .with_system(spawn_player)
         );
 
         app.add_system_set(
-            SystemSet::on_update(AppState::InGame)
-                .with_system(draw_win_lose_placeholder_menu)
-            // .with_system(rotate_player_placeholder)
+            SystemSet::on_update(AppState::InGame).with_system(draw_win_lose_placeholder_menu), // .with_system(rotate_player_placeholder)
         );
 
         app.add_system_set(
-            SystemSet::on_exit(AppState::InGame)
-                .with_system(despawn_gameplay_entities)
+            SystemSet::on_exit(AppState::InGame).with_system(despawn_gameplay_entities),
         );
     }
 }
@@ -55,7 +51,11 @@ fn setup(mut cmd: Commands) {
         .insert(CleanupOnGameplayEnd);
 }
 
-fn draw_win_lose_placeholder_menu(mut egui_context: ResMut<EguiContext>, mut state: ResMut<State<AppState>>, mut result: ResMut<State<GameResult>>) {
+fn draw_win_lose_placeholder_menu(
+    mut egui_context: ResMut<EguiContext>,
+    mut state: ResMut<State<AppState>>,
+    mut result: ResMut<State<GameResult>>,
+) {
     egui::Window::new("Gameplay").show(egui_context.ctx_mut(), |ui| {
         if ui.button("Win").clicked() {
             state.replace(AppState::GameEnded).ok();
@@ -68,10 +68,7 @@ fn draw_win_lose_placeholder_menu(mut egui_context: ResMut<EguiContext>, mut sta
     });
 }
 
-pub fn despawn_gameplay_entities(
-    mut cmd: Commands,
-    q: Query<Entity, With<CleanupOnGameplayEnd>>,
-) {
+pub fn despawn_gameplay_entities(mut cmd: Commands, q: Query<Entity, With<CleanupOnGameplayEnd>>) {
     for e in q.iter() {
         cmd.entity(e).despawn_recursive();
     }
