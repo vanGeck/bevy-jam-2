@@ -14,7 +14,6 @@ pub use create_items_system::*;
 pub use draw_grid_system::*;
 pub use player::*;
 
-
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {

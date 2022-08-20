@@ -13,7 +13,7 @@ use bevy_asset_loader::prelude::{LoadingState, LoadingStateAppExt};
 use bevy_egui::{egui, EguiContext, EguiPlugin};
 use crate::game::GamePlugin;
 use crate::gameover::GameOverPlugin;
-use crate::input::{InputsPlugin, MousePos, move_dragged_item, process_drag_attempt, process_drag_end, process_fresh_drag};
+use crate::input::{InputsPlugin, MousePosition, move_dragged_item, process_drag_attempt, process_drag_end, process_fresh_drag};
 use crate::mainmenu::MainMenuPlugin;
 use heron::prelude::*;
 

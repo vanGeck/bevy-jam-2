@@ -28,7 +28,7 @@ pub fn create_items_system(mut commands: Commands, assets: Res<AssetHandles>, mu
         .insert_bundle(
             SpriteBundle {
                 texture: assets.three_x_two_croissant.clone(),
-                transform: Transform::from_xyz(0., 0., 0.),
+                transform: Transform::from_xyz(0., 0., 1.),
                 ..Default::default()
             }
         );
