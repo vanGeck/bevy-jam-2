@@ -33,10 +33,10 @@ fn draw_main_menu(mut egui_context: ResMut<EguiContext>, windows: ResMut<Windows
             );
             painter.text( // title text
                 rect.center_top() + vec2(0.0, height / 2.0),
-                Align2::CENTER_CENTER,
-                crate::GAMENAME,
-                FontId::proportional(46.0),
-                text_col,
+                          Align2::CENTER_CENTER,
+                          crate::GAME_NAME,
+                          FontId::proportional(46.0),
+                          text_col,
             );
             painter.line_segment( // divider
                 [

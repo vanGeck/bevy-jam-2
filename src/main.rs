@@ -2,6 +2,7 @@ mod mainmenu;
 mod game;
 mod cleanup;
 mod gameover;
+mod input;
 
 use bevy::DefaultPlugins;
 use egui::*;
@@ -12,9 +13,11 @@ use bevy_asset_loader::prelude::{LoadingState, LoadingStateAppExt};
 use bevy_egui::{egui, EguiContext, EguiPlugin};
 use crate::game::GamePlugin;
 use crate::gameover::GameOverPlugin;
+use crate::input::{InputsPlugin, MousePos, move_dragged_item, process_drag_attempt, process_drag_end, process_fresh_drag};
 use crate::mainmenu::MainMenuPlugin;
+use heron::prelude::*;
 
-pub const GAMENAME: &str = "Bevy Jam 2 Game";
+pub const GAME_NAME: &str = "Bevy Jam 2 Game";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Component)]
 pub enum AppState { // changing this state alone will make game state plugins act according to new state, nothing else is needed
@@ -37,13 +40,15 @@ fn main() {
         .add_state(game::GameResult::Won)
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
+        .add_plugin(PhysicsPlugin::default())
         .add_plugin(WorldInspectorPlugin::new())
-
         .add_plugin(MainMenuPlugin)
         .add_plugin(GamePlugin)
         .add_plugin(GameOverPlugin)
+        .add_plugin(InputsPlugin)
         
         .add_startup_system(configure_ui_look)
+        
         .run();
 }
 
@@ -53,4 +58,11 @@ fn configure_ui_look(mut egui_ctx: ResMut<EguiContext>){
         window_rounding: 0.0.into(),
         ..Default::default()
     });
+}
+
+// Define your physics layers
+#[derive(PhysicsLayer)]
+enum PhysLayer {
+    World,
+    Draggables,
 }

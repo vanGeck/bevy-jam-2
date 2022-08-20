@@ -8,13 +8,16 @@ publish = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = "0.8"
-
-bevy_ninepatch = "0.8.0"
+bevy = { version = "0.8.0", features = ["dynamic"] }
 bevy_asset_loader = "0.12.0"
 bevy_egui = "0.15.1"
 bevy-inspector-egui = "0.12.1"
+bevy_ninepatch = "0.8.0"
+bevy_rapier2d = { version = "0.16.0", features = ["debug-render", "serde-serialize", "simd-stable"] }
 egui = "0.18.1"
+serde = "1.0.143"
+serde_json = "1.0.83"
+heron = { version = "4", features=["3d","debug-3d"]}
 
 # Enable only a small amount of optimization in debug mode
 [profile.dev]

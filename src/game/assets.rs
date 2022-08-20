@@ -8,5 +8,24 @@ use bevy_asset_loader::asset_collection::AssetCollection;
 #[derive(AssetCollection)]
 pub struct AssetHandles {
     #[asset(path = "placeholder.png")]
-    pub placeholder: Handle<Image>
+    pub placeholder: Handle<Image>,
+
+    #[asset(path = "sprites/1x1_coin.png")]
+    pub one_x_one_coin: Handle<Image>,
+
+    #[asset(path = "sprites/3x2_croissant.png")]
+    pub three_x_two_croissant: Handle<Image>,
+
+    #[asset(path = "sprites/green_square.png")]
+    pub green_square: Handle<Image>,
+
+    #[asset(path = "sprites/red_square.png")]
+    pub red_square: Handle<Image>,
+
+    #[asset(path = "sprites/selection_square.png")]
+    pub selection_square: Handle<Image>,
+
+    #[asset(path = "sprites/yellow_square.png")]
+    pub yellow_square: Handle<Image>,
 }
+
