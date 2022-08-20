@@ -14,7 +14,7 @@ use crate::game::GamePlugin;
 use crate::gameover::GameOverPlugin;
 use crate::mainmenu::MainMenuPlugin;
 
-pub const GAMENAME: &str = "Bevy Jam 2 Game";
+pub const GAME_NAME: &str = "Bevy Jam 2 Game";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Component)]
 pub enum AppState { // changing this state alone will make game state plugins act according to new state, nothing else is needed
@@ -38,7 +38,6 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_plugin(WorldInspectorPlugin::new())
-
         .add_plugin(MainMenuPlugin)
         .add_plugin(GamePlugin)
         .add_plugin(GameOverPlugin)

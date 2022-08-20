@@ -1,22 +1,31 @@
 ﻿use crate::*;
+
 pub mod player;
 pub mod assets;
 
+pub use create_grid_system::*;
+
+mod components;
+mod create_grid_system;
+mod draw_grid_system;
+
 pub struct GamePlugin;
-impl Plugin for GamePlugin{
-    fn build(&self, app: &mut App){ 
+
+impl Plugin for GamePlugin {
+    fn build(&self, app: &mut App) {
         app.add_system_set(
             SystemSet::on_enter(AppState::InGame)
                 .with_system(setup)
-                .with_system(player::spawn_player)
+                // .with_system(player::spawn_player)
+                .with_system(create_grid_system)
         );
-    
+
         app.add_system_set(
             SystemSet::on_update(AppState::InGame)
                 .with_system(draw_win_lose_placeholder_menu)
-                .with_system(player::rotate_player_placeholder)
+            // .with_system(player::rotate_player_placeholder)
         );
-        
+
         app.add_system_set(
             SystemSet::on_exit(AppState::InGame)
                 .with_system(despawn_gameplay_entities)
@@ -25,27 +34,27 @@ impl Plugin for GamePlugin{
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Component)]
-pub enum GameResult{
+pub enum GameResult {
     Lost,
-    Won
+    Won,
 }
 
 // Place this component on every gameplay entity that needs to be destroyed when game ends.
 #[derive(Component)]
 pub struct CleanupOnGameplayEnd;
 
-fn setup(mut cmd: Commands){
+fn setup(mut cmd: Commands) {
     cmd.spawn_bundle(Camera2dBundle::default())
         .insert(CleanupOnGameplayEnd);
 }
 
-fn draw_win_lose_placeholder_menu(mut egui_context: ResMut<EguiContext>, mut state: ResMut<State<AppState>>, mut result: ResMut<State<GameResult>>){
+fn draw_win_lose_placeholder_menu(mut egui_context: ResMut<EguiContext>, mut state: ResMut<State<AppState>>, mut result: ResMut<State<GameResult>>) {
     egui::Window::new("Gameplay").show(egui_context.ctx_mut(), |ui| {
         if ui.button("Win").clicked() {
             state.replace(AppState::GameEnded).ok();
             result.replace(GameResult::Won).ok();
         }
-        if ui.button("Lose").clicked(){
+        if ui.button("Lose").clicked() {
             state.replace(AppState::GameEnded).ok();
             result.replace(GameResult::Lost).ok();
         }
