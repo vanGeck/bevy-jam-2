@@ -49,6 +49,7 @@ pub struct CleanupOnGameplayEnd;
 
 fn setup(mut cmd: Commands) {
     cmd.spawn_bundle(Camera2dBundle::default())
+        .insert(input::GameCamera)
         .insert(CleanupOnGameplayEnd);
 }
 

@@ -1,6 +1,7 @@
 ﻿use bevy::math::Vec3;
 use bevy::prelude::{Commands, ImageBundle, Query, Res, Sprite, Time, Vec2, With, Component, Color};
-use crate::{Quat, SpriteBundle, Transform};
+use heron::{CollisionShape, PhysicsLayer, RigidBody};
+use crate::{CollisionLayers, input, PhysLayer, Quat, SpriteBundle, Transform};
 use crate::game::assets::AssetHandles;
 use crate::game::CleanupOnGameplayEnd;
 
@@ -12,13 +13,15 @@ pub struct RotatePlayerAroundSelfPlaceholder {
     pub rad_per_sec: f32,
 }
 
-pub fn spawn_player(mut cmd: Commands, assets: Res<AssetHandles>) {
-    let player_transform = Transform::from_translation(Vec3::ZERO);
-
-    cmd.spawn_bundle(SpriteBundle {
+pub fn spawn_player(mut cmd: Commands, assets: Res<AssetHandles>){
+    let player_tform = Transform::from_translation(Vec3::ZERO);
+    
+    let dimensions = Vec2::new(256.0, 256.0);
+    
+    cmd.spawn_bundle(SpriteBundle{
         sprite: Sprite {
             color: Color::WHITE,
-            custom_size: Some(Vec2::new(256.0, 256.0)),
+            custom_size: Some(dimensions),
             ..Default::default()
         },
         transform: player_transform,
@@ -27,7 +30,12 @@ pub fn spawn_player(mut cmd: Commands, assets: Res<AssetHandles>) {
     })
         .insert(Player)
         .insert(CleanupOnGameplayEnd)
-        .insert(RotatePlayerAroundSelfPlaceholder {
+        .insert(input::Draggable)
+        .insert(RigidBody::Sensor)
+        .insert(CollisionLayers::new(PhysLayer::Draggables, PhysLayer::World))
+        // Collider dimensions match texture dimensions (halved)
+        .insert(CollisionShape::Cuboid { half_extends: (dimensions * 0.5).extend(1.0), border_radius: None })
+        .insert(RotatePlayerAroundSelfPlaceholder{
             rad_per_sec: 0.61
         });
 }
