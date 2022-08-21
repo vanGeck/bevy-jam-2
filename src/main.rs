@@ -1,3 +1,4 @@
+use crate::config::config_log::LogConfig;
 use crate::config_loading::ConfigLoadingPlugin;
 use bevy::prelude::*;
 use bevy::DefaultPlugins;
@@ -40,7 +41,7 @@ pub enum AppState {
 fn main() {
     App::new()
         .insert_resource(bevy::log::LogSettings {
-            level: bevy::log::Level::DEBUG,
+            level: LogConfig::load_from_file().level.parse().unwrap(),
             ..Default::default()
         })
         .add_loopless_state(AppState::AssetLoading)

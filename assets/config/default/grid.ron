@@ -1,5 +1,5 @@
 (
-    grid_dimens: ((32, 16)),
-    grid_offset: ((5, 5)),
+    dimens: ((32, 16)),
+    pos: ((5, 5)),
     tile_size: 16,
 )

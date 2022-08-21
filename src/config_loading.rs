@@ -1,8 +1,11 @@
-use crate::config::config_grid::GridConfig;
-use crate::AppState;
+use bevy::log::LogSettings;
 use bevy::prelude::*;
 use bevy_egui::EguiContext;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, NextState};
+
+use crate::config::config_grid::GridConfig;
+use crate::config::config_log::LogConfig;
+use crate::AppState;
 
 pub struct ConfigLoadingPlugin;
 

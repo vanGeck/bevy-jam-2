@@ -16,7 +16,7 @@ pub fn get_config_default_dir() -> PathBuf {
 ///
 /// This is where override configuration files for individual devs are stored.
 pub fn get_config_dev_dir() -> PathBuf {
-    create_if_missing(PathBuf::new().join("assets/config/default/"))
+    create_if_missing(PathBuf::new().join("assets/config/dev/"))
 }
 
 /// Creates the given directory if it does not exist yet.
