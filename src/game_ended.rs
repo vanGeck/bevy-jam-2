@@ -3,9 +3,9 @@ use iyes_loopless::prelude::{ConditionSet, NextState};
 use crate::game::GameResult;
 use crate::*;
 
-pub struct GameOverPlugin;
+pub struct GameEndedPlugin;
 
-impl Plugin for GameOverPlugin {
+impl Plugin for GameEndedPlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(
             ConditionSet::new()
