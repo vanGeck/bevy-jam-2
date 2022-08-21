@@ -2,7 +2,7 @@ use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
 
-use crate::config::file_utils::{get_config_default_dir, get_config_dev_dir};
+use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 use crate::grid::dimens::Dimens;
 use crate::grid::pos::Pos;
 use bevy::prelude::*;
@@ -19,15 +19,15 @@ pub struct GridConfig {
 impl GridConfig {
     /// Loads the most relevant instance of `GridConfig`.
     ///
-    /// If the `GridConfig` dev file exists, tries to load from config/dev/ first. If that fails,
+    /// If the `GridConfig` override file exists, tries to load from config/override/ first. If that fails,
     /// log an error and use the Default trait implementation (ie: `GridConfig::default()`).
     ///
-    /// If the 'GridConfig' dev file does not exist, tries to load from config/default/ instead.
+    /// If the 'GridConfig' override file does not exist, tries to load from config/default/ instead.
     #[must_use]
     pub fn load_from_file() -> GridConfig {
-        let dev_override_file = get_config_dev_dir().join("grid.ron");
-        if dev_override_file.exists() {
-            load_from_path(&dev_override_file)
+        let override_file = get_config_override_dir().join("grid.ron");
+        if override_file.exists() {
+            load_from_path(&override_file)
         } else {
             load_from_path(&get_config_default_dir().join("grid.ron"))
         }

@@ -50,6 +50,5 @@ pub fn rotate_player_placeholder(
     time: Res<Time>,
 ) {
     let (mut tform, mut rotate) = q.single_mut();
-    tform.rotation =
-        tform.rotation * Quat::from_axis_angle(Vec3::Z, rotate.rad_per_sec * time.delta_seconds());
+    tform.rotation *= Quat::from_axis_angle(Vec3::Z, rotate.rad_per_sec * time.delta_seconds());
 }

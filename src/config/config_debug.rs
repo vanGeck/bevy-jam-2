@@ -5,7 +5,7 @@ use std::path::Path;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::config::file_utils::{get_config_default_dir, get_config_dev_dir};
+use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]
@@ -18,15 +18,15 @@ pub struct DebugConfig {
 impl DebugConfig {
     /// Loads the most relevant instance of `DebugConfig`.
     ///
-    /// If the `DebugConfig` dev file exists, tries to load from config/dev/ first. If that fails,
+    /// If the `DebugConfig` override file exists, tries to load from config/override/ first. If that fails,
     /// log an error and use the Default trait implementation (ie: `DebugConfig::default()`).
     ///
-    /// If the 'DebugConfig' dev file does not exist, tries to load from config/default/ instead.
+    /// If the 'DebugConfig' override file does not exist, tries to load from config/default/ instead.
     #[must_use]
     pub fn load_from_file() -> DebugConfig {
-        let dev_override_file = get_config_dev_dir().join("debug.ron");
-        if dev_override_file.exists() {
-            load_from_path(&dev_override_file)
+        let override_file = get_config_override_dir().join("debug.ron");
+        if override_file.exists() {
+            load_from_path(&override_file)
         } else {
             load_from_path(&get_config_default_dir().join("debug.ron"))
         }

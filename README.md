@@ -3,7 +3,7 @@
 ## Config files
 
 Every config file is present as a `ron` file in the `assets/config/default/` directory. If you need to change one of the
-constants for yourself, for testing purposes, you can copy the relevant config file to `assets/config/dev/` and change
+constants for yourself, for testing purposes, you can copy the relevant config file to `assets/config/override/` and change
 the values to your wishes. Those files wil not be added to source control, so you're not fucking up anyone else's
 build.
 
