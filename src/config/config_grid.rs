@@ -3,16 +3,14 @@ use std::io::{Error, ErrorKind};
 use std::path::Path;
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
-use crate::grid::dimens::Dimens;
-use crate::grid::pos::Pos;
+use crate::grid::coords::Coords;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]
 pub struct GridConfig {
-    pub dimens: Dimens,
-    pub pos: Pos,
+    pub coords: Coords,
     pub tile_size: i32,
 }
 

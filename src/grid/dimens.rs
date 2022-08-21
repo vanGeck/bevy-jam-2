@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 /// Defines a width and height in terms of discrete grid coordinates.
 /// Wraps an IVec2, which works well together with bevy.
 #[derive(Deserialize, Serialize, Default, Copy, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Dimens(IVec2);
+pub struct Dimens(pub IVec2);
 
 impl Dimens {
     #[must_use]

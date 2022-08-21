@@ -1,11 +1,11 @@
-use bevy::prelude::*;
-
-use crate::config::config_grid::GridConfig;
 use crate::game::assets::AssetHandles;
 use crate::game::components::Grid;
 use crate::grid::coords::Coords;
 use crate::grid::dimens::Dimens;
 use crate::grid::pos::Pos;
+use bevy::prelude::*;
+
+use crate::config::config_grid::GridConfig;
 
 pub fn create_grid_system(
     mut commands: Commands,
@@ -19,21 +19,20 @@ pub fn create_grid_system(
     commands
         .entity(grid_entity)
         .insert(Grid {
-            width: config.dimens.x,
-            height: config.dimens.y,
-            occupied: vec![false; (config.dimens.x * config.dimens.y) as usize],
+            coords: config.coords,
+            occupied: vec![false; (config.coords.dimens.x * config.coords.dimens.y) as usize],
         })
         .insert(Name::new("Grid"))
         .insert_bundle(SpatialBundle {
-            transform: Transform::from_xyz(config.pos.x as f32, config.pos.y as f32, 0.),
+            transform: Transform::from_xyz(config.coords.pos.x as f32, config.coords.pos.y as f32, 0.),
             ..Default::default()
         });
 
-    for j in 0..config.dimens.y {
-        for i in 0..config.dimens.x {
+    for j in 0..config.coords.dimens.y {
+        for i in 0..config.coords.dimens.x {
             let index = xy_index(&config, i, j);
-            let tile_x_position = ((i - (config.dimens.x / 2)) * config.tile_size) as f32;
-            let tile_y_position = ((j - (config.dimens.y / 2)) * config.tile_size) as f32;
+            let tile_x_position = ((i - (config.coords.dimens.x / 2)) * config.tile_size) as f32;
+            let tile_y_position = ((j - (config.coords.dimens.y / 2)) * config.tile_size) as f32;
 
             let tile_entity = commands.spawn().id();
             commands
@@ -61,5 +60,5 @@ pub fn create_grid_system(
 }
 
 pub fn xy_index(config: &GridConfig, x: i32, y: i32) -> usize {
-    ((y * config.dimens.x) + x) as usize
+    ((y * config.coords.dimens.x) + x) as usize
 }
