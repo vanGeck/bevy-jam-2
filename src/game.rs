@@ -1,4 +1,4 @@
-use crate::*;
+use crate::{*, grid::{coords::Coords, pos::Pos, dimens::Dimens}};
 
 pub mod assets;
 mod components;
@@ -22,7 +22,6 @@ impl Plugin for GamePlugin {
             SystemSet::on_enter(AppState::InGame)
                 .with_system(setup)
                 .with_system(create_grid_system)
-                .with_system(create_items_system), // .with_system(spawn_player)
         );
 
         app.add_system_set(
@@ -45,10 +44,18 @@ pub enum GameResult {
 #[derive(Component)]
 pub struct CleanupOnGameplayEnd;
 
-fn setup(mut cmd: Commands) {
+fn setup(mut cmd: Commands, assets: Res<AssetHandles>) { 
     cmd.spawn_bundle(Camera2dBundle::default())
         .insert(input::GameCamera)
         .insert(CleanupOnGameplayEnd);
+    
+    spawn_item(cmd, Item{
+        name: "Croissant".to_string(),
+        coords: Coords::new(Pos::new(2, 2), Dimens::new(3, 2)),
+        occupied: vec![vec![true, true, true], vec![true, true, true]]
+        },
+        assets.three_x_two_croissant.clone(),
+    )
 }
 
 fn draw_win_lose_placeholder_menu(

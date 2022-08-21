@@ -1,24 +1,18 @@
-use super::{components::Grid, components::Shape, AssetHandles, PhysLayer};
+use super::{components::Item, PhysLayer};
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::*;
-use heron::{CollisionLayers, CollisionShape, PhysicsLayer, RigidBody};
+use heron::{CollisionLayers, CollisionShape, RigidBody};
 
-pub fn create_items_system(
-    mut commands: Commands,
-    assets: Res<AssetHandles>,
-    mut query: Query<&mut Grid>,
+pub fn spawn_item(
+    mut commands: Commands, // should this use ResMut instead? lifetime issues
+    item: Item,
+    texture: Handle<Image>,
 ) {
-    let mut shape = commands.spawn().id();
+    let item_id = commands.spawn().id();
 
     commands
-        .entity(shape)
-        .insert(Name::new("Shape_Croissant"))
-        .insert(Shape {
-            width: 3,
-            height: 2,
-            // This truth table is the shape of the croissant sprite.
-            occupied: vec![vec![true, true, true], vec![true, false, true]],
-        })
+        .entity(item_id)
+        .insert(Name::new(item.clone().name))
+        .insert(item.clone())
         .insert(RigidBody::Sensor)
         .insert(CollisionLayers::new(
             PhysLayer::Draggables,
@@ -26,11 +20,15 @@ pub fn create_items_system(
         ))
         // Collider dimensions match texture dimensions (halved)
         .insert(CollisionShape::Cuboid {
-            half_extends: Vec3::new(48., 32., 1.),
+            half_extends: Vec3::new(
+                (item.coords.dimens.x * 10) as f32,
+                (item.coords.dimens.y * 10) as f32 ,
+                1.), // Item dimens * 10 probably a better way
+                                                   
             border_radius: None,
         })
         .insert_bundle(SpriteBundle {
-            texture: assets.three_x_two_croissant.clone(),
+            texture,
             transform: Transform::from_xyz(0., 0., 1.),
             ..Default::default()
         });

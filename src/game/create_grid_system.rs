@@ -1,5 +1,8 @@
 use crate::game::assets::AssetHandles;
-use crate::game::components::{Coordinate, Grid};
+use crate::game::components::Grid;
+use crate::grid::coords::Coords;
+use crate::grid::dimens::Dimens;
+use crate::grid::pos::Pos;
 use bevy::prelude::*;
 
 pub const GRID_WIDTH: i32 = 32;
@@ -16,8 +19,10 @@ pub fn create_grid_system(mut commands: Commands, assets: Res<AssetHandles>) {
     commands
         .entity(grid_entity)
         .insert(Grid {
-            width: GRID_WIDTH,
-            height: GRID_HEIGHT,
+            coords: Coords::new(
+                Pos::new(GRID_X_OFFSET, GRID_Y_OFFSET),
+                Dimens::new(GRID_WIDTH, GRID_HEIGHT),
+            ),
             occupied: vec![false; (GRID_WIDTH * GRID_HEIGHT) as usize],
         })
         .insert(Name::new("Grid"))
@@ -28,7 +33,7 @@ pub fn create_grid_system(mut commands: Commands, assets: Res<AssetHandles>) {
 
     for j in 0..GRID_HEIGHT {
         for i in 0..GRID_WIDTH {
-            let index = xy_index(i, j);
+            let _index = xy_index(i, j); // might be useful later?
             let tile_x_position = ((i - (GRID_WIDTH / 2)) * TILE_SIZE) as f32;
             let tile_y_position = ((j - (GRID_HEIGHT / 2)) * TILE_SIZE) as f32;
 
@@ -36,7 +41,7 @@ pub fn create_grid_system(mut commands: Commands, assets: Res<AssetHandles>) {
             commands
                 .entity(tile_entity)
                 .insert(Name::new("Tile"))
-                .insert(Coordinate { x: i, y: j })
+                .insert(Coords::new(Pos::new(i, j), Dimens::new(1, 1)))
                 .insert_bundle(SpriteBundle {
                     texture: assets.green_square.clone(),
                     transform: Transform::from_xyz(tile_x_position, tile_y_position, 0.),

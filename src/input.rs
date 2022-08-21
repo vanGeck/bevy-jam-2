@@ -127,6 +127,7 @@ pub fn process_drag_end(
 
     if let Ok(mut dragged_entity_transform) = transform_query.get_single_mut() {
         let mut dragged_entity_position = dragged_entity_transform.translation;
+        // Add overlap check
         dragged_entity_position.z = 1.0;
         dragged_entity_transform.translation = dragged_entity_position;
     }
