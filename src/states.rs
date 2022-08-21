@@ -11,11 +11,7 @@ use iyes_loopless::state::NextState;
 ///
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Component)]
 pub enum AppState {
-    AssetLoading,
-    /// Load config files. It doesn't look like this can be done with a custom AssetLoader
-    /// (because the file location is uncertain), and I don't know how to integrate it with the
-    /// bevy asset loader. That's why I created a separate 2nd loading state.
-    ConfigLoading,
+    Loading,
     MainMenu,
     InGame,
     GameEnded,
@@ -35,9 +31,7 @@ pub fn handle_escape(
 ) {
     if keys.clear_just_pressed(KeyCode::Escape) {
         match state.0 {
-            AppState::AssetLoading | AppState::ConfigLoading | AppState::MainMenu => {
-                exit.send(AppExit)
-            }
+            AppState::Loading | AppState::MainMenu => exit.send(AppExit),
             AppState::InGame | AppState::GameEnded => {
                 commands.insert_resource(NextState(AppState::MainMenu))
             }

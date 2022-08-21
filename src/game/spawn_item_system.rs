@@ -20,7 +20,6 @@ pub fn spawn_item(commands: &mut Commands, item: Item, texture: Handle<Image>) {
                 (item.coords.dimens.y * 10) as f32,
                 1.,
             ), // Item dimens * 10 there's probably a better way
-
             border_radius: None,
         })
         .insert_bundle(SpriteBundle {

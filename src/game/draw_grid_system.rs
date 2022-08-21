@@ -1,10 +1,10 @@
 use super::game::components::Grid;
-use crate::game::assets::AssetHandles;
+use crate::game::AssetStorage;
 use bevy::prelude::*;
 
 pub fn draw_grid_system(
     mut commands: Commands,
-    assets: Res<AssetHandles>,
+    assets: Res<AssetStorage>,
     mut query: Query<&mut Grid>,
 ) {
     let grid = query.single_mut();

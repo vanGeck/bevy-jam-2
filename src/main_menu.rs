@@ -1,3 +1,5 @@
+use crate::audio::sound_event::SoundEvent;
+use crate::game::SoundType;
 use crate::*;
 use iyes_loopless::prelude::ConditionSet;
 use iyes_loopless::state::NextState;
@@ -17,6 +19,7 @@ impl Plugin for MainMenuPlugin {
 
 fn draw_main_menu(
     mut commands: Commands,
+    mut audio: EventWriter<SoundEvent>,
     mut egui_context: ResMut<EguiContext>,
     windows: ResMut<Windows>,
 ) {
@@ -62,6 +65,7 @@ fn draw_main_menu(
                 egui::Button::new("Start game"),
             );
             if start_btn.clicked() {
+                audio.send(SoundEvent::Sfx(SoundType::Placeholder));
                 commands.insert_resource(NextState(AppState::InGame))
             }
             let _quit_btn = ui.put(

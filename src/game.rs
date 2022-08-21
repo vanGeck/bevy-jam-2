@@ -13,6 +13,8 @@ mod draw_grid_system;
 pub mod player;
 mod spawn_item_system;
 
+use crate::audio::sound_event::SoundEvent;
+use crate::game::SpriteType::Croissant;
 pub use assets::*;
 pub use components::*;
 pub use create_grid_system::*;
@@ -60,7 +62,8 @@ pub enum GameResult {
 #[derive(Component)]
 pub struct CleanupOnGameplayEnd;
 
-fn setup(mut cmd: Commands, assets: Res<AssetHandles>) {
+fn setup(mut cmd: Commands, assets: Res<AssetStorage>, mut audio: EventWriter<SoundEvent>) {
+    audio.send(SoundEvent::Music(Some((MusicType::Placeholder, false))));
     cmd.spawn_bundle(Camera2dBundle::default())
         .insert(input::GameCamera)
         .insert(CleanupOnGameplayEnd);
@@ -72,29 +75,37 @@ fn setup(mut cmd: Commands, assets: Res<AssetHandles>) {
             name: "Croissant".to_string(),
             coords: Coords::new(Pos::new(2, 2), Dimens::new(3, 2)),
         },
-        assets.three_x_two_croissant.clone(),
+        assets.texture(&Croissant),
     )
 }
 
 fn draw_win_lose_placeholder_menu(
     mut commands: Commands,
+    mut audio: EventWriter<SoundEvent>,
     mut egui_context: ResMut<EguiContext>,
     mut result: ResMut<State<GameResult>>,
 ) {
     egui::Window::new("Gameplay").show(egui_context.ctx_mut(), |ui| {
         if ui.button("Win").clicked() {
+            audio.send(SoundEvent::Sfx(SoundType::Placeholder));
             commands.insert_resource(NextState(AppState::GameEnded));
             result.replace(GameResult::Won).ok();
         }
         if ui.button("Lose").clicked() {
+            audio.send(SoundEvent::Sfx(SoundType::Placeholder));
             commands.insert_resource(NextState(AppState::GameEnded));
             result.replace(GameResult::Lost).ok();
         }
     });
 }
 
-pub fn despawn_gameplay_entities(mut cmd: Commands, q: Query<Entity, With<CleanupOnGameplayEnd>>) {
+pub fn despawn_gameplay_entities(
+    mut cmd: Commands,
+    mut audio: EventWriter<SoundEvent>,
+    q: Query<Entity, With<CleanupOnGameplayEnd>>,
+) {
     for e in q.iter() {
         cmd.entity(e).despawn_recursive();
     }
+    audio.send(SoundEvent::KillAllMusic);
 }
