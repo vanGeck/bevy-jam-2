@@ -2,6 +2,7 @@ use crate::AppState;
 use bevy::prelude::*;
 use heron::rapier_plugin::PhysicsWorld;
 use iyes_loopless::prelude::ConditionSet;
+use bevy_inspector_egui::Inspectable;
 
 pub struct InputsPlugin;
 
@@ -16,6 +17,7 @@ impl Plugin for InputsPlugin {
                 .with_system(world_cursor_system)
                 .with_system(process_drag_attempt)
                 .with_system(process_fresh_drag)
+                .with_system(cancel_drag_when_mouse_oob)
                 .with_system(move_dragged_item)
                 .with_system(process_drag_end)
                 .into(),
@@ -23,9 +25,11 @@ impl Plugin for InputsPlugin {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Inspectable)]
 pub struct MousePosition {
     pub position: Vec2,
+    pub screen_position: Vec2,
+    pub out_of_bounds: bool
 }
 
 #[derive(Component)]
@@ -39,6 +43,7 @@ pub struct DragStart(pub Vec2);
 
 #[derive(Component)]
 pub struct BeingDragged {
+    pub original_position: Vec3,
     pub offset: Vec2,
 }
 
@@ -50,6 +55,9 @@ pub fn world_cursor_system(
     if let Ok((camera, camera_transform)) = query.get_single() {
         let window = windows.get_primary().unwrap();
 
+        // Bevy will not return anything here if the mouse is out of screen bounds...
+        // ... unless a mouse button is pressed, for whatever reason.
+        // That's why there's a double check for mouse being out of bounds.
         if let Some(screen_pos) = window.cursor_position() {
             let window_size = Vec2::new(window.width() as f32, window.height() as f32);
             let ndc = (screen_pos / window_size) * 2.0 - Vec2::ONE; // What the heck does ndc stand for?
@@ -59,6 +67,14 @@ pub fn world_cursor_system(
             let world_position: Vec2 = world_position.truncate();
 
             mouse_position.position = world_position;
+            mouse_position.screen_position = screen_pos;
+            if screen_pos.x < 0. || screen_pos.x > window.width() || screen_pos.y < 0. || screen_pos.y > window.height(){
+                mouse_position.out_of_bounds = true;
+            } else {
+                mouse_position.out_of_bounds = false;
+            }
+        } else {
+            mouse_position.out_of_bounds = true;
         }
     }
 }
@@ -93,14 +109,17 @@ pub fn process_fresh_drag(
     entity_query: Query<Entity, With<DragStart>>,
     drag_query: Query<(&Transform, &DragStart)>,
 ) {
+    let mut original_pos = Vec3::ZERO;
     let mut offset = Vec2::ZERO;
     if let Ok((drag_entity_transform, drag_start_component)) = drag_query.get_single() {
         offset = drag_start_component.0 - drag_entity_transform.translation.truncate();
+        original_pos = drag_entity_transform.translation;
     }
 
     if let Ok(e) = entity_query.get_single() {
         commands.entity(e).remove::<DragStart>();
-        commands.entity(e).insert(BeingDragged { offset });
+        commands.entity(e).insert(BeingDragged { original_position: original_pos, offset });
+
     }
 }
 
@@ -112,6 +131,23 @@ pub fn move_dragged_item(
     if let Ok((mut dragged_entity_transform, being_dragged_component)) = query.get_single_mut() {
         dragged_entity_transform.translation =
             mouse_position.position.extend(2.0) - being_dragged_component.offset.extend(0.0);
+    }
+}
+
+// Cancels drag when mouse moves out of window borders.
+pub fn cancel_drag_when_mouse_oob(mouse_position: Res<MousePosition>,
+                                  mut q: Query<(&mut Transform, &BeingDragged)>, 
+                                  mut entity_q: Query<Entity, With<BeingDragged>>, 
+                                  mut cmd: Commands){
+    if mouse_position.out_of_bounds == false{
+        return;
+    }
+    
+    if let Ok((mut tform, being_dragged_comp)) = q.get_single_mut(){
+        tform.translation = being_dragged_comp.original_position;
+        
+        let e =  entity_q.single();
+        cmd.entity(e).remove::<BeingDragged>();
     }
 }
 
