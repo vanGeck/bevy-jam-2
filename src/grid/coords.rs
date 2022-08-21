@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::grid::dimens::Dimens;
 use crate::grid::pos::Pos;
 use bevy::prelude::*;

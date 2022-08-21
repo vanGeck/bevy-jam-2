@@ -1,10 +1,9 @@
-use bevy::log::LogSettings;
 use bevy::prelude::*;
 use bevy_egui::EguiContext;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, NextState};
 
+use crate::config::config_debug::DebugConfig;
 use crate::config::config_grid::GridConfig;
-use crate::config::config_log::LogConfig;
 use crate::AppState;
 
 pub struct ConfigLoadingPlugin;
@@ -38,11 +37,13 @@ fn configure_ui_look(mut egui_ctx: ResMut<EguiContext>) {
 
 fn load_configs(mut commands: Commands) {
     commands.insert_resource(GridConfig::load_from_file());
+    commands.insert_resource(DebugConfig::load_from_file());
 }
 
-fn check_load_state(mut commands: Commands) {
-    // Depending on debug config, we could start the game with different parameters.
-    // For example, skipping past menu state and straight into the game for rapid testing.
-
-    commands.insert_resource(NextState(AppState::MainMenu));
+fn check_load_state(mut commands: Commands, config: Res<DebugConfig>) {
+    if config.skip_straight_to_game {
+        commands.insert_resource(NextState(AppState::InGame));
+    } else {
+        commands.insert_resource(NextState(AppState::MainMenu));
+    }
 }

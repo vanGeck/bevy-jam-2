@@ -2,7 +2,7 @@ use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
 
-use crate::config::file_util::{get_config_default_dir, get_config_dev_dir};
+use crate::config::file_utils::{get_config_default_dir, get_config_dev_dir};
 use crate::grid::dimens::Dimens;
 use crate::grid::pos::Pos;
 use bevy::prelude::*;

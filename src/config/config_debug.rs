@@ -1,0 +1,46 @@
+use std::fs;
+use std::io::{Error, ErrorKind};
+use std::path::Path;
+
+use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
+
+use crate::config::file_utils::{get_config_default_dir, get_config_dev_dir};
+
+#[derive(Debug, Deserialize, Serialize, Default)]
+#[serde(deny_unknown_fields)]
+pub struct DebugConfig {
+    /// If true, the loader will bypass the menu and drop you straight into the game.
+    /// Can be very handy for rapid testing, not having to click the play button every time.
+    pub skip_straight_to_game: bool,
+}
+
+impl DebugConfig {
+    /// Loads the most relevant instance of `DebugConfig`.
+    ///
+    /// If the `DebugConfig` dev file exists, tries to load from config/dev/ first. If that fails,
+    /// log an error and use the Default trait implementation (ie: `DebugConfig::default()`).
+    ///
+    /// If the 'DebugConfig' dev file does not exist, tries to load from config/default/ instead.
+    #[must_use]
+    pub fn load_from_file() -> DebugConfig {
+        let dev_override_file = get_config_dev_dir().join("debug.ron");
+        if dev_override_file.exists() {
+            load_from_path(&dev_override_file)
+        } else {
+            load_from_path(&get_config_default_dir().join("debug.ron"))
+        }
+    }
+}
+
+fn load_from_path(path: &Path) -> DebugConfig {
+    fs::read_to_string(path)
+        .and_then(|data| ron::de::from_str::<DebugConfig>(&data).map_err(|error| Error::new(ErrorKind::Other, error)))
+        .unwrap_or_else(|error| {
+            error!(
+                    "Failed to load the debug config file from {:?}! Falling back to DebugConfig::default(). Error: {:?}",
+                    path, error
+                );
+            DebugConfig::default()
+        })
+}

@@ -30,6 +30,7 @@ fn create_if_missing(path: PathBuf) -> PathBuf {
     path
 }
 
+#[allow(dead_code)]
 pub fn serialise_ron<S>(serialize: S) -> Result<String, ron::Error>
 where
     S: Serialize,
