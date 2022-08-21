@@ -1,5 +1,4 @@
-use crate::game::assets::AssetHandles;
-use crate::game::CleanupOnGameplayEnd;
+use crate::game::{AssetStorage, CleanupOnGameplayEnd, SpriteType};
 use crate::{input, CollisionLayers, PhysLayer, Quat, SpriteBundle, Transform};
 use bevy::math::Vec3;
 use bevy::prelude::{Color, Commands, Component, Query, Res, Sprite, Time, Vec2};
@@ -13,7 +12,7 @@ pub struct RotatePlayerAroundSelfPlaceholder {
     pub rad_per_sec: f32,
 }
 
-pub fn spawn_player(mut cmd: Commands, assets: Res<AssetHandles>) {
+pub fn spawn_player(mut cmd: Commands, assets: Res<AssetStorage>) {
     let player_transform = Transform::from_translation(Vec3::ZERO);
 
     let dimensions = Vec2::new(256.0, 256.0);
@@ -25,7 +24,7 @@ pub fn spawn_player(mut cmd: Commands, assets: Res<AssetHandles>) {
             ..Default::default()
         },
         transform: player_transform,
-        texture: assets.placeholder.clone(),
+        texture: assets.texture(&SpriteType::Placeholder),
         ..Default::default()
     })
     .insert(Player)

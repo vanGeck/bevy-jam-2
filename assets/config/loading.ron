@@ -1,0 +1,18 @@
+// Deserialises to a LoadingConfig struct.
+(
+    textures: {
+        NotFound: "not_found.png",
+        GreenSquare: "green_square.png",
+        SelectionSquare: "selection_square.png",
+        Croissant: "3x2_croissant.png",
+    },
+    atlases: {
+        NotFound: "not_found.ron",
+    },
+    sound_effects: {
+        Placeholder:"placeholder.ogg",
+    },
+    music: {
+        Placeholder: "placeholder.mp3",
+    },
+)

@@ -22,9 +22,10 @@ pub fn spawn_item(
         .insert(CollisionShape::Cuboid {
             half_extends: Vec3::new(
                 (item.coords.dimens.x * 10) as f32,
-                (item.coords.dimens.y * 10) as f32 ,
-                1.), // Item dimens * 10 probably a better way
-                                                   
+                (item.coords.dimens.y * 10) as f32,
+                1.,
+            ), // Item dimens * 10 probably a better way
+
             border_radius: None,
         })
         .insert_bundle(SpriteBundle {

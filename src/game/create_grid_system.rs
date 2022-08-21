@@ -1,4 +1,3 @@
-use crate::game::assets::AssetHandles;
 use crate::game::components::Grid;
 use crate::grid::coords::Coords;
 use crate::grid::dimens::Dimens;
@@ -6,10 +5,11 @@ use crate::grid::pos::Pos;
 use bevy::prelude::*;
 
 use crate::config::config_grid::GridConfig;
+use crate::game::{AssetStorage, SpriteType};
 
 pub fn create_grid_system(
     mut commands: Commands,
-    assets: Res<AssetHandles>,
+    assets: Res<AssetStorage>,
     config: Res<GridConfig>,
 ) {
     let grid_entity = commands.spawn().id();
@@ -24,7 +24,11 @@ pub fn create_grid_system(
         })
         .insert(Name::new("Grid"))
         .insert_bundle(SpatialBundle {
-            transform: Transform::from_xyz(config.coords.pos.x as f32, config.coords.pos.y as f32, 0.),
+            transform: Transform::from_xyz(
+                config.coords.pos.x as f32,
+                config.coords.pos.y as f32,
+                0.,
+            ),
             ..Default::default()
         });
 
@@ -40,13 +44,13 @@ pub fn create_grid_system(
                 .insert(Name::new("Tile"))
                 .insert(Coords::new(Pos::new(i, j), Dimens::unit()))
                 .insert_bundle(SpriteBundle {
-                    texture: assets.green_square.clone(),
+                    texture: assets.texture(&SpriteType::GreenSquare),
                     transform: Transform::from_xyz(tile_x_position, tile_y_position, 0.),
                     ..Default::default()
                 })
                 .with_children(|parent| {
                     parent.spawn_bundle(SpriteBundle {
-                        texture: assets.selection_square.clone(),
+                        texture: assets.texture(&SpriteType::SelectionSquare),
                         transform: Transform::from_xyz(0., 0., 1.),
                         ..Default::default()
                     });

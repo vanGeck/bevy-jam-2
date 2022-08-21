@@ -1,9 +1,8 @@
+use crate::audio::plugin::MyAudioPlugin;
 use crate::config::config_log::LogConfig;
-use crate::config_loading::ConfigLoadingPlugin;
 use bevy::prelude::*;
 use bevy::window::WindowMode;
 use bevy::DefaultPlugins;
-use bevy_asset_loader::prelude::{LoadingState, LoadingStateAppExt};
 use bevy_egui::{egui, EguiContext, EguiPlugin};
 use bevy_inspector_egui::WorldInspectorPlugin;
 use egui::*;
@@ -13,17 +12,19 @@ use iyes_loopless::prelude::AppLooplessStateExt;
 use crate::game::GamePlugin;
 use crate::game_ended::GameEndedPlugin;
 use crate::input::InputsPlugin;
+use crate::loading::state::LoadingPlugin;
 use crate::main_menu::MainMenuPlugin;
 use crate::states::{handle_escape, log_state_changes, AppState};
 use crate::window_event_handler::handle_window;
 
+mod audio;
 mod cleanup;
 mod config;
-mod config_loading;
 mod game;
 mod game_ended;
 mod grid;
 mod input;
+mod loading;
 mod main_menu;
 mod states;
 mod window_event_handler;
@@ -41,18 +42,14 @@ fn main() {
             mode: WindowMode::Windowed,
             ..default()
         })
-        .add_loopless_state(AppState::AssetLoading)
-        .add_loading_state(
-            LoadingState::new(AppState::AssetLoading) // <- we load all assets in this state
-                .continue_to_state(AppState::ConfigLoading) // and then switch to the config loading state.
-                .with_collection::<game::assets::AssetHandles>(),
-        )
+        .add_loopless_state(AppState::Loading)
         .add_state(game::GameResult::Won)
         .add_plugins(DefaultPlugins)
         .add_plugin(EguiPlugin)
         .add_plugin(PhysicsPlugin::default())
         .add_plugin(WorldInspectorPlugin::new())
-        .add_plugin(ConfigLoadingPlugin)
+        .add_plugin(MyAudioPlugin)
+        .add_plugin(LoadingPlugin)
         .add_plugin(MainMenuPlugin)
         .add_plugin(GamePlugin)
         .add_plugin(GameEndedPlugin)
