@@ -7,6 +7,8 @@ use bevy::prelude::*;
 
 use crate::config::config_grid::GridConfig;
 
+use super::{Tile, TileType};
+
 pub fn create_grid_system(
     mut commands: Commands,
     assets: Res<AssetHandles>,
@@ -20,11 +22,15 @@ pub fn create_grid_system(
         .entity(grid_entity)
         .insert(Grid {
             coords: config.coords,
-            occupied: vec![false; (config.coords.dimens.x * config.coords.dimens.y) as usize],
+            tiles: Vec::new(),
         })
         .insert(Name::new("Grid"))
         .insert_bundle(SpatialBundle {
-            transform: Transform::from_xyz(config.coords.pos.x as f32, config.coords.pos.y as f32, 0.),
+            transform: Transform::from_xyz(
+                config.coords.pos.x as f32,
+                config.coords.pos.y as f32,
+                0.,
+            ),
             ..Default::default()
         });
 
@@ -37,8 +43,12 @@ pub fn create_grid_system(
             let tile_entity = commands.spawn().id();
             commands
                 .entity(tile_entity)
-                .insert(Name::new("Tile"))
-                .insert(Coords::new(Pos::new(i, j), Dimens::unit()))
+                .insert(Tile::new(
+                    index,
+                    Coords::new(Pos::new(i, j), Dimens::unit()),
+                    TileType::Available,
+                ))
+                .insert(Name::new(format!("Tile index: {}", index)))
                 .insert_bundle(SpriteBundle {
                     texture: assets.green_square.clone(),
                     transform: Transform::from_xyz(tile_x_position, tile_y_position, 0.),

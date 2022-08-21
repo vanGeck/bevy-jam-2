@@ -1,21 +1,24 @@
-use crate::{*, grid::{coords::Coords, pos::Pos, dimens::Dimens}};
 use crate::*;
+use crate::{
+    grid::{coords::Coords, dimens::Dimens, pos::Pos},
+    *,
+};
 use iyes_loopless::condition::ConditionSet;
 use iyes_loopless::prelude::NextState;
 
 pub mod assets;
 mod components;
 mod create_grid_system;
-mod create_items_system;
 mod draw_grid_system;
 pub mod player;
+mod spawn_item_system;
 
 pub use assets::*;
 pub use components::*;
 pub use create_grid_system::*;
-pub use create_items_system::*;
 pub use draw_grid_system::*;
 pub use player::*;
+pub use spawn_item_system::*;
 
 pub struct GamePlugin;
 
@@ -27,7 +30,7 @@ impl Plugin for GamePlugin {
                 .run_in_state(AppState::InGame)
                 .with_system(setup)
                 .with_system(create_grid_system)
-                .into()
+                .into(),
         );
 
         app.add_system_set(
@@ -36,7 +39,7 @@ impl Plugin for GamePlugin {
                 .with_system(draw_win_lose_placeholder_menu)
                 .into(),
         );
-        
+
         app.add_exit_system_set(
             AppState::InGame,
             ConditionSet::new()
@@ -57,15 +60,17 @@ pub enum GameResult {
 #[derive(Component)]
 pub struct CleanupOnGameplayEnd;
 
-fn setup(mut cmd: Commands, assets: Res<AssetHandles>) { 
+fn setup(mut cmd: Commands, assets: Res<AssetHandles>) {
     cmd.spawn_bundle(Camera2dBundle::default())
         .insert(input::GameCamera)
         .insert(CleanupOnGameplayEnd);
-    
-    spawn_item(cmd, Item{
-        name: "Croissant".to_string(),
-        coords: Coords::new(Pos::new(2, 2), Dimens::new(3, 2)),
-        occupied: vec![vec![true, true, true], vec![true, true, true]]
+
+    // Remove this spawn later
+    spawn_item(
+        &mut cmd,
+        Item {
+            name: "Croissant".to_string(),
+            coords: Coords::new(Pos::new(2, 2), Dimens::new(3, 2)),
         },
         assets.three_x_two_croissant.clone(),
     )

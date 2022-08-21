@@ -5,8 +5,9 @@ use bevy::window::WindowMode;
 use bevy::DefaultPlugins;
 use bevy_asset_loader::prelude::{LoadingState, LoadingStateAppExt};
 use bevy_egui::{egui, EguiContext, EguiPlugin};
-use bevy_inspector_egui::WorldInspectorPlugin;
+use bevy_inspector_egui::{WorldInspectorPlugin, InspectorPlugin, RegisterInspectable};
 use egui::*;
+use game::Tile;
 use heron::prelude::*;
 use iyes_loopless::prelude::AppLooplessStateExt;
 
