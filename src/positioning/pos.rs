@@ -3,7 +3,7 @@
 use std::cmp::Ordering;
 use std::ops::{Add, Deref, DerefMut, Sub};
 
-use bevy::prelude::IVec2;
+use bevy::prelude::{IVec2, Vec2};
 use serde::{Deserialize, Serialize};
 
 /// Defines a set of discrete grid coordinates.
@@ -87,5 +87,11 @@ impl Add for Pos {
 
     fn add(self, other: Pos) -> Pos {
         Pos::new(self.x + other.x, self.y + other.y)
+    }
+}
+
+impl From<Vec2> for Pos {
+    fn from(vec: Vec2) -> Self {
+        Pos::new(vec.x.floor() as i32, vec.y.floor() as i32)
     }
 }

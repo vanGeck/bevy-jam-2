@@ -1,54 +1,65 @@
-use crate::*;
-use crate::{
-    grid::{coords::Coords, dimens::Dimens, pos::Pos},
-    *,
-};
-use iyes_loopless::condition::ConditionSet;
-use iyes_loopless::prelude::NextState;
+use bevy::prelude::*;
+use bevy_egui::EguiContext;
+use iyes_loopless::prelude::*;
 
-pub mod assets;
-mod components;
-mod spawn_inventory;
-mod draw_grid_system;
-pub mod player;
-mod spawn_item_system;
-
-use crate::audio::sound_event::SoundEvent;
-use crate::game::SpriteType::Croissant;
 pub use assets::*;
 pub use components::*;
-pub use spawn_inventory::*;
-pub use draw_grid_system::*;
-pub use player::*;
-pub use spawn_item_system::*;
+pub use item_spawner::*;
+
+use crate::audio::sound_event::SoundEvent;
+use crate::game::camera::create_camera;
+use crate::game::dragging::{
+    apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, process_drag_event,
+    set_ghost_position, DragEvent,
+};
+use crate::game::spawn_grid::{spawn_crafting_grid, spawn_playing_field};
+use crate::input::{world_cursor_system, Mouse};
+use crate::AppState;
+
+pub mod assets;
+pub mod camera;
+mod components;
+mod dragging;
+mod item_spawner;
+mod spawn_grid;
 
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_enter_system_set(
-            AppState::InGame,
-            ConditionSet::new()
-                .run_in_state(AppState::InGame)
-                .with_system(setup)
-                .with_system(spawn_inventory)
-                .into(),
-        );
-
-        app.add_system_set(
-            ConditionSet::new()
-                .run_in_state(AppState::InGame)
-                .with_system(draw_win_lose_placeholder_menu)
-                .into(),
-        );
-
-        app.add_exit_system_set(
-            AppState::InGame,
-            ConditionSet::new()
-                .run_in_state(AppState::InGame)
-                .with_system(despawn_gameplay_entities)
-                .into(),
-        );
+        app.add_event::<SpawnItemEvent>()
+            .add_event::<DragEvent>()
+            .init_resource::<Mouse>()
+            .add_enter_system_set(
+                AppState::InGame,
+                ConditionSet::new()
+                    .run_in_state(AppState::InGame)
+                    .with_system(setup)
+                    .with_system(create_camera)
+                    .with_system(spawn_playing_field)
+                    .with_system(spawn_crafting_grid)
+                    .into(),
+            )
+            .add_system_set(
+                ConditionSet::new()
+                    .run_in_state(AppState::InGame)
+                    .with_system(draw_win_lose_placeholder_menu)
+                    .with_system(spawn_item)
+                    .with_system(world_cursor_system)
+                    .with_system(check_drag_begin)
+                    .with_system(set_ghost_position)
+                    .with_system(apply_scrim_to_being_dragged)
+                    .with_system(check_drag_end)
+                    .with_system(process_drag_event)
+                    .into(),
+            )
+            .add_exit_system_set(
+                AppState::InGame,
+                ConditionSet::new()
+                    .run_in_state(AppState::InGame)
+                    .with_system(despawn_gameplay_entities)
+                    .into(),
+            );
     }
 }
 
@@ -58,25 +69,13 @@ pub enum GameResult {
     Won,
 }
 
-// Place this component on every gameplay entity that needs to be destroyed when game ends.
-#[derive(Component)]
-pub struct CleanupOnGameplayEnd;
-
-fn setup(mut cmd: Commands, assets: Res<AssetStorage>, mut audio: EventWriter<SoundEvent>) {
+fn setup(mut spawn: EventWriter<SpawnItemEvent>, mut audio: EventWriter<SoundEvent>) {
     audio.send(SoundEvent::Music(Some((MusicType::Placeholder, false))));
-    cmd.spawn_bundle(Camera2dBundle::default())
-        .insert(input::GameCamera)
-        .insert(CleanupOnGameplayEnd);
 
-    // Remove this spawn later
-    spawn_item(
-        &mut cmd,
-        Item {
-            name: "Croissant".to_string(),
-            coords: Coords::new(Pos::new(2, 2), Dimens::new(3, 2)),
-        },
-        assets.texture(&Croissant),
-    )
+    // TODO: Remove this test call later:
+    spawn.send(SpawnItemEvent::new(Item {
+        name: "Croissant".to_string(),
+    }));
 }
 
 fn draw_win_lose_placeholder_menu(

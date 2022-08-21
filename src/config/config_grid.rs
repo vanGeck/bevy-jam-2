@@ -3,7 +3,7 @@ use std::io::{Error, ErrorKind};
 use std::path::Path;
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
-use crate::grid::coords::Coords;
+use crate::positioning::coords::Coords;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 

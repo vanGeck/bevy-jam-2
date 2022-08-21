@@ -1,4 +1,3 @@
-
 use bevy::prelude::*;
 
 use super::coords::Coords;
@@ -25,3 +24,11 @@ impl Tile {
         }
     }
 }
+
+/// TODO: Do we really need this?
+#[derive(Component, Default, Debug)]
+pub struct Grid;
+
+/// TODO: Do we really need this?
+#[derive(Component, Default, Debug)]
+pub struct GridCell;

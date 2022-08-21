@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
-use crate::grid::dimens::Dimens;
-use crate::grid::pos::Pos;
+use crate::positioning::dimens::Dimens;
+use crate::positioning::pos::Pos;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 

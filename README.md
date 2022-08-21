@@ -10,7 +10,7 @@ build.
 ### Adding new config files
 
 - Add it as a struct to `src/config/`.
-- Add it to the ConfigLoader.
+- Add it to the `src/loading/systems/load_configs()` function to load as a resource.
 - Add a ron file with default values to `assets/config/default`.
 
 ### Using the configs
