@@ -2,10 +2,8 @@ use crate::game::assets::AssetHandles;
 use crate::game::CleanupOnGameplayEnd;
 use crate::{input, CollisionLayers, PhysLayer, Quat, SpriteBundle, Transform};
 use bevy::math::Vec3;
-use bevy::prelude::{
-    Color, Commands, Component, ImageBundle, Query, Res, Sprite, Time, Vec2, With,
-};
-use heron::{CollisionShape, PhysicsLayer, RigidBody};
+use bevy::prelude::{Color, Commands, Component, Query, Res, Sprite, Time, Vec2};
+use heron::{CollisionShape, RigidBody};
 
 #[derive(Component)]
 pub struct Player;

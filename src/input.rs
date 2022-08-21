@@ -1,8 +1,7 @@
-use crate::{AppState, PhysLayer};
+use crate::AppState;
 use bevy::prelude::*;
-use bevy::sprite::Rect;
-use heron::prelude::*;
-use heron::rapier_plugin::{PhysicsWorld, ShapeCastCollisionType};
+use heron::rapier_plugin::PhysicsWorld;
+use iyes_loopless::prelude::ConditionSet;
 
 pub struct InputsPlugin;
 
@@ -12,12 +11,14 @@ impl Plugin for InputsPlugin {
         // I'm executing those only during gameplay, since egui doesn't rely on them
         app.init_resource::<MousePosition>();
         app.add_system_set(
-            SystemSet::on_update(AppState::InGame)
+            ConditionSet::new()
+                .run_in_state(AppState::InGame)
                 .with_system(world_cursor_system)
                 .with_system(process_drag_attempt)
                 .with_system(process_fresh_drag)
                 .with_system(move_dragged_item)
-                .with_system(process_drag_end),
+                .with_system(process_drag_end)
+                .into(),
         );
     }
 }

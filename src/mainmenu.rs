@@ -1,17 +1,24 @@
 use crate::*;
+use iyes_loopless::prelude::ConditionSet;
+use iyes_loopless::state::NextState;
 
 pub struct MainMenuPlugin;
 
 impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(SystemSet::on_update(AppState::MainMenu).with_system(draw_main_menu));
+        app.add_system_set(
+            ConditionSet::new()
+                .run_in_state(AppState::MainMenu)
+                .with_system(draw_main_menu)
+                .into(),
+        );
     }
 }
 
 fn draw_main_menu(
+    mut commands: Commands,
     mut egui_context: ResMut<EguiContext>,
     windows: ResMut<Windows>,
-    mut state: ResMut<State<AppState>>,
 ) {
     let win_fill = egui_context.ctx_mut().style().visuals.window_fill();
     let text_col = egui_context.ctx_mut().style().visuals.text_color();
@@ -55,9 +62,9 @@ fn draw_main_menu(
                 egui::Button::new("Start game"),
             );
             if start_btn.clicked() {
-                state.replace(AppState::InGame).ok();
+                commands.insert_resource(NextState(AppState::InGame))
             }
-            let quit_btn = ui.put(
+            let _quit_btn = ui.put(
                 Rect::from_center_size(pos2(win_wi / 2., win_ht / 2. + 132.), vec2(280., 66.)),
                 egui::Button::new("Quit"),
             );
