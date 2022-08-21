@@ -19,6 +19,7 @@ use bevy_egui::{egui, EguiContext, EguiPlugin};
 use bevy_inspector_egui::WorldInspectorPlugin;
 use egui::*;
 use heron::prelude::*;
+mod grid;
 
 pub const GAME_NAME: &str = "Bevy Jam 2 Game";
 
