@@ -2,14 +2,14 @@ use crate::game::components::Grid;
 use crate::grid::coords::Coords;
 use crate::grid::dimens::Dimens;
 use crate::grid::pos::Pos;
+use crate::grid::tiles::{Tile, TileType};
 use bevy::prelude::*;
 
 use crate::config::config_grid::GridConfig;
 use crate::game::{AssetStorage, SpriteType};
 
-use super::{Tile, TileType};
 
-pub fn create_grid_system(
+pub fn spawn_inventory(
     mut commands: Commands,
     assets: Res<AssetStorage>,
     config: Res<GridConfig>,

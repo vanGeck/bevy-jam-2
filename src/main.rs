@@ -4,9 +4,8 @@ use bevy::prelude::*;
 use bevy::window::WindowMode;
 use bevy::DefaultPlugins;
 use bevy_egui::{egui, EguiContext, EguiPlugin};
-use bevy_inspector_egui::{WorldInspectorPlugin, InspectorPlugin, RegisterInspectable};
+use bevy_inspector_egui::WorldInspectorPlugin;
 use egui::*;
-use game::Tile;
 use heron::prelude::*;
 use iyes_loopless::prelude::AppLooplessStateExt;
 

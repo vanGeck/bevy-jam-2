@@ -8,7 +8,7 @@ use iyes_loopless::prelude::NextState;
 
 pub mod assets;
 mod components;
-mod create_grid_system;
+mod spawn_inventory;
 mod draw_grid_system;
 pub mod player;
 mod spawn_item_system;
@@ -17,7 +17,7 @@ use crate::audio::sound_event::SoundEvent;
 use crate::game::SpriteType::Croissant;
 pub use assets::*;
 pub use components::*;
-pub use create_grid_system::*;
+pub use spawn_inventory::*;
 pub use draw_grid_system::*;
 pub use player::*;
 pub use spawn_item_system::*;
@@ -31,7 +31,7 @@ impl Plugin for GamePlugin {
             ConditionSet::new()
                 .run_in_state(AppState::InGame)
                 .with_system(setup)
-                .with_system(create_grid_system)
+                .with_system(spawn_inventory)
                 .into(),
         );
 
