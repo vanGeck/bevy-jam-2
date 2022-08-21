@@ -1,17 +1,14 @@
 use super::{components::Grid, components::Shape, AssetHandles, PhysLayer};
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::*;
-use heron::{CollisionLayers, CollisionShape, PhysicsLayer, RigidBody};
+use heron::{CollisionLayers, CollisionShape, RigidBody};
 
 pub fn create_items_system(
     mut commands: Commands,
     assets: Res<AssetHandles>,
     mut query: Query<&mut Grid>,
 ) {
-    let mut shape = commands.spawn().id();
-
     commands
-        .entity(shape)
+        .spawn()
         .insert(Name::new("Shape_Croissant"))
         .insert(Shape {
             width: 3,

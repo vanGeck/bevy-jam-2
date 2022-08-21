@@ -16,6 +16,11 @@ impl Dimens {
     }
 
     #[must_use]
+    pub fn unit() -> Self {
+        Dimens(IVec2::new(1, 1))
+    }
+
+    #[must_use]
     pub fn plus_x(self, x: i32) -> Self {
         Dimens::new(self.x + x, self.y)
     }
@@ -25,6 +30,7 @@ impl Dimens {
         Dimens::new(self.x, self.y + y)
     }
 
+    /// If you have got another Dimens, consider simply adding them together using the + operator.
     #[must_use]
     pub fn plus_xy(self, x: i32, y: i32) -> Self {
         Dimens::new(self.x + x, self.y + y)

@@ -1,10 +1,7 @@
-use bevy::prelude::*;
-use serde::{Deserialize, Serialize};
 use crate::grid::dimens::Dimens;
 use crate::grid::pos::Pos;
-
-use crate::systems::motion::structs::dimens::Dimens;
-use crate::systems::motion::structs::pos::Pos;
+use bevy::prelude::*;
+use serde::{Deserialize, Serialize};
 
 /// Can be used as a component for entities that are on the grid.
 /// Contains a discrete position and dimensions.

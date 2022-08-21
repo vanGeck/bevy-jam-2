@@ -16,17 +16,18 @@ impl Pos {
     }
 
     #[must_use]
-    pub fn append_x(self, x: i32) -> Self {
+    pub fn plus_x(self, x: i32) -> Self {
         Pos::new(self.x + x, self.y)
     }
 
     #[must_use]
-    pub fn append_y(self, y: i32) -> Self {
+    pub fn plus_y(self, y: i32) -> Self {
         Pos::new(self.x, self.y + y)
     }
 
+    /// If you have got another Pos, consider simply adding them together using the + operator.
     #[must_use]
-    pub fn append_xy(self, x: i32, y: i32) -> Self {
+    pub fn plus_xy(self, x: i32, y: i32) -> Self {
         Pos::new(self.x + x, self.y + y)
     }
 }

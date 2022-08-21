@@ -1,3 +1,5 @@
+use iyes_loopless::prelude::{ConditionSet, NextState};
+
 use crate::game::GameResult;
 use crate::*;
 
@@ -6,15 +8,18 @@ pub struct GameOverPlugin;
 impl Plugin for GameOverPlugin {
     fn build(&self, app: &mut App) {
         app.add_system_set(
-            SystemSet::on_update(AppState::GameEnded).with_system(draw_game_over_screen),
+            ConditionSet::new()
+                .run_in_state(AppState::GameEnded)
+                .with_system(draw_game_over_screen)
+                .into(),
         );
     }
 }
 
 fn draw_game_over_screen(
+    mut commands: Commands,
     mut egui_context: ResMut<EguiContext>,
     windows: ResMut<Windows>,
-    mut state: ResMut<State<AppState>>,
     result: Res<State<GameResult>>,
 ) {
     let win_fill = egui_context.ctx_mut().style().visuals.window_fill();
@@ -62,14 +67,14 @@ fn draw_game_over_screen(
                 egui::Button::new("Restart game"),
             );
             if start_btn.clicked() {
-                state.replace(AppState::InGame).ok();
+                commands.insert_resource(NextState(AppState::InGame));
             }
             let quit_btn = ui.put(
                 Rect::from_center_size(pos2(win_wi / 2., win_ht / 2. + 132.), vec2(280., 66.)),
                 egui::Button::new("Back to menu"),
             );
             if quit_btn.clicked() {
-                state.replace(AppState::MainMenu).ok();
+                commands.insert_resource(NextState(AppState::MainMenu));
             }
         });
 }

@@ -1,4 +1,6 @@
 use crate::*;
+use iyes_loopless::condition::ConditionSet;
+use iyes_loopless::prelude::NextState;
 
 pub mod assets;
 mod components;
@@ -18,19 +20,27 @@ pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
-        app.add_system_set(
-            SystemSet::on_enter(AppState::InGame)
+        app.add_enter_system_set(
+            AppState::InGame,
+            ConditionSet::new()
+                .run_in_state(AppState::InGame)
                 .with_system(setup)
                 .with_system(create_grid_system)
-                .with_system(create_items_system), // .with_system(spawn_player)
-        );
-
-        app.add_system_set(
-            SystemSet::on_update(AppState::InGame).with_system(draw_win_lose_placeholder_menu), // .with_system(rotate_player_placeholder)
-        );
-
-        app.add_system_set(
-            SystemSet::on_exit(AppState::InGame).with_system(despawn_gameplay_entities),
+                .with_system(create_items_system) // .with_system(spawn_player)
+                .into(),
+        )
+        .add_system_set(
+            ConditionSet::new()
+                .run_in_state(AppState::InGame)
+                .with_system(draw_win_lose_placeholder_menu)
+                .into(),
+        )
+        .add_exit_system_set(
+            AppState::InGame,
+            ConditionSet::new()
+                .run_in_state(AppState::InGame)
+                .with_system(despawn_gameplay_entities)
+                .into(),
         );
     }
 }
@@ -52,17 +62,17 @@ fn setup(mut cmd: Commands) {
 }
 
 fn draw_win_lose_placeholder_menu(
+    mut commands: Commands,
     mut egui_context: ResMut<EguiContext>,
-    mut state: ResMut<State<AppState>>,
     mut result: ResMut<State<GameResult>>,
 ) {
     egui::Window::new("Gameplay").show(egui_context.ctx_mut(), |ui| {
         if ui.button("Win").clicked() {
-            state.replace(AppState::GameEnded).ok();
+            commands.insert_resource(NextState(AppState::GameEnded));
             result.replace(GameResult::Won).ok();
         }
         if ui.button("Lose").clicked() {
-            state.replace(AppState::GameEnded).ok();
+            commands.insert_resource(NextState(AppState::GameEnded));
             result.replace(GameResult::Lost).ok();
         }
     });
