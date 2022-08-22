@@ -8,7 +8,7 @@ use std::time::Duration;
 use bevy::prelude::*;
 use bevy::ui::Style;
 
-use crate::game::Player;
+use crate::game::{Player, CleanupOnGameplayEnd};
 
 #[derive(Component, Default)]
 pub struct Gold {
@@ -69,7 +69,8 @@ pub fn setup_gold(mut commands: Commands, asset_server: Res<AssetServer>) {
                 ..default()
             }),
         )
-        .insert(GoldText);
+        .insert(GoldText)
+        .insert(CleanupOnGameplayEnd);
 }
 
 pub fn gold_update_system(
