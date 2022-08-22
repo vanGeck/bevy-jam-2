@@ -3,8 +3,6 @@ use bevy::prelude::*;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, SpriteType};
 use crate::positioning::coords::Coords;
 use crate::positioning::depth::Depth;
-use crate::positioning::dimens::Dimens;
-use crate::positioning::pos::Pos;
 
 use super::components::Item;
 

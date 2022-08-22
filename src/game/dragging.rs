@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::config::config_grid::GridConfig;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, Item, SpriteType};
-use crate::input::Mouse;
+use crate::mouse::Mouse;
 use crate::positioning::coords::Coords;
 use crate::positioning::depth::Depth;
 use crate::positioning::pos::Pos;
@@ -88,7 +88,7 @@ pub fn set_ghost_position(
     mut query_mouse: Query<&mut Mouse>,
     mut query: Query<(&mut Transform, &mut Coords, &DragGhost)>,
 ) {
-    let mut mouse = query_mouse.single_mut();
+    let mouse = query_mouse.single_mut();
     if let Ok((mut transform, mut coords, ghost)) = query.get_single_mut() {
         coords.pos = Pos::from(mouse.position) + ghost.cursor_delta;
         transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
@@ -156,17 +156,16 @@ pub fn process_drag_event(
 ) {
     for event in events.iter() {
         debug!("Received drag item event: {:?}", event);
-        if let DragEvent(end) = event {
-            if let Ok((entity, mut transform, mut coords)) = query_item.get_single_mut() {
-                let (ghost_entity, ghost) = query_ghost.single();
-                commands.entity(ghost_entity).despawn_recursive();
-                commands.entity(entity).remove::<BeingDragged>();
-                if ghost.placement_valid {
-                    coords.pos.x = end.x;
-                    coords.pos.y = end.y;
-                    transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
-                    transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
-                }
+        let DragEvent(end) = event;
+        if let Ok((entity, mut transform, mut coords)) = query_item.get_single_mut() {
+            let (ghost_entity, ghost) = query_ghost.single();
+            commands.entity(ghost_entity).despawn_recursive();
+            commands.entity(entity).remove::<BeingDragged>();
+            if ghost.placement_valid {
+                coords.pos.x = end.x;
+                coords.pos.y = end.y;
+                transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
+                transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
             }
         }
     }

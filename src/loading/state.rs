@@ -2,9 +2,7 @@ use bevy::prelude::*;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet};
 
 use crate::game::AssetStorage;
-use crate::loading::systems::{
-    check_load_state, configure_cursor, configure_ui_look, load_assets, load_configs,
-};
+use crate::loading::systems::{check_load_state, configure_ui_look, load_assets, load_configs};
 use crate::AppState;
 
 pub struct LoadingPlugin;
@@ -16,7 +14,6 @@ impl Plugin for LoadingPlugin {
                 AppState::Loading,
                 ConditionSet::new()
                     .run_in_state(AppState::Loading)
-                    .with_system(configure_ui_look)
                     .with_system(load_assets)
                     .with_system(load_configs)
                     .into(),
@@ -31,7 +28,6 @@ impl Plugin for LoadingPlugin {
                 AppState::Loading,
                 ConditionSet::new()
                     .run_in_state(AppState::Loading)
-                    .with_system(configure_cursor)
                     .with_system(configure_ui_look)
                     .into(),
             );

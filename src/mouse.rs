@@ -1,8 +1,9 @@
 use bevy::prelude::*;
 
 use crate::game::camera::GameCamera;
-
-pub struct InputsPlugin;
+use crate::game::{AssetStorage, CleanupOnGameplayEnd, SpriteType};
+use crate::positioning::depth::Depth;
+use crate::positioning::dimens::Dimens;
 
 #[derive(Component, Default)]
 pub struct Mouse {
@@ -10,10 +11,40 @@ pub struct Mouse {
     pub position: Vec2,
     /// Position in logical pixels in the window.
     pub screen_position: Vec2,
-    /// TODO: is this really necessary?
     /// Whether or not the mouse is currently in a dragging operation.
+    ///
+    /// It is handy to store this separately, rather than relying on whether or not the LMB is
+    /// held down, because this way we could add an accessibility mode that
+    /// allows click-to-start-dragging, click-to-stop-dragging.
     pub is_dragging: bool,
     pub out_of_bounds: bool,
+}
+
+pub fn configure_cursor(
+    mut commands: Commands,
+    mut windows: ResMut<Windows>,
+    assets: Res<AssetStorage>,
+) {
+    let window = windows.get_primary_mut().unwrap();
+    window.set_cursor_visibility(false);
+    commands
+        .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Dimens::unit().as_vec2()),
+                ..default()
+            },
+            texture: assets.texture(&SpriteType::Cursor),
+            transform: Transform::from_xyz(0., 0., Depth::Cursor.z()),
+            ..Default::default()
+        })
+        .insert(Name::new("MouseCursor"))
+        .insert(Mouse::default())
+        .insert(CleanupOnGameplayEnd);
+}
+
+pub fn reset_cursor(mut windows: ResMut<Windows>) {
+    let window = windows.get_primary_mut().unwrap();
+    window.set_cursor_visibility(true);
 }
 
 pub fn world_cursor_system(

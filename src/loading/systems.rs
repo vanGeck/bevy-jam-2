@@ -9,12 +9,9 @@ use iyes_loopless::prelude::NextState;
 use crate::config::config_audio::AudioConfig;
 use crate::config::config_debug::DebugConfig;
 use crate::config::config_grid::GridConfig;
-use crate::game::{AssetStorage, SpriteType};
-use crate::input::Mouse;
+use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
-use crate::positioning::depth::Depth;
-use crate::positioning::dimens::Dimens;
 use crate::AppState;
 
 // This is a global look for egui
@@ -23,27 +20,6 @@ pub fn configure_ui_look(mut egui_ctx: ResMut<EguiContext>) {
         window_rounding: 0.0.into(),
         ..Default::default()
     });
-}
-
-pub fn configure_cursor(
-    mut commands: Commands,
-    mut windows: ResMut<Windows>,
-    assets: Res<AssetStorage>,
-) {
-    let window = windows.get_primary_mut().unwrap();
-    window.set_cursor_visibility(false);
-    commands
-        .spawn_bundle(SpriteBundle {
-            sprite: Sprite {
-                custom_size: Some(Dimens::unit().as_vec2()),
-                ..default()
-            },
-            texture: assets.texture(&SpriteType::Cursor),
-            transform: Transform::from_xyz(0., 0., Depth::Cursor.z()),
-            ..Default::default()
-        })
-        .insert(Name::new("MouseCursor"))
-        .insert(Mouse::default());
 }
 
 pub fn load_configs(mut commands: Commands) {

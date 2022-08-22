@@ -13,7 +13,7 @@ use crate::game::dragging::{
     process_drag_event, set_ghost_position, DragEvent,
 };
 use crate::game::spawn_grid::spawn_grids;
-use crate::input::world_cursor_system;
+use crate::mouse::{configure_cursor, reset_cursor, world_cursor_system};
 use crate::positioning::coords::Coords;
 use crate::positioning::dimens::Dimens;
 use crate::positioning::pos::Pos;
@@ -39,6 +39,7 @@ impl Plugin for GamePlugin {
                     .with_system(setup)
                     .with_system(create_camera)
                     .with_system(spawn_grids)
+                    .with_system(configure_cursor)
                     .into(),
             )
             .add_system_set(
@@ -60,6 +61,7 @@ impl Plugin for GamePlugin {
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
                     .with_system(despawn_gameplay_entities)
+                    .with_system(reset_cursor)
                     .into(),
             );
     }
