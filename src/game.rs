@@ -13,6 +13,7 @@ use crate::game::dragging::{
     set_ghost_position, DragEvent,
 };
 use crate::game::spawn_grid::{spawn_crafting_grid, spawn_playing_field};
+use crate::hud::gold::{gold_update_system, setup_gold};
 use crate::input::{world_cursor_system, Mouse};
 use crate::AppState;
 
@@ -30,11 +31,13 @@ impl Plugin for GamePlugin {
         app.add_event::<SpawnItemEvent>()
             .add_event::<DragEvent>()
             .init_resource::<Mouse>()
+            .init_resource::<Player>()
             .add_enter_system_set(
                 AppState::InGame,
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
                     .with_system(setup)
+                    .with_system(setup_gold)
                     .with_system(create_camera)
                     .with_system(spawn_playing_field)
                     .with_system(spawn_crafting_grid)
@@ -51,6 +54,7 @@ impl Plugin for GamePlugin {
                     .with_system(apply_scrim_to_being_dragged)
                     .with_system(check_drag_end)
                     .with_system(process_drag_event)
+                    .with_system(gold_update_system)
                     .into(),
             )
             .add_exit_system_set(

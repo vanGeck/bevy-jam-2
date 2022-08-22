@@ -19,6 +19,7 @@ mod audio;
 mod config;
 mod game;
 mod game_ended;
+mod hud;
 mod input;
 mod loading;
 mod main_menu;
