@@ -8,7 +8,7 @@ use std::time::Duration;
 use bevy::prelude::*;
 use bevy::ui::Style;
 
-use crate::game::{Player, CleanupOnGameplayEnd};
+use crate::game::{CleanupOnGameplayEnd, Player};
 
 #[derive(Component, Default)]
 pub struct Gold {

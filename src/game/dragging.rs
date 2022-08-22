@@ -47,12 +47,18 @@ pub fn check_drag_begin(
     query: Query<(&Coords, Entity), With<Item>>,
 ) {
     let mut mouse = query_mouse.single_mut();
-    if mouse.is_dragging || !input.just_pressed(MouseButton::Left) {
+    if mouse.is_dragging {
         return;
     }
-    let clicked_cell = Pos::from(mouse.position);
+    let hovered_over_cell = Pos::from(mouse.position);
+    if !input.just_pressed(MouseButton::Left) {
+        mouse.can_drag = query
+            .iter()
+            .any(|(coords, _)| coords.overlaps_pos(&hovered_over_cell));
+        return;
+    }
     for (coords, entity) in query.iter() {
-        if coords.overlaps_pos(&clicked_cell) {
+        if coords.overlaps_pos(&hovered_over_cell) {
             commands.entity(entity).insert(BeingDragged);
             commands
                 .spawn_bundle(SpriteBundle {
@@ -71,7 +77,7 @@ pub fn check_drag_begin(
                 })
                 .insert(coords.clone())
                 .insert(DragGhost {
-                    cursor_delta: coords.pos - clicked_cell,
+                    cursor_delta: coords.pos - hovered_over_cell,
                     ..default()
                 })
                 .insert(CleanupOnGameplayEnd);

@@ -35,6 +35,8 @@ fn main() {
             level: LogConfig::load_from_file().level.parse().unwrap(),
             ..Default::default()
         })
+        // .add_plugin(LogDiagnosticsPlugin::default())
+        // .add_plugin(FrameTimeDiagnosticsPlugin::default())
         .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.9)))
         .insert_resource(WindowDescriptor {
             title: GAME_NAME.to_string(),
