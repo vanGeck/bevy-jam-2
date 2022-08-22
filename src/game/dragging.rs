@@ -80,9 +80,6 @@ pub fn check_drag_begin(
     }
 }
 
-// TODO: if it goes out of bounds:
-//  - The item ghost just disappears, but dragging continues. If it is let go at that point, the drag simply fails.
-
 /// Move the item ghost with the mouse, but in discrete increments, always snapping to the grid.
 pub fn set_ghost_position(
     mut query_mouse: Query<&mut Mouse>,

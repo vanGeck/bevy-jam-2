@@ -5,10 +5,10 @@
         GreenSquare: "green_square.png",
         SelectionSquare: "selection_square.png",
         Croissant: "3x2_croissant.png",
-        Cursor: "cursor.png",
     },
     atlases: {
         NotFound: "not_found.ron",
+        Cursor: "cursor.ron",
     },
     sound_effects: {
         Placeholder:"placeholder.ogg",

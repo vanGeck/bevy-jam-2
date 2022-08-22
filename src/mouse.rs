@@ -28,12 +28,13 @@ pub fn configure_cursor(
     let window = windows.get_primary_mut().unwrap();
     window.set_cursor_visibility(false);
     commands
-        .spawn_bundle(SpriteBundle {
-            sprite: Sprite {
-                custom_size: Some(Dimens::unit().as_vec2()),
+        .spawn_bundle(SpriteSheetBundle {
+            sprite: TextureAtlasSprite {
+                custom_size: Some(Dimens::new(2, 2).as_vec2()),
+                index: 0,
                 ..default()
             },
-            texture: assets.texture(&SpriteType::Cursor),
+            texture_atlas: assets.atlas(&SpriteType::Cursor),
             transform: Transform::from_xyz(0., 0., Depth::Cursor.z()),
             ..Default::default()
         })
@@ -47,7 +48,8 @@ pub fn reset_cursor(mut windows: ResMut<Windows>) {
     window.set_cursor_visibility(true);
 }
 
-pub fn world_cursor_system(
+// TODO: Put this earlier in system execution order, to avoid 1 extra frame of delay for cursor.
+pub fn calc_mouse_pos(
     windows: Res<Windows>,
     mut query_mouse: Query<(&mut Transform, &mut Mouse)>,
     query_cam: Query<(&Camera, &GlobalTransform), With<GameCamera>>,
@@ -66,19 +68,23 @@ pub fn world_cursor_system(
                 let world_position = ndc_to_world.project_point3(ndc.extend(-1.0));
                 let world_position: Vec2 = world_position.truncate();
 
+                transform.translation.x = mouse.position.x;
+                transform.translation.y = mouse.position.y;
+
                 mouse.position = world_position;
                 mouse.screen_position = screen_pos;
                 mouse.out_of_bounds = screen_pos.x < 0.
                     || screen_pos.x > window.width()
                     || screen_pos.y < 0.
                     || screen_pos.y > window.height();
-                // The top-left corner is what the user clicks with,
-                // so that should be the mouse position:
-                transform.translation.x = mouse.position.x + 0.5;
-                transform.translation.y = mouse.position.y - 0.5;
             } else {
                 mouse.out_of_bounds = true;
             }
         }
     }
+}
+
+pub fn set_cursor_sprite(mut query: Query<(&mut TextureAtlasSprite, &Mouse)>) {
+    let (mut sprite, mouse) = query.single_mut();
+    sprite.index = if mouse.is_dragging { 1 } else { 0 };
 }

@@ -13,7 +13,7 @@ use crate::game::dragging::{
     process_drag_event, set_ghost_position, DragEvent,
 };
 use crate::game::spawn_grid::spawn_grids;
-use crate::mouse::{configure_cursor, reset_cursor, world_cursor_system};
+use crate::mouse::{calc_mouse_pos, configure_cursor, reset_cursor, set_cursor_sprite};
 use crate::positioning::coords::Coords;
 use crate::positioning::dimens::Dimens;
 use crate::positioning::pos::Pos;
@@ -47,7 +47,8 @@ impl Plugin for GamePlugin {
                     .run_in_state(AppState::InGame)
                     .with_system(draw_win_lose_placeholder_menu)
                     .with_system(spawn_item)
-                    .with_system(world_cursor_system)
+                    .with_system(calc_mouse_pos)
+                    .with_system(set_cursor_sprite)
                     .with_system(check_drag_begin)
                     .with_system(set_ghost_position)
                     .with_system(apply_scrim_to_being_dragged)
