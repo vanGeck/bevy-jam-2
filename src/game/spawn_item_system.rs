@@ -5,10 +5,12 @@ use std::io::{Error, ErrorKind};
 use bevy::prelude::*;
 use rand::Rng;
 use crate::game::{Item, SpawnItemEvent};
+use crate::config::config_items::ItemsConfig;
 use crate::positioning::coordinates::Coordinates;
 use crate::positioning::dimensions::Dimensions;
 use crate::positioning::position::Position;
 use serde::{Deserialize, Serialize};
+use crate::config;
 
 
 pub struct Items {
@@ -26,7 +28,7 @@ impl Items {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Default)]
 pub struct ItemData {
     pub id: String,
     pub name: String,
@@ -37,28 +39,33 @@ pub struct ItemData {
 
 pub struct ItemSpawnTimer(Timer);
 
-pub fn setup_item_spawn_system(mut commands: Commands) {
-    let mut items: Items = Items { all_items_data: Default::default() };
 
-    // read items.ron file
-    let items_file = fs::read_to_string("assets/items.ron").unwrap();
+// pub fn setup_item_spawn_system(mut commands: Commands) {
+//     let mut items: Items = Items { all_items_data: Default::default() };
+//
+//     // read items.ron file
+//
+//     let items_file = fs::read_to_string().unwrap();
+//
+//     // parse all items from items_file as ItemData
+//     let items_data: Vec<ItemData> = ron::de::from_str(&items_file).unwrap();
+//
+//     // insert all item data into items.AllItemData
+//     let mut items_map: HashMap<String, ItemData> = HashMap::new();
+//     for item_data in items_data {
+//         items_map.insert(item_data.id.clone(), item_data);
+//     }
+//
+//     items.all_items_data = items_map;
+//
+//     commands.insert_resource(items);
+// }
 
-    // parse all items from items_file as ItemData
-    let items_data: Vec<ItemData> = ron::de::from_str(&items_file).unwrap();
-
-    // insert all item data into items.AllItemData
-    let mut items_map: HashMap<String, ItemData> = HashMap::new();
-    for item_data in items_data {
-        items_map.insert(item_data.id.clone(), item_data);
-    }
-
-    items.all_items_data = items_map;
-
-    commands.insert_resource(items);
+pub fn setup_spawn_item_timer(mut commands: Commands) {
     commands.insert_resource(ItemSpawnTimer(Timer::from_seconds(15.0, true)));
 }
 
-pub fn spawn_item_system(time: Res<Time>, mut timer: ResMut<ItemSpawnTimer>, items: Res<Items>, mut spawn: EventWriter<SpawnItemEvent>) {
+pub fn spawn_item_system(time: Res<Time>, mut timer: ResMut<ItemSpawnTimer>, items: Res<config::config_items::ItemsConfig>, mut spawn: EventWriter<SpawnItemEvent>) {
     // update our timer with the time elapsed since the last update
     if timer.0.tick(time.delta()).just_finished() {
         let item_data = items.get_random_item();
