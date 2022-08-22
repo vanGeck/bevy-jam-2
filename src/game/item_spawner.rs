@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, SpriteType};
-use crate::positioning::coords::Coords;
+use crate::positioning::coordinates::Coordinates;
 use crate::positioning::depth::Depth;
 
 use super::components::Item;
@@ -10,11 +10,11 @@ use super::components::Item;
 #[derive(Debug)]
 pub struct SpawnItemEvent {
     item: Item,
-    coords: Coords,
+    coords: Coordinates,
 }
 
 impl SpawnItemEvent {
-    pub fn new(item: Item, coords: Coords) -> Self {
+    pub fn new(item: Item, coords: Coordinates) -> Self {
         SpawnItemEvent { item, coords }
     }
 }
@@ -31,13 +31,13 @@ pub fn spawn_item(
                 commands
                     .spawn_bundle(SpriteBundle {
                         sprite: Sprite {
-                            custom_size: Some(coords.dimens.as_vec2()),
+                            custom_size: Some(coords.dimensions.as_vec2()),
                             ..default()
                         },
                         texture: assets.texture(&SpriteType::Croissant),
                         transform: Transform::from_xyz(
-                            coords.pos.x as f32 + coords.dimens.x as f32 * 0.5,
-                            coords.pos.y as f32 + coords.dimens.y as f32 * 0.5,
+                            coords.position.x as f32 + coords.dimensions.x as f32 * 0.5,
+                            coords.position.y as f32 + coords.dimensions.y as f32 * 0.5,
                             Depth::Item.z(),
                         ),
                         ..Default::default()

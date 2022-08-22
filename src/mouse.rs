@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::game::camera::GameCamera;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, SpriteType};
 use crate::positioning::depth::Depth;
-use crate::positioning::dimens::Dimens;
+use crate::positioning::dimensions::Dimensions;
 
 #[derive(Component, Default)]
 pub struct Mouse {
@@ -30,7 +30,7 @@ pub fn configure_cursor(
     commands
         .spawn_bundle(SpriteSheetBundle {
             sprite: TextureAtlasSprite {
-                custom_size: Some(Dimens::new(2, 2).as_vec2()),
+                custom_size: Some(Dimensions::new(2, 2).as_vec2()),
                 index: 0,
                 ..default()
             },

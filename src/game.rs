@@ -5,6 +5,7 @@ use iyes_loopless::prelude::*;
 pub use assets::*;
 pub use components::*;
 pub use item_spawner::*;
+pub use spawn_item_system::*;
 
 use crate::audio::sound_event::SoundEvent;
 use crate::game::camera::create_camera;
@@ -13,11 +14,8 @@ use crate::game::dragging::{
     process_drag_event, set_ghost_position, DragEvent,
 };
 use crate::hud::gold::{gold_update_system, setup_gold};
-use crate::game::spawn_grid::spawn_grids;
+use crate::game::create_grid_system::create_grids;
 use crate::mouse::{calc_mouse_pos, configure_cursor, reset_cursor, set_cursor_sprite};
-use crate::positioning::coords::Coords;
-use crate::positioning::dimens::Dimens;
-use crate::positioning::pos::Pos;
 use crate::AppState;
 
 pub mod assets;
@@ -25,7 +23,8 @@ pub mod camera;
 mod components;
 mod dragging;
 mod item_spawner;
-mod spawn_grid;
+mod create_grid_system;
+mod spawn_item_system;
 
 pub struct GamePlugin;
 
@@ -41,7 +40,7 @@ impl Plugin for GamePlugin {
                     .with_system(setup)
                     .with_system(setup_gold)
                     .with_system(create_camera)
-                    .with_system(spawn_grids)
+                    .with_system(create_grids)
                     .with_system(configure_cursor)
                     .into(),
             )
@@ -49,6 +48,7 @@ impl Plugin for GamePlugin {
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
                     .with_system(draw_win_lose_placeholder_menu)
+                    .with_system(spawn_item_system)
                     .with_system(spawn_item)
                     .with_system(calc_mouse_pos)
                     .with_system(set_cursor_sprite)
@@ -78,22 +78,8 @@ pub enum GameResult {
     Won,
 }
 
-fn setup(mut spawn: EventWriter<SpawnItemEvent>, mut audio: EventWriter<SoundEvent>) {
+fn setup(mut audio: EventWriter<SoundEvent>) {
     audio.send(SoundEvent::Music(Some((MusicType::Placeholder, false))));
-
-    // TODO: Remove these test spawns later:
-    spawn.send(SpawnItemEvent::new(
-        Item {
-            name: "Croissant".to_string(),
-        },
-        Coords::new(Pos::new(1, 1), Dimens::new(3, 2)),
-    ));
-    spawn.send(SpawnItemEvent::new(
-        Item {
-            name: "Croissant2".to_string(),
-        },
-        Coords::new(Pos::new(10, 10), Dimens::new(3, 2)),
-    ));
 }
 
 fn draw_win_lose_placeholder_menu(

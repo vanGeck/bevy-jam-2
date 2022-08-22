@@ -1,0 +1,49 @@
+Recipes(
+    recipes: {
+        health_potion: {
+            id: "health_potion",
+            name: "Health Potion",
+            description: "Restores health",
+            ingredients: [
+                {
+                    id: "vial",
+                    quantity: 1
+                },
+                {
+                    id: "turtle_herb",
+                    quantity: 1
+                }
+            ],
+        },
+        filled_lantern: {
+            id: "filled_lantern",
+            name: "Filled Lantern",
+            description: "A lantern with a candle stick inside.",
+            ingredients: [
+                {
+                    id: "empty_lantern",
+                    quantity: 1
+                },
+                {
+                    id: "candle_stick",
+                    quantity: 1
+                }
+            ],
+        },
+        lit_lantern: {
+            id: "lit_lantern",
+            name: "Lit Lantern",
+            description: "A lit lantern to provide light in dark environments.",
+            ingredients: [
+                {
+                    id: "filled_lantern",
+                    quantity: 1
+                },
+                {
+                    id: "fire_essence",
+                    quantity: 1
+                }
+            ],
+        },
+    }
+)
