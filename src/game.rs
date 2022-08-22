@@ -39,6 +39,7 @@ impl Plugin for GamePlugin {
                     .run_in_state(AppState::InGame)
                     .with_system(setup)
                     .with_system(setup_gold)
+                    .with_system(setup_item_spawn_system)
                     .with_system(create_camera)
                     .with_system(create_grids)
                     .with_system(configure_cursor)

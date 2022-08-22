@@ -1,5 +1,7 @@
 use std::collections::HashMap;
+use std::fs;
 use std::fs::File;
+use std::io::{Error, ErrorKind};
 use bevy::prelude::*;
 use rand::Rng;
 use crate::game::{Item, SpawnItemEvent};
@@ -10,17 +12,17 @@ use serde::{Deserialize, Serialize};
 
 
 pub struct Items {
-    pub AllItemData: HashMap<String, ItemData>,
+    pub all_items_data: HashMap<String, ItemData>,
 }
 
 impl Items {
     pub fn get_random_item(&self) -> &ItemData {
         let mut rng = rand::thread_rng();
-        let index = rng.gen_range(0..self.AllItemData.len());
-        let mut item_keys: Vec<&String> = self.AllItemData.keys().collect();
+        let index = rng.gen_range(0..self.all_items_data.len());
+        let mut item_keys: Vec<&String> = self.all_items_data.keys().collect();
         item_keys.swap(0, index);
         let item_key = item_keys[0];
-        self.AllItemData.get(item_key).unwrap().clone()
+        self.all_items_data.get(item_key).unwrap().clone()
     }
 }
 
@@ -33,16 +35,16 @@ pub struct ItemData {
     pub height: i32,
 }
 
-struct ItemSpawnTimer(Timer);
+pub struct ItemSpawnTimer(Timer);
 
-pub fn setup_item_spawn_system(commands: &mut Commands) {
-    let mut items: Items = Items { AllItemData: Default::default() };
+pub fn setup_item_spawn_system(mut commands: Commands) {
+    let mut items: Items = Items { all_items_data: Default::default() };
 
     // read items.ron file
-    let mut items_file = File::open("assets/items.ron").unwrap();
+    let items_file = fs::read_to_string("assets/items.ron").unwrap();
 
     // parse all items from items_file as ItemData
-    let items_data: Vec<ItemData> = ron::de::from_reader(&mut items_file).unwrap();
+    let items_data: Vec<ItemData> = ron::de::from_str(&items_file).unwrap();
 
     // insert all item data into items.AllItemData
     let mut items_map: HashMap<String, ItemData> = HashMap::new();
@@ -50,28 +52,28 @@ pub fn setup_item_spawn_system(commands: &mut Commands) {
         items_map.insert(item_data.id.clone(), item_data);
     }
 
-    items.AllItemData = items_map;
+    items.all_items_data = items_map;
 
     commands.insert_resource(items);
     commands.insert_resource(ItemSpawnTimer(Timer::from_seconds(15.0, true)));
 }
 
-pub fn spawn_item_system(time: Res<Time>, mut timer: Res<ItemSpawnTimer>, items: Res<Items>, mut spawn: EventWriter<SpawnItemEvent>) {
+pub fn spawn_item_system(time: Res<Time>, mut timer: ResMut<ItemSpawnTimer>, items: Res<Items>, mut spawn: EventWriter<SpawnItemEvent>) {
     // update our timer with the time elapsed since the last update
     if timer.0.tick(time.delta()).just_finished() {
-        let itemData = items.get_random_item();
+        let item_data = items.get_random_item();
         let item = Item {
-            id: itemData.id.clone(),
-            name: itemData.name.clone(),
-            sprite_path: itemData.sprite_path.clone(),
-            width: itemData.width,
-            height: itemData.height,
+            id: item_data.id.clone(),
+            name: item_data.name.clone(),
+            sprite_path: item_data.sprite_path.clone(),
+            width: item_data.width,
+            height: item_data.height,
         };
-        let coords = Coordinates {
+        let coordinates = Coordinates {
             position: Position::new(0, 0),
             dimensions: Dimensions::new(item.width, item.height),
         };
-        spawn.send(SpawnItemEvent::new(item, coords));
+        spawn.send(SpawnItemEvent::new(item, coordinates));
     }
 
 
