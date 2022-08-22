@@ -12,7 +12,7 @@ pub fn create_camera(mut commands: Commands, windows: Res<Windows>) {
     // info!("Window size is {:?}", window);
     let scale = 24. / window.y;
     bundle.transform.scale = Vec3::new(scale, scale, 1.);
-    bundle.transform.translation.x = 15.;
+    bundle.transform.translation.x = 20.;
     bundle.transform.translation.y = 10.;
     commands
         .spawn_bundle(bundle)

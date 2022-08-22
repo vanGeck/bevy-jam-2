@@ -12,11 +12,12 @@ use super::components::Item;
 #[derive(Debug)]
 pub struct SpawnItemEvent {
     item: Item,
+    coords: Coords,
 }
 
 impl SpawnItemEvent {
-    pub fn new(item: Item) -> Self {
-        SpawnItemEvent { item }
+    pub fn new(item: Item, coords: Coords) -> Self {
+        SpawnItemEvent { item, coords }
     }
 }
 
@@ -28,26 +29,24 @@ pub fn spawn_item(
     for event in events.iter() {
         debug!("Received spawn item event: {:?}", event);
         match event {
-            SpawnItemEvent { item } => {
-                // TODO: make not hardcoded.
-                let hardcoded = Coords::new(Pos::new(1, 1), Dimens::new(3, 2));
+            SpawnItemEvent { item, coords } => {
                 commands
                     .spawn_bundle(SpriteBundle {
                         sprite: Sprite {
-                            custom_size: Some(hardcoded.dimens.as_vec2()),
+                            custom_size: Some(coords.dimens.as_vec2()),
                             ..default()
                         },
                         texture: assets.texture(&SpriteType::Croissant),
                         transform: Transform::from_xyz(
-                            hardcoded.pos.x as f32 + hardcoded.dimens.x as f32 * 0.5,
-                            hardcoded.pos.y as f32 + hardcoded.dimens.y as f32 * 0.5,
+                            coords.pos.x as f32 + coords.dimens.x as f32 * 0.5,
+                            coords.pos.y as f32 + coords.dimens.y as f32 * 0.5,
                             Depth::Item.z(),
                         ),
                         ..Default::default()
                     })
                     .insert(Name::new(item.name.clone()))
                     .insert(item.clone())
-                    .insert(hardcoded)
+                    .insert(*coords)
                     .insert(CleanupOnGameplayEnd);
             }
         }

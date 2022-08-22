@@ -1,9 +1,10 @@
 #![allow(dead_code)]
 
-use crate::positioning::dimens::Dimens;
-use crate::positioning::pos::Pos;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
+
+use crate::positioning::dimens::Dimens;
+use crate::positioning::pos::Pos;
 
 /// Can be used as a component for entities that are on the grid.
 /// Contains a discrete position and dimensions.
@@ -26,6 +27,7 @@ impl Coords {
         Coords { pos, dimens }
     }
 
+    /// Return true iff the two Coords rectangles overlap at all.
     pub fn overlaps(&self, other: &Coords) -> bool {
         self.pos.x < other.pos.x + other.dimens.x
             && self.pos.x + self.dimens.x > other.pos.x
@@ -39,6 +41,14 @@ impl Coords {
     pub fn overlaps_rect(&self, other: &Pos, other_dimens: &Dimens) -> bool {
         let other = Coords::new(*other, *other_dimens);
         self.overlaps(&other)
+    }
+    /// Return true iff the given 'other' Coords is completely enclosed by this Coords.
+    /// Two Coords that are equal will enclose each other.
+    pub fn encloses(&self, other: &Coords) -> bool {
+        self.pos.x <= other.pos.x
+            && self.pos.x + self.dimens.x >= other.pos.x + other.dimens.x
+            && self.pos.y <= other.pos.y
+            && self.pos.y + self.dimens.y >= other.pos.y + other.dimens.y
     }
 
     /// Converts the given discrete position to a translation, taking into account the dimensions

@@ -103,7 +103,7 @@ pub struct AtlasType(pub SpriteType, pub usize);
 pub enum SpriteType {
     /// Fallback sprite.
     NotFound,
-    Placeholder,
+    Cursor,
     Croissant,
     GreenSquare,
     SelectionSquare,
