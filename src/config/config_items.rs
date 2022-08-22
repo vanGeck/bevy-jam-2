@@ -2,7 +2,7 @@ use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
 use std::collections::HashMap;
-use crate::game::{Item, ItemData};
+use crate::game::{ItemData};
 
 use bevy::prelude::*;
 use rand::Rng;

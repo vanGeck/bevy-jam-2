@@ -41,17 +41,17 @@ pub struct DragGhost {
 ///     - The mouse is tagged as being in the middle of a dragging operation.
 pub fn check_drag_begin(
     mut commands: Commands,
-    assets: Res<AssetStorage>,
+    asset_server: Res<AssetServer>,
     input: Res<Input<MouseButton>>,
     mut query_mouse: Query<&mut Mouse>,
-    query: Query<(&Coordinates, Entity), With<Item>>,
+    query: Query<(&Coordinates, Entity, &Item)>,
 ) {
     let mut mouse = query_mouse.single_mut();
     if mouse.is_dragging || !input.just_pressed(MouseButton::Left) {
         return;
     }
     let clicked_cell = Position::from(mouse.position);
-    for (coords, entity) in query.iter() {
+    for (coords, entity, item) in query.iter() {
         if coords.overlaps_pos(&clicked_cell) {
             commands.entity(entity).insert(BeingDragged);
             commands
@@ -61,7 +61,7 @@ pub fn check_drag_begin(
                         custom_size: Some(coords.dimensions.as_vec2()),
                         ..default()
                     },
-                    texture: assets.texture(&SpriteType::Croissant),
+                    texture: asset_server.load(std::path::PathBuf::new().join("textures/").join(&item.sprite_path)),
                     transform: Transform::from_xyz(
                         coords.position.x as f32 + coords.dimensions.x as f32 * 0.5,
                         coords.position.y as f32 + coords.dimensions.y as f32 * 0.5,

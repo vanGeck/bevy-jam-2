@@ -4,7 +4,6 @@ use iyes_loopless::prelude::*;
 
 pub use assets::*;
 pub use components::*;
-pub use item_spawner::*;
 pub use spawn_item_system::*;
 
 use crate::audio::sound_event::SoundEvent;
@@ -22,7 +21,6 @@ pub mod assets;
 pub mod camera;
 mod components;
 mod dragging;
-mod item_spawner;
 mod create_grid_system;
 mod spawn_item_system;
 
@@ -49,7 +47,7 @@ impl Plugin for GamePlugin {
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
                     .with_system(draw_win_lose_placeholder_menu)
-                    .with_system(spawn_item_system)
+                    .with_system(spawn_item_timer_system)
                     .with_system(spawn_item)
                     .with_system(calc_mouse_pos)
                     .with_system(set_cursor_sprite)

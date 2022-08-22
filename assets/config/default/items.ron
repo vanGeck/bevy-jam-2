@@ -1,60 +1,60 @@
 (
     items: {
-        croissant: (
-                id: "croissant",
-                name: "Croissant",
-                sprite: "3x2_croissant.png"
-                width: 3,
-                height: 2
-            ),
-            vial: (
-                id: "vial",
-                name: "Vial",
-                sprite: "3x2_vial.png"
-                width: 3,
-                height: 2
-            ),
-            turtle_herb: (
-                id: "turtle_herb",
-                name: "Turtle Herb",
-                sprite: "2x2_turtle_herb.png"
-                width: 2,
-                height: 2
-            ),
-            candle_stick: (
-                id: "candle_stick",
-                name: "Candle Stick",
-                sprite: "1x2_candle_stick.png"
-                width: 1,
-                height: 2
-            ),
-            "empty_lantern": (
-                id: "empty_lantern",
-                name: "Empty Lantern",
-                sprite: "2x3_empty_lantern.png"
-                width: 2,
-                height: 3
-            ),
-            "filled_lantern": (
-                id: "filled_lantern",
-                name: "Filled Lantern",
-                sprite: "2x3_filled_lantern.png"
-                width: 2,
-                height: 3
-            ),
-            "lit_lantern": (
-                id: "lit_lantern",
-                name: "Lit Lantern",
-                sprite: "2x3_lit_lantern.png"
-                width: 2,
-                height: 3
-            ),
-            "fire_essence": (
-                id: "fire_essence",
-                name: "Fire Essence",
-                sprite: "1x1_fire_essence.png"
-                width: 1,
-                height: 1
-            ),
+        "croissant": (
+            id: "croissant",
+            name: "Croissant",
+            sprite_path: "3x2_croissant.png",
+            width: 3,
+            height: 2
+        ),
+        "vial": (
+            id: "vial",
+            name: "Vial",
+            sprite_path: "3x2_vial.png",
+            width: 3,
+            height: 2
+        ),
+        "turtle_herb": (
+            id: "turtle_herb",
+            name: "Turtle Herb",
+            sprite_path: "2x2_turtle_herb.png",
+            width: 2,
+            height: 2
+        ),
+        "candle_stick": (
+            id: "candle_stick",
+            name: "Candle Stick",
+            sprite_path: "1x2_candle_stick.png",
+            width: 1,
+            height: 2
+        ),
+        "empty_lantern": (
+            id: "empty_lantern",
+            name: "Empty Lantern",
+            sprite_path: "2x3_empty_lantern.png",
+            width: 2,
+            height: 3
+        ),
+        "filled_lantern": (
+            id: "filled_lantern",
+            name: "Filled Lantern",
+            sprite_path: "2x3_filled_lantern.png",
+            width: 2,
+            height: 3
+        ),
+        "lit_lantern": (
+            id: "lit_lantern",
+            name: "Lit Lantern",
+            sprite_path: "2x3_lit_lantern.png",
+            width: 2,
+            height: 3
+        ),
+        "fire_essence": (
+            id: "fire_essence",
+            name: "Fire Essence",
+            sprite_path: "1x1_fire_essence.png",
+            width: 1,
+            height: 1
+        ),
     }
 )
