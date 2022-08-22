@@ -8,6 +8,7 @@
     },
     atlases: {
         NotFound: "not_found.ron",
+        Cursor: "cursor.ron",
     },
     sound_effects: {
         Placeholder:"placeholder.ogg",

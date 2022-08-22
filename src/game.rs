@@ -9,12 +9,15 @@ pub use item_spawner::*;
 use crate::audio::sound_event::SoundEvent;
 use crate::game::camera::create_camera;
 use crate::game::dragging::{
-    apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, process_drag_event,
-    set_ghost_position, DragEvent,
+    apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
+    process_drag_event, set_ghost_position, DragEvent,
 };
-use crate::game::spawn_grid::{spawn_crafting_grid, spawn_playing_field};
 use crate::hud::gold::{gold_update_system, setup_gold};
-use crate::input::{world_cursor_system, Mouse};
+use crate::game::spawn_grid::spawn_grids;
+use crate::mouse::{calc_mouse_pos, configure_cursor, reset_cursor, set_cursor_sprite};
+use crate::positioning::coords::Coords;
+use crate::positioning::dimens::Dimens;
+use crate::positioning::pos::Pos;
 use crate::AppState;
 
 pub mod assets;
@@ -30,7 +33,6 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<SpawnItemEvent>()
             .add_event::<DragEvent>()
-            .init_resource::<Mouse>()
             .init_resource::<Player>()
             .add_enter_system_set(
                 AppState::InGame,
@@ -39,8 +41,8 @@ impl Plugin for GamePlugin {
                     .with_system(setup)
                     .with_system(setup_gold)
                     .with_system(create_camera)
-                    .with_system(spawn_playing_field)
-                    .with_system(spawn_crafting_grid)
+                    .with_system(spawn_grids)
+                    .with_system(configure_cursor)
                     .into(),
             )
             .add_system_set(
@@ -48,10 +50,12 @@ impl Plugin for GamePlugin {
                     .run_in_state(AppState::InGame)
                     .with_system(draw_win_lose_placeholder_menu)
                     .with_system(spawn_item)
-                    .with_system(world_cursor_system)
+                    .with_system(calc_mouse_pos)
+                    .with_system(set_cursor_sprite)
                     .with_system(check_drag_begin)
                     .with_system(set_ghost_position)
                     .with_system(apply_scrim_to_being_dragged)
+                    .with_system(check_ghost_placement_validity)
                     .with_system(check_drag_end)
                     .with_system(process_drag_event)
                     .with_system(gold_update_system)
@@ -62,6 +66,7 @@ impl Plugin for GamePlugin {
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
                     .with_system(despawn_gameplay_entities)
+                    .with_system(reset_cursor)
                     .into(),
             );
     }
@@ -76,10 +81,19 @@ pub enum GameResult {
 fn setup(mut spawn: EventWriter<SpawnItemEvent>, mut audio: EventWriter<SoundEvent>) {
     audio.send(SoundEvent::Music(Some((MusicType::Placeholder, false))));
 
-    // TODO: Remove this test call later:
-    spawn.send(SpawnItemEvent::new(Item {
-        name: "Croissant".to_string(),
-    }));
+    // TODO: Remove these test spawns later:
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            name: "Croissant".to_string(),
+        },
+        Coords::new(Pos::new(1, 1), Dimens::new(3, 2)),
+    ));
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            name: "Croissant2".to_string(),
+        },
+        Coords::new(Pos::new(10, 10), Dimens::new(3, 2)),
+    ));
 }
 
 fn draw_win_lose_placeholder_menu(

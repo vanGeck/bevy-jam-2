@@ -1,0 +1,6 @@
+(
+    texture: "cursor_sheet.png",
+    tile_size: (32., 32.),
+    columns: 2,
+    rows: 1,
+)

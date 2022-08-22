@@ -14,7 +14,6 @@ impl Plugin for LoadingPlugin {
                 AppState::Loading,
                 ConditionSet::new()
                     .run_in_state(AppState::Loading)
-                    .with_system(configure_ui_look)
                     .with_system(load_assets)
                     .with_system(load_configs)
                     .into(),
@@ -23,6 +22,13 @@ impl Plugin for LoadingPlugin {
                 ConditionSet::new()
                     .run_in_state(AppState::Loading)
                     .with_system(check_load_state)
+                    .into(),
+            )
+            .add_exit_system_set(
+                AppState::Loading,
+                ConditionSet::new()
+                    .run_in_state(AppState::Loading)
+                    .with_system(configure_ui_look)
                     .into(),
             );
     }

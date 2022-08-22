@@ -1,9 +1,10 @@
+use std::fs;
+use std::path::PathBuf;
+
 use bevy::asset::LoadState;
 use bevy::prelude::*;
 use bevy_egui::EguiContext;
 use iyes_loopless::prelude::NextState;
-use std::fs;
-use std::path::PathBuf;
 
 use crate::config::config_audio::AudioConfig;
 use crate::config::config_debug::DebugConfig;
