@@ -5,6 +5,7 @@ use iyes_loopless::prelude::*;
 pub use assets::*;
 pub use components::*;
 pub use spawn_item_system::*;
+pub use combining_system::*;
 
 use crate::audio::sound_event::SoundEvent;
 use crate::game::camera::create_camera;
@@ -23,6 +24,7 @@ mod components;
 mod dragging;
 mod create_grid_system;
 mod spawn_item_system;
+mod combining_system;
 
 pub struct GamePlugin;
 
@@ -36,6 +38,7 @@ impl Plugin for GamePlugin {
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
                     .with_system(setup)
+                    .with_system(setup_recipes)
                     .with_system(setup_gold)
                     .with_system(setup_spawn_item_timer)
                     .with_system(create_camera)
