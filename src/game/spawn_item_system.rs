@@ -42,8 +42,8 @@ pub fn update_spawn_item_timer(
     if timer.0.tick(time.delta()).just_finished() {
         let (dimens, item) = items_data.get_random_item();
 
+        // can we move this logic into the spawn_new_items system?
         let mut free_coords: Option<Coords> = None;
-
         for y in 0..grid.inventory.dimens.y {
             for x in 0..grid.inventory.dimens.x {
                 let coords = Coords {

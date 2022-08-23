@@ -71,6 +71,7 @@ impl Plugin for GamePlugin {
                     .with_system(update_dragged_item_tint)
                     .with_system(check_drag_end)
                     .with_system(process_drag_ended_event)
+                    .with_system(combine_items_system)
                     .with_system(update_spawn_item_timer)
                     .with_system(update_gold_timer)
                     .with_system(spawn_new_items)

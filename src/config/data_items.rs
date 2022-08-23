@@ -7,7 +7,7 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
-use crate::game::items::Item;
+use crate::game::items::{Item, ItemId};
 use crate::positioning::Dimens;
 
 #[derive(Debug, Deserialize, Serialize, Default)]
@@ -31,6 +31,10 @@ impl ItemsData {
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..self.items.len());
         self.items.get(index).unwrap().clone()
+    }
+
+    pub fn get_item(&self, item_id: ItemId) -> Option<(Dimens, Item)> {
+        self.items.iter().find(|(dimens, item)| item.id == item_id).cloned()
     }
 }
 
