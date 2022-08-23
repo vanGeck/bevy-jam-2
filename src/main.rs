@@ -1,6 +1,4 @@
-use crate::audio::plugin::MyAudioPlugin;
-use crate::config::config_log::LogConfig;
-use crate::game::GamePlugin;
+use bevy::log::Level;
 use bevy::prelude::*;
 use bevy::window::WindowMode;
 use bevy::DefaultPlugins;
@@ -9,6 +7,9 @@ use bevy_inspector_egui::WorldInspectorPlugin;
 use egui::*;
 use iyes_loopless::prelude::AppLooplessStateExt;
 
+use crate::audio::plugin::MyAudioPlugin;
+use crate::config::config_log::LogConfig;
+use crate::game::GamePlugin;
 use crate::game_ended::GameEndedPlugin;
 use crate::loading::state::LoadingPlugin;
 use crate::main_menu::MainMenuPlugin;
@@ -30,9 +31,11 @@ mod window_event_handler;
 pub const GAME_NAME: &str = "Bevy Jam 2 Game";
 
 fn main() {
+    let log_settings = LogConfig::load_from_file();
     App::new()
         .insert_resource(bevy::log::LogSettings {
-            level: LogConfig::load_from_file().level.parse().unwrap(),
+            filter: log_settings.filter,
+            level: Level::TRACE,
             ..Default::default()
         })
         // .add_plugin(LogDiagnosticsPlugin::default())

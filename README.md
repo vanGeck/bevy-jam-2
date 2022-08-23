@@ -29,4 +29,4 @@ Some suggestions on how to use this:
 
 - Override the `audio.ron` file to turn down the music and sound effects.
 - Override the `debug.ron` file to skip past the main menu when testing.
-- Override the `log.ron` file to set the log level to INFO, which is a lot less spammy than the default.
+- Override the `log.ron` file to tweak to log filter.

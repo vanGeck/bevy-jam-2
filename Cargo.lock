@@ -207,6 +207,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
+name = "bag_goblin"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy-inspector-egui",
+ "bevy_egui",
+ "bevy_kira_audio",
+ "bevy_ninepatch",
+ "egui",
+ "iyes_loopless",
+ "rand",
+ "ron",
+ "serde",
+]
+
+[[package]]
 name = "base64"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -244,22 +260,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "bevy-jam-2"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy-inspector-egui",
- "bevy_egui",
- "bevy_kira_audio",
- "bevy_ninepatch",
- "egui",
- "iyes_loopless",
- "rand",
- "ron",
- "serde",
 ]
 
 [[package]]
