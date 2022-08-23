@@ -40,7 +40,6 @@ fn main() {
         .insert_resource(ClearColor(Color::rgb(0.1, 0.1, 0.9)))
         .insert_resource(WindowDescriptor {
             title: GAME_NAME.to_string(),
-            mode: WindowMode::Windowed,
             ..default()
         })
         .add_loopless_state(AppState::Loading)

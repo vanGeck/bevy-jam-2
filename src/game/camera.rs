@@ -10,7 +10,7 @@ pub fn create_camera(mut commands: Commands, windows: Res<Windows>) {
     let mut bundle = Camera2dBundle::default();
     let window = get_primary_window_size(&windows);
     // info!("Window size is {:?}", window);
-    let scale = 24. / window.y;
+    let scale = 32. / window.y;
     bundle.transform.scale = Vec3::new(scale, scale, 1.);
     bundle.transform.translation.x = 20.;
     bundle.transform.translation.y = 10.;

@@ -6,6 +6,7 @@ use bevy::prelude::*;
 use bevy_egui::EguiContext;
 use iyes_loopless::prelude::NextState;
 
+use crate::{AppState, WindowMode};
 use crate::config::config_audio::AudioConfig;
 use crate::config::config_debug::DebugConfig;
 use crate::config::config_grid::GridConfig;
@@ -14,7 +15,6 @@ use crate::config::data_recipes::RecipesData;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
-use crate::AppState;
 
 // This is a global look for egui
 pub fn configure_ui_look(mut egui_ctx: ResMut<EguiContext>) {
@@ -96,12 +96,18 @@ pub fn check_load_state(
     asset_server: Res<AssetServer>,
     storage: Res<AssetStorage>,
     config: Res<DebugConfig>,
+    mut windows: ResMut<Windows>,
 ) {
     match asset_server.get_group_load_state(storage.get_all_handle_ids()) {
         LoadState::Failed => {
             error!("Failed loading assets!");
         }
         LoadState::Loaded => {
+            windows.primary_mut().set_mode(if config.launch_fullscreen {
+                WindowMode::BorderlessFullscreen
+            } else {
+                WindowMode::Windowed
+            });
             if config.skip_straight_to_game {
                 commands.insert_resource(NextState(AppState::InGame));
             } else {

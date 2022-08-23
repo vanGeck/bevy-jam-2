@@ -10,8 +10,8 @@ use serde::{Deserialize, Serialize};
 pub struct AssetStorage {
     textures: HashMap<TextureId, Handle<Image>>,
     atlases: HashMap<TextureId, Handle<TextureAtlas>>,
-    sounds: HashMap<SoundType, Vec<Handle<AudioSource>>>,
-    music: HashMap<MusicType, Vec<Handle<AudioSource>>>,
+    sounds: HashMap<SoundId, Vec<Handle<AudioSource>>>,
+    music: HashMap<MusicId, Vec<Handle<AudioSource>>>,
 }
 
 impl AssetStorage {
@@ -45,13 +45,13 @@ impl AssetStorage {
         .clone()
     }
 
-    pub fn put_sound(&mut self, sound_type: SoundType, asset: Handle<AudioSource>) {
+    pub fn put_sound(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
         self.sounds
             .entry(sound_type)
             .or_insert_with(Vec::new)
             .push(asset);
     }
-    pub fn sound(&self, asset_type: &SoundType) -> Option<Handle<AudioSource>> {
+    pub fn sound(&self, asset_type: &SoundId) -> Option<Handle<AudioSource>> {
         self
             .sounds
             .get(asset_type)
@@ -64,13 +64,13 @@ impl AssetStorage {
                 (*(sounds_of_that_type.get(random_index).expect("Should not panic."))).clone()
             })
     }
-    pub fn put_music(&mut self, music_type: MusicType, asset: Handle<AudioSource>) {
+    pub fn put_music(&mut self, music_type: MusicId, asset: Handle<AudioSource>) {
         self.music
             .entry(music_type)
             .or_insert_with(Vec::new)
             .push(asset);
     }
-    pub fn music(&self, asset_type: &MusicType) -> Option<Handle<AudioSource>> {
+    pub fn music(&self, asset_type: &MusicId) -> Option<Handle<AudioSource>> {
         self
             .music
             .get(asset_type)
@@ -96,7 +96,7 @@ impl AssetStorage {
 
 /// Contains both a handle to the sprite sheet and the number of the sprite on the sheet.
 #[derive(Debug, Default, Copy, Clone, Deserialize, Serialize)]
-pub struct AtlasType(pub TextureId, pub usize);
+pub struct AtlasId(pub TextureId, pub usize);
 
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub enum TextureId {
@@ -114,6 +114,7 @@ pub enum TextureId {
     FilledLantern,
     LitLantern,
     FireEssence,
+    MediumShield,
 }
 
 impl Default for TextureId {
@@ -125,12 +126,12 @@ impl Default for TextureId {
 /// Identifies a type of sound effect. Each of these sound types could be represented by any number
 /// of sound files that the game will randomly pick from.
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
-pub enum SoundType {
+pub enum SoundId {
     Placeholder,
 }
 
 /// Identifies a music track.
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
-pub enum MusicType {
+pub enum MusicId {
     Placeholder,
 }

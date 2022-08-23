@@ -12,6 +12,7 @@
         FilledLantern: "2x3_filled_lantern.png",
         LitLantern: "2x3_lit_lantern.png",
         FireEssence: "1x1_fire_essence.png",
+        MediumShield: "2x2_medium_shield.png",
     },
     atlases: {
         NotFound: "not_found.ron",

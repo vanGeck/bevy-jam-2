@@ -82,7 +82,7 @@ pub enum GameResult {
 }
 
 fn setup(mut audio: EventWriter<SoundEvent>) {
-    audio.send(SoundEvent::Music(Some((MusicType::Placeholder, false))));
+    audio.send(SoundEvent::Music(Some((MusicId::Placeholder, false))));
 }
 
 fn draw_win_lose_placeholder_menu(
@@ -93,12 +93,12 @@ fn draw_win_lose_placeholder_menu(
 ) {
     egui::Window::new("Gameplay").show(egui_context.ctx_mut(), |ui| {
         if ui.button("Win").clicked() {
-            audio.send(SoundEvent::Sfx(SoundType::Placeholder));
+            audio.send(SoundEvent::Sfx(SoundId::Placeholder));
             commands.insert_resource(NextState(AppState::GameEnded));
             result.replace(GameResult::Won).ok();
         }
         if ui.button("Lose").clicked() {
-            audio.send(SoundEvent::Sfx(SoundType::Placeholder));
+            audio.send(SoundEvent::Sfx(SoundId::Placeholder));
             commands.insert_resource(NextState(AppState::GameEnded));
             result.replace(GameResult::Lost).ok();
         }

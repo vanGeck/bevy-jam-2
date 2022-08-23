@@ -1,7 +1,7 @@
 use iyes_loopless::prelude::{ConditionSet, NextState};
 
 use crate::audio::sound_event::SoundEvent;
-use crate::game::{GameResult, SoundType};
+use crate::game::{GameResult, SoundId};
 use crate::*;
 
 pub struct GameEndedPlugin;
@@ -69,7 +69,7 @@ fn draw_game_over_screen(
                 egui::Button::new("Restart game"),
             );
             if start_btn.clicked() {
-                audio.send(SoundEvent::Sfx(SoundType::Placeholder));
+                audio.send(SoundEvent::Sfx(SoundId::Placeholder));
                 commands.insert_resource(NextState(AppState::InGame));
             }
             let quit_btn = ui.put(

@@ -1,3 +1,4 @@
 (
     skip_straight_to_game: false,
+    launch_fullscreen: false,
 )

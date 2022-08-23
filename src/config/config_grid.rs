@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
@@ -6,14 +7,27 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
-use crate::positioning::Coords;
+use crate::game::items::EquipmentSlot;
+use crate::positioning::{Coords, };
 
-#[derive(Debug, Deserialize, Serialize, Default)]
+#[derive(Deserialize, Serialize, Default, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct GridConfig {
+    /// An invisible grid above the inventory grid, this is where new items spawn in.
     pub drop_in: Coords,
-    pub equipment: Coords,
+    /// This is where items are stored.
+    pub inventory: Coords,
+    /// A small crafting window used for complex recipes (of more than two ingredients).
     pub crafting: Coords,
+    pub equipped: EquipmentGrid,
+}
+
+#[derive(Deserialize, Serialize, Default, Debug)]
+pub struct EquipmentGrid {
+    /// The absolute coordinates of the equipment grid. Coordinates of each of the individual slots
+    /// are relative to this.
+    pub coords: Coords,
+    pub slots: HashMap<EquipmentSlot, Coords>,
 }
 
 impl GridConfig {

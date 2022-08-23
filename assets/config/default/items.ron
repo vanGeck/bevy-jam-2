@@ -49,5 +49,12 @@
             description: "One of the four elements. Before they discovered all the other ones.",
             texture_id: FireEssence,
         )),
+        (((2, 2)), (
+            id: MediumShield,
+            name: "Shield",
+            description: "Stick and stones may break your bones, so use a shield.",
+            texture_id: MediumShield,
+            wearable: (Shield, ((0, 0))),
+        )),
     ]
 )

@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::game::TextureId;
+use crate::positioning::Pos;
 
 #[derive(Component, Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
@@ -9,7 +10,9 @@ pub struct Item {
     pub name: String,
     pub description: String,
     pub texture_id: TextureId,
-    pub wearable: Option<EquipmentSlot>,
+    /// If this is an item that can be worn by the hero, which slot is it in and what is the
+    /// offset in the equipment grid?
+    pub wearable: Option<(EquipmentSlot, Pos)>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -24,15 +27,16 @@ pub enum ItemId {
     FilledLantern,
     LitLantern,
     FireEssence,
+    MediumShield,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq, Hash)]
 pub enum EquipmentSlot {
-    Weapon,
-    Shield,
-    Armour,
     Helmet,
     Necklace,
+    Armour,
+    Weapon,
+    Shield,
 }
 
 #[derive(Component)]

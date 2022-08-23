@@ -1,4 +1,4 @@
-use crate::game::{MusicType, SoundType};
+use crate::game::{MusicId, SoundId};
 use bevy::prelude::*;
 
 /// Elsewhere in the application, you can broadcast `SoundEvents`. The `PlaySfxSystem` below listens
@@ -7,9 +7,9 @@ use bevy::prelude::*;
 #[derive(Debug)]
 pub enum SoundEvent {
     /// SoundType and whether the music should be interrupted during play.
-    Sfx(SoundType),
+    Sfx(SoundId),
     /// MusicType. If present, play this song. Otherwise, stop all music.
-    Music(Option<(MusicType, Looped)>),
+    Music(Option<(MusicId, Looped)>),
     KillAllSoundEffects,
     KillAllMusic,
 }

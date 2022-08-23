@@ -122,7 +122,7 @@ pub fn check_ghost_placement_validity(
     if let Ok((mut ghost, mut sprite, coords)) = query_ghost.get_single_mut() {
         let conflicts_with_item = query_items.iter().any(|item| coords.overlaps(item));
         if !conflicts_with_item
-            && (grid.equipment.encloses(coords) || grid.crafting.encloses(coords))
+            && (grid.inventory.encloses(coords) || grid.crafting.encloses(coords))
         {
             ghost.placement_valid = true;
             sprite.color = Color::rgba(1., 1., 1., 0.5);

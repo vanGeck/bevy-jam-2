@@ -13,6 +13,7 @@ pub struct DebugConfig {
     /// If true, the loader will bypass the menu and drop you straight into the game.
     /// Can be very handy for rapid testing, not having to click the play button every time.
     pub skip_straight_to_game: bool,
+    pub launch_fullscreen: bool,
 }
 
 impl DebugConfig {

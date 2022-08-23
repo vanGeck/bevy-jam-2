@@ -1,5 +1,5 @@
 use crate::audio::sound_event::SoundEvent;
-use crate::game::SoundType;
+use crate::game::SoundId;
 use crate::*;
 use iyes_loopless::prelude::ConditionSet;
 use iyes_loopless::state::NextState;
@@ -65,7 +65,7 @@ fn draw_main_menu(
                 egui::Button::new("Start game"),
             );
             if start_btn.clicked() {
-                audio.send(SoundEvent::Sfx(SoundType::Placeholder));
+                audio.send(SoundEvent::Sfx(SoundId::Placeholder));
                 commands.insert_resource(NextState(AppState::InGame))
             }
             let _quit_btn = ui.put(

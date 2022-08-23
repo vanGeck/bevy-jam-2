@@ -3,12 +3,40 @@
         pos: ((0, 16)),
         dimens: ((32, 16)),
     ),
-    equipment: (
+    inventory: (
         pos: ((0, 0)),
         dimens: ((32, 16)),
     ),
     crafting: (
         pos: ((34, 0)),
-        dimens: ((5, 5)),
+        dimens: ((6, 6)),
+    ),
+    equipped: (
+        coords: (
+            pos: ((33, 7)),
+            dimens: ((8, 13)),
+        ),
+        slots: {
+            Helmet: (
+                pos: ((3, 9)),
+                dimens: ((2, 3)),
+            ),
+            Necklace: (
+                pos: ((3, 7)),
+                dimens: ((2, 1)),
+            ),
+            Armour: (
+                pos: ((2, 1)),
+                dimens: ((4, 5)),
+            ),
+            Weapon: (
+                pos: ((0, 3)),
+                dimens: ((2, 6)),
+            ),
+            Shield: (
+                pos: ((5, 2)),
+                dimens: ((3, 3)),
+            ),
+        },
     ),
 )
