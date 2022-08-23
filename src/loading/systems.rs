@@ -6,7 +6,6 @@ use bevy::prelude::*;
 use bevy_egui::EguiContext;
 use iyes_loopless::prelude::NextState;
 
-use crate::{AppState, WindowMode};
 use crate::config::config_audio::AudioConfig;
 use crate::config::config_debug::DebugConfig;
 use crate::config::config_grid::GridConfig;
@@ -15,6 +14,7 @@ use crate::config::data_recipes::RecipesData;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
+use crate::{AppState, WindowMode};
 
 // This is a global look for egui
 pub fn configure_ui_look(mut egui_ctx: ResMut<EguiContext>) {

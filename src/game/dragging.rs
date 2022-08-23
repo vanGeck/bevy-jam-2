@@ -76,7 +76,7 @@ pub fn check_drag_begin(
                     ),
                     ..Default::default()
                 })
-                .insert(coords.clone())
+                .insert(*coords)
                 .insert(DragGhost {
                     cursor_delta: coords.pos - hovered_over_cell,
                     ..default()
@@ -105,7 +105,7 @@ pub fn apply_scrim_to_being_dragged(
     mut query: Query<(&mut Sprite, Option<&BeingDragged>), With<Item>>,
 ) {
     for (mut sprite, being_dragged) in query.iter_mut() {
-        sprite.color = if let Some(_) = being_dragged {
+        sprite.color = if being_dragged.is_some() {
             Color::rgba(0.5, 0.5, 0.5, 0.5)
         } else {
             Color::rgb(1., 1., 1.)

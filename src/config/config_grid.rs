@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 use crate::game::items::EquipmentSlot;
-use crate::positioning::{Coords, };
+use crate::positioning::Coords;
 
 #[derive(Deserialize, Serialize, Default, Debug)]
 #[serde(deny_unknown_fields)]
