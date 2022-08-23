@@ -13,7 +13,6 @@ use crate::config::data_recipes::RecipesData;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
-use crate::AppState;
 use crate::config::dungeon_params::DungeonParams;
 use crate::config::dungeon_texts::DungeonTexts;
 use crate::{AppState, WindowMode};

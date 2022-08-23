@@ -31,8 +31,6 @@ mod components;
 mod create_grid_system;
 pub mod dragging;
 mod dragging;
-mod item_spawner;
-mod spawn_grid;
 mod dungeonsim;
 pub mod items;
 pub mod recipes;
