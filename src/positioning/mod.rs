@@ -1,5 +1,5 @@
-pub mod coords;
+pub mod coordinates;
 pub mod depth;
-pub mod dimens;
+pub mod dimensions;
 pub mod grid;
-pub mod pos;
+pub mod position;

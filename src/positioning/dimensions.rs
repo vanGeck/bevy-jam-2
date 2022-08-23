@@ -3,38 +3,43 @@
 use std::cmp::Ordering;
 use std::ops::{Add, Deref, DerefMut, Sub};
 
-use bevy::prelude::{IVec2, Vec2};
+use bevy::prelude::IVec2;
 use serde::{Deserialize, Serialize};
 
-/// Defines a set of discrete grid coordinates.
+/// Defines a width and height in terms of discrete grid coordinates.
 /// Wraps an IVec2, which works well together with bevy.
 #[derive(Deserialize, Serialize, Default, Copy, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Pos(IVec2);
+pub struct Dimensions(pub IVec2);
 
-impl Pos {
+impl Dimensions {
     #[must_use]
     pub fn new(x: i32, y: i32) -> Self {
-        Pos(IVec2::new(x, y))
+        Dimensions(IVec2::new(x, y))
+    }
+
+    #[must_use]
+    pub fn unit() -> Self {
+        Dimensions(IVec2::new(1, 1))
     }
 
     #[must_use]
     pub fn plus_x(self, x: i32) -> Self {
-        Pos::new(self.x + x, self.y)
+        Dimensions::new(self.x + x, self.y)
     }
 
     #[must_use]
     pub fn plus_y(self, y: i32) -> Self {
-        Pos::new(self.x, self.y + y)
+        Dimensions::new(self.x, self.y + y)
     }
 
-    /// If you have got another Pos, consider simply adding them together using the + operator.
+    /// If you have got another Dimens, consider simply adding them together using the + operator.
     #[must_use]
     pub fn plus_xy(self, x: i32, y: i32) -> Self {
-        Pos::new(self.x + x, self.y + y)
+        Dimensions::new(self.x + x, self.y + y)
     }
 }
 
-impl Deref for Pos {
+impl Deref for Dimensions {
     type Target = IVec2;
 
     fn deref(&self) -> &Self::Target {
@@ -42,17 +47,14 @@ impl Deref for Pos {
     }
 }
 
-impl DerefMut for Pos {
+impl DerefMut for Dimensions {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
 /// Order by x first, then y.
-///
-/// This is implemented purely to make it possible to save level and adventure files in a
-/// deterministic way.
-impl PartialOrd<Self> for Pos {
+impl PartialOrd<Self> for Dimensions {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         if self.x < other.x {
             Some(Ordering::Less)
@@ -68,30 +70,24 @@ impl PartialOrd<Self> for Pos {
     }
 }
 
-impl Ord for Pos {
+impl Ord for Dimensions {
     fn cmp(&self, other: &Self) -> Ordering {
         self.partial_cmp(other).unwrap()
     }
 }
 
-impl Sub for Pos {
-    type Output = Pos;
+impl Sub for Dimensions {
+    type Output = Dimensions;
 
-    fn sub(self, other: Pos) -> Pos {
-        Pos::new(self.x - other.x, self.y - other.y)
+    fn sub(self, other: Dimensions) -> Dimensions {
+        Dimensions::new(self.x - other.x, self.y - other.y)
     }
 }
 
-impl Add for Pos {
-    type Output = Pos;
+impl Add for Dimensions {
+    type Output = Dimensions;
 
-    fn add(self, other: Pos) -> Pos {
-        Pos::new(self.x + other.x, self.y + other.y)
-    }
-}
-
-impl From<Vec2> for Pos {
-    fn from(vec: Vec2) -> Self {
-        Pos::new(vec.x.floor() as i32, vec.y.floor() as i32)
+    fn add(self, other: Dimensions) -> Dimensions {
+        Dimensions::new(self.x + other.x, self.y + other.y)
     }
 }
