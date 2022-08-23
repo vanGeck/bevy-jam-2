@@ -1,9 +1,7 @@
 use bevy::prelude::*;
 
 use crate::game::camera::GameCamera;
-use crate::game::{AssetStorage, CleanupOnGameplayEnd, SpriteType};
-use crate::positioning::Depth;
-use crate::positioning::Dimens;
+use crate::game::CleanupOnGameplayEnd;
 
 #[derive(Component, Default)]
 pub struct Mouse {
@@ -32,7 +30,7 @@ pub fn configure_cursor(mut commands: Commands) {
         //         index: 0,
         //         ..default()
         //     },
-        //     texture_atlas: assets.atlas(&SpriteType::Cursor),
+        //     texture_atlas: assets.atlas(&TextureId::Cursor),
         //     transform: Transform::from_xyz(0., 0., Depth::Cursor.z()),
         //     ..Default::default()
         // })

@@ -24,6 +24,8 @@ mod combining_system;
 mod components;
 mod create_grid_system;
 mod dragging;
+pub mod items;
+pub mod recipes;
 mod spawn_item_system;
 
 pub struct GamePlugin;
@@ -38,7 +40,6 @@ impl Plugin for GamePlugin {
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
                     .with_system(setup)
-                    .with_system(setup_recipes)
                     .with_system(setup_gold)
                     .with_system(setup_spawn_item_timer)
                     .with_system(create_camera)

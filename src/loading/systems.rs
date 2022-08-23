@@ -9,7 +9,8 @@ use iyes_loopless::prelude::NextState;
 use crate::config::config_audio::AudioConfig;
 use crate::config::config_debug::DebugConfig;
 use crate::config::config_grid::GridConfig;
-use crate::config::config_items::ItemsConfig;
+use crate::config::data_items::ItemsData;
+use crate::config::data_recipes::RecipesData;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
@@ -27,7 +28,8 @@ pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(GridConfig::load_from_file());
     commands.insert_resource(DebugConfig::load_from_file());
     commands.insert_resource(AudioConfig::load_from_file());
-    commands.insert_resource(ItemsConfig::load_from_file());
+    commands.insert_resource(ItemsData::load_from_file());
+    commands.insert_resource(RecipesData::load_from_file());
 }
 
 pub fn load_assets(

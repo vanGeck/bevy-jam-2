@@ -1,5 +1,3 @@
-use crate::game::ItemData;
-use std::collections::HashMap;
 use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
@@ -9,16 +7,18 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
+use crate::game::items::Item;
+use crate::positioning::Dimens;
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]
-pub struct ItemsConfig {
-    pub items: HashMap<String, ItemData>,
+pub struct ItemsData {
+    pub items: Vec<(Dimens, Item)>,
 }
 
-impl ItemsConfig {
+impl ItemsData {
     #[must_use]
-    pub fn load_from_file() -> ItemsConfig {
+    pub fn load_from_file() -> ItemsData {
         let override_file = get_config_override_dir().join("items.ron");
         if override_file.exists() {
             load_from_path(&override_file)
@@ -27,24 +27,21 @@ impl ItemsConfig {
         }
     }
 
-    pub fn get_random_item(&self) -> &ItemData {
+    pub fn get_random_item(&self) -> (Dimens, Item) {
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..self.items.len());
-        let mut item_keys: Vec<&String> = self.items.keys().collect();
-        item_keys.swap(0, index);
-        let item_key = item_keys[0];
-        self.items.get(item_key).unwrap().clone()
+        self.items.get(index).unwrap().clone()
     }
 }
 
-fn load_from_path(path: &Path) -> ItemsConfig {
+fn load_from_path(path: &Path) -> ItemsData {
     fs::read_to_string(path)
-        .and_then(|data| ron::de::from_str::<ItemsConfig>(&data).map_err(|error| Error::new(ErrorKind::Other, error)))
+        .and_then(|data| ron::de::from_str::<ItemsData>(&data).map_err(|error| Error::new(ErrorKind::Other, error)))
         .unwrap_or_else(|error| {
             error!(
-                    "Failed to load the items config file from {:?}! Falling back to ItemsConfig::default(). Error: {:?}",
+                    "Failed to load the items data file from {:?}! Falling back to ItemsData::default(). Error: {:?}",
                     path, error
                 );
-            ItemsConfig::default()
+            ItemsData::default()
         })
 }

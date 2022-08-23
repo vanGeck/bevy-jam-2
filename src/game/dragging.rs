@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use crate::config::config_grid::GridConfig;
-use crate::game::{AssetStorage, CleanupOnGameplayEnd, Item, SpriteType};
+use crate::game::items::Item;
+use crate::game::{AssetStorage, CleanupOnGameplayEnd};
 use crate::mouse::Mouse;
 use crate::positioning::Coords;
 use crate::positioning::Depth;
@@ -41,7 +42,7 @@ pub struct DragGhost {
 ///     - The mouse is tagged as being in the middle of a dragging operation.
 pub fn check_drag_begin(
     mut commands: Commands,
-    asset_server: Res<AssetServer>,
+    assets: Res<AssetStorage>,
     input: Res<Input<MouseButton>>,
     mut query_mouse: Query<&mut Mouse>,
     query: Query<(&Coords, Entity, &Item)>,
@@ -67,11 +68,7 @@ pub fn check_drag_begin(
                         custom_size: Some(coords.dimens.as_vec2()),
                         ..default()
                     },
-                    texture: asset_server.load(
-                        std::path::PathBuf::new()
-                            .join("textures/")
-                            .join(&item.sprite_path),
-                    ),
+                    texture: assets.texture(&item.texture_id),
                     transform: Transform::from_xyz(
                         coords.pos.x as f32 + coords.dimens.x as f32 * 0.5,
                         coords.pos.y as f32 + coords.dimens.y as f32 * 0.5,

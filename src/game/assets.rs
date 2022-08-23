@@ -2,45 +2,44 @@ use std::collections::HashMap;
 
 use bevy::asset::{Handle, HandleId};
 use bevy::prelude::*;
-use serde::{Deserialize, Serialize};
-
 use bevy_kira_audio::AudioSource;
 use rand::Rng;
+use serde::{Deserialize, Serialize};
 
 #[derive(Default, Debug)]
 pub struct AssetStorage {
-    textures: HashMap<SpriteType, Handle<Image>>,
-    atlases: HashMap<SpriteType, Handle<TextureAtlas>>,
+    textures: HashMap<TextureId, Handle<Image>>,
+    atlases: HashMap<TextureId, Handle<TextureAtlas>>,
     sounds: HashMap<SoundType, Vec<Handle<AudioSource>>>,
     music: HashMap<MusicType, Vec<Handle<AudioSource>>>,
 }
 
 impl AssetStorage {
-    pub fn put_texture(&mut self, asset_type: SpriteType, asset: Handle<Image>) {
+    pub fn put_texture(&mut self, asset_type: TextureId, asset: Handle<Image>) {
         self.textures.insert(asset_type, asset);
     }
-    pub fn texture(&self, asset_type: &SpriteType) -> Handle<Image> {
+    pub fn texture(&self, asset_type: &TextureId) -> Handle<Image> {
         (*self
             .textures
             .get(asset_type)
             .or_else(|| {
                 error!("Texture asset {:?} is missing!", asset_type);
-                self.textures.get(&SpriteType::NotFound)
+                self.textures.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
         .clone()
     }
 
-    pub fn put_atlas(&mut self, asset_type: SpriteType, asset: Handle<TextureAtlas>) {
+    pub fn put_atlas(&mut self, asset_type: TextureId, asset: Handle<TextureAtlas>) {
         self.atlases.insert(asset_type, asset);
     }
-    pub fn atlas(&self, asset_type: &SpriteType) -> Handle<TextureAtlas> {
+    pub fn atlas(&self, asset_type: &TextureId) -> Handle<TextureAtlas> {
         (*self
             .atlases
             .get(asset_type)
             .or_else(|| {
                 error!("Spritesheet asset {:?} is missing!", asset_type);
-                self.atlases.get(&SpriteType::NotFound)
+                self.atlases.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
         .clone()
@@ -97,21 +96,29 @@ impl AssetStorage {
 
 /// Contains both a handle to the sprite sheet and the number of the sprite on the sheet.
 #[derive(Debug, Default, Copy, Clone, Deserialize, Serialize)]
-pub struct AtlasType(pub SpriteType, pub usize);
+pub struct AtlasType(pub TextureId, pub usize);
 
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
-pub enum SpriteType {
-    /// Fallback sprite.
+pub enum TextureId {
+    /// Fallback sprite. Will be used if the intended sprite failed to load.
     NotFound,
+    /// Unused at the moment, but might be used later.
     Cursor,
     Croissant,
-    GreenSquare,
-    SelectionSquare,
+    Athelas,
+    HealthPotion,
+    Vial,
+    TurtleHerb,
+    CandleStick,
+    EmptyLantern,
+    FilledLantern,
+    LitLantern,
+    FireEssence,
 }
 
-impl Default for SpriteType {
+impl Default for TextureId {
     fn default() -> Self {
-        SpriteType::NotFound
+        TextureId::NotFound
     }
 }
 

@@ -2,9 +2,16 @@
 (
     textures: {
         NotFound: "not_found.png",
-        GreenSquare: "green_square.png",
-        SelectionSquare: "selection_square.png",
         Croissant: "3x2_croissant.png",
+        Athelas: "2x2_turtle_herb.png",
+        // HealthPotion: "??.png",
+        Vial: "3x2_vial.png",
+        TurtleHerb: "2x2_turtle_herb.png",
+        CandleStick: "1x2_candle_stick.png",
+        EmptyLantern: "2x3_empty_lantern.png",
+        FilledLantern: "2x3_filled_lantern.png",
+        LitLantern: "2x3_lit_lantern.png",
+        FireEssence: "1x1_fire_essence.png",
     },
     atlases: {
         NotFound: "not_found.ron",

@@ -1,52 +1,43 @@
-Recipes(
-    recipes: {
-        "health_potion": (
-            id: "health_potion",
-            name: "Health Potion",
-            description: "Restores health",
+(
+    recipes: [
+        (
+            result: HealthPotion,
             ingredients: [
                 (
-                    item_id: "vial",
+                    item_id: Vial,
                     quantity: 1
                 ),
                 (
-                    item_id: "turtle_herb",
+                    item_id: TurtleHerb,
                     quantity: 1
                 )
             ],
-            result_item_id: "health_potion",
         ),
-        "filled_lantern": (
-            id: "filled_lantern",
-            name: "Filled Lantern",
-            description: "A lantern with a candle stick inside.",
+        (
+            result: FilledLantern,
             ingredients: [
                 (
-                    item_id: "empty_lantern",
+                    item_id: EmptyLantern,
                     quantity: 1
                 ),
                 (
-                    item_id: "candle_stick",
+                    item_id: CandleStick,
                     quantity: 1
                 )
             ],
-            result_item_id: "filled_lantern",
         ),
-        "lit_lantern": (
-            id: "lit_lantern",
-            name: "Lit Lantern",
-            description: "A lit lantern to provide light in dark environments.",
+        (
+            result: LitLantern,
             ingredients: [
                 (
-                    item_id: "filled_lantern",
+                    item_id: FilledLantern,
                     quantity: 1
                 ),
                 (
-                    item_id: "fire_essence",
+                    item_id: FireEssence,
                     quantity: 1
                 )
             ],
-            result_item_id: "lit_lantern",
         ),
-    }
+    ]
 )
