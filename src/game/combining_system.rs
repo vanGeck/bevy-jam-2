@@ -6,11 +6,46 @@ use bevy::prelude::*;
 use bevy::utils::HashMap;
 
 use serde::{Deserialize, Serialize};
+use crate::game::Item;
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]
 pub struct Recipes {
     pub recipes: HashMap<String, Recipe>,
+}
+
+impl Recipes {
+    // Sorry the parameter names aren't the greatest here, over_item is the item that the dragged_item is currently 'hovering' over.
+    pub fn is_valid_recipe(&self, dragged_item: Item, over_item: Item) -> Option<&Recipe> {
+        let dragged_item_id = dragged_item.id;
+        let over_item_id = over_item.id;
+
+        let mut recipe_has_dragged_item: bool = false;
+        let mut recipe_has_over_item: bool = false;
+
+        let mut recipe_clone: &Recipe;
+
+        self.recipes.values().for_each(|recipe| {
+            recipe.ingredients.iter().for_each(|ingredient| {
+                if ingredient.item_id == dragged_item_id {
+                    recipe_has_dragged_item = true;
+                }
+                if ingredient.item_id == over_item_id {
+                    recipe_has_over_item = true;
+                }
+
+                if recipe_has_dragged_item && recipe_has_over_item {
+                    recipe_clone = recipe;
+                }
+            });
+        });
+
+        if recipe_clone.is_some() {
+            Some(recipe_clone)
+        } else {
+            None
+        }
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize, Default)]
