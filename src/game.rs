@@ -18,6 +18,7 @@ use crate::game::dragging::{
 use crate::hud::gold::{gold_update_system, setup_gold};
 use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
 use crate::AppState;
+use crate::game::dungeonsim::{dungeon_text_test, DungeonState, init_dungeon, tick_dungeon};
 use crate::game::items::{Item, ItemId};
 use crate::positioning::{Coords, Dimens, Pos};
 
@@ -43,7 +44,7 @@ impl Plugin for GamePlugin {
         app.add_event::<SpawnItemEvent>()
             .add_event::<DragEvent>()
             .init_resource::<Player>()
-            .insert_resource(DungeonState{msg_cooldown: Timer::new(Duration::from_millis(3000), true), running: true })
+            .insert_resource(DungeonState{ current_room_idx: 0, current_level: None, msg_cooldown: Timer::new(Duration::from_millis(3000), true), running: true })
             .add_enter_system_set(
                 AppState::InGame,
                 ConditionSet::new()
@@ -75,6 +76,7 @@ impl Plugin for GamePlugin {
                     .with_system(dungeon_text_test)
                     .with_system(animate)
                     .with_system(track_combine_button_hover)
+                    .with_system(tick_dungeon)
                     .into(),
             )
             .add_exit_system_set(

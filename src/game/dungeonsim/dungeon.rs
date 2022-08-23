@@ -1,4 +1,4 @@
-﻿use bevy::log::debug;
+﻿use bevy::log::{debug, info};
 use rand::Rng;
 use crate::config::dungeon_params::DungeonParams;
 use crate::default;
@@ -23,7 +23,7 @@ pub fn generate_level(len: i32, params: &DungeonParams) -> DungeonLevel {
     }
     rooms.push(generate_last_room());
 
-    debug!("Dungeon generation results: ");
+    info!("Dungeon generation results: ");
     for s in 0..rooms.len(){
         rooms[s].print_diag_name();
     }

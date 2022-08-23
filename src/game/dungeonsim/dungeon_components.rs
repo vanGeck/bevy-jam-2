@@ -1,4 +1,4 @@
-﻿use bevy::log::debug;
+﻿use bevy::log::{debug, info};
 use crate::game::dungeonsim::combat::Combatant;
 
 pub struct Room{
@@ -30,15 +30,15 @@ impl Room {
     // Helper method for listing reults of dungeon generation.
     pub fn print_diag_name(&self) {
         if self.corridor {
-            debug!("{}","|Corridor|".to_string());
+            info!("{}","|Corridor|".to_string());
         } else if self.start {
-            debug!("{}","|First|".to_string());
+            info!("{}","|First|".to_string());
         } else if self.end {
-            debug!("{}","|Last|".to_string());
+            info!("{}","|Last|".to_string());
         } else if let Some(comb) = &self.monster {
-            debug!("{}","|Fight|".to_string());
+            info!("{}","|Fight|".to_string());
         } else {
-            debug!("{}","|Empty|".to_string());
+            info!("{}","|Empty|".to_string());
         }
     }
 }
