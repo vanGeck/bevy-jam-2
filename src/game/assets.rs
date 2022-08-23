@@ -18,6 +18,7 @@ impl AssetStorage {
     pub fn put_texture(&mut self, asset_type: TextureId, asset: Handle<Image>) {
         self.textures.insert(asset_type, asset);
     }
+
     pub fn texture(&self, asset_type: &TextureId) -> Handle<Image> {
         (*self
             .textures
@@ -27,12 +28,13 @@ impl AssetStorage {
                 self.textures.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-        .clone()
+            .clone()
     }
 
     pub fn put_atlas(&mut self, asset_type: TextureId, asset: Handle<TextureAtlas>) {
         self.atlases.insert(asset_type, asset);
     }
+
     pub fn atlas(&self, asset_type: &TextureId) -> Handle<TextureAtlas> {
         (*self
             .atlases
@@ -42,7 +44,7 @@ impl AssetStorage {
                 self.atlases.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-        .clone()
+            .clone()
     }
 
     pub fn put_sound(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
@@ -51,6 +53,7 @@ impl AssetStorage {
             .or_insert_with(Vec::new)
             .push(asset);
     }
+
     pub fn sound(&self, asset_type: &SoundId) -> Option<Handle<AudioSource>> {
         self
             .sounds
@@ -64,12 +67,14 @@ impl AssetStorage {
                 (*(sounds_of_that_type.get(random_index).expect("Should not panic."))).clone()
             })
     }
+
     pub fn put_music(&mut self, music_type: MusicId, asset: Handle<AudioSource>) {
         self.music
             .entry(music_type)
             .or_insert_with(Vec::new)
             .push(asset);
     }
+
     pub fn music(&self, asset_type: &MusicId) -> Option<Handle<AudioSource>> {
         self
             .music
@@ -83,6 +88,7 @@ impl AssetStorage {
                 (*(sounds_of_that_type.get(random_index).expect("Should not panic."))).clone()
             })
     }
+
     pub fn get_all_handle_ids(&self) -> Vec<HandleId> {
         let vec = self.textures.iter().map(|item| item.1.clone().id).collect();
         // let vec = self.sounds.iter()
@@ -106,6 +112,7 @@ pub enum TextureId {
     Cursor,
     Croissant,
     Athelas,
+    // ^ what is an Athelas? Atlas? - Jacques
     HealthPotion,
     Vial,
     TurtleHerb,

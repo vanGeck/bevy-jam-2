@@ -8,14 +8,26 @@ pub use components::*;
 pub use spawn_item_system::*;
 
 use crate::audio::sound_event::SoundEvent;
+use crate::audio::audio::*;
 use crate::game::camera::create_camera;
 use crate::game::create_grid_system::create_grids;
 use crate::game::dragging::{
-    apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
-    process_drag_event, set_ghost_position, DragEvent,
+    update_dragged_item_tint,
+    check_drag_begin,
+    check_drag_end,
+    update_dragged_ghost_item_validity,
+    process_drag_ended_event,
+    update_dragged_ghost_item_position,
+    DragEndedEvent,
 };
-use crate::hud::gold::{gold_update_system, setup_gold};
-use crate::mouse::{calc_mouse_pos, configure_cursor, reset_cursor, set_cursor_appearance};
+use crate::hud::gold::{
+    update_gold_timer,
+    setup_gold};
+use crate::mouse::{
+    update_mouse_pos,
+    setup_mouse,
+    reset_mouse,
+    update_mouse_cursor_icon};
 use crate::AppState;
 
 pub mod assets;
@@ -33,59 +45,50 @@ pub struct GamePlugin;
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<SpawnItemEvent>()
-            .add_event::<DragEvent>()
+            .add_event::<DragEndedEvent>()
             .init_resource::<Player>()
             .add_enter_system_set(
                 AppState::InGame,
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    .with_system(setup)
-                    .with_system(setup_gold)
-                    .with_system(setup_spawn_item_timer)
                     .with_system(create_camera)
                     .with_system(create_grids)
-                    .with_system(configure_cursor)
+                    .with_system(setup_audio)
+                    .with_system(setup_gold)
+                    .with_system(setup_mouse)
+                    .with_system(setup_spawn_item_timer)
                     .into(),
             )
             .add_system_set(
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    .with_system(draw_win_lose_placeholder_menu)
-                    .with_system(spawn_item_timer_system)
-                    .with_system(spawn_item)
-                    .with_system(calc_mouse_pos)
-                    .with_system(set_cursor_appearance)
+                    .with_system(draw_win_lose_debug_menu)
+                    .with_system(update_mouse_pos)
+                    .with_system(update_mouse_cursor_icon)
                     .with_system(check_drag_begin)
-                    .with_system(set_ghost_position)
-                    .with_system(apply_scrim_to_being_dragged)
-                    .with_system(check_ghost_placement_validity)
+                    .with_system(update_dragged_ghost_item_position)
+                    .with_system(update_dragged_ghost_item_validity)
+                    .with_system(update_dragged_item_tint)
                     .with_system(check_drag_end)
-                    .with_system(process_drag_event)
-                    .with_system(gold_update_system)
+                    .with_system(process_drag_ended_event)
+                    .with_system(update_spawn_item_timer)
+                    .with_system(update_gold_timer)
+                    .with_system(spawn_new_items)
                     .into(),
             )
             .add_exit_system_set(
                 AppState::InGame,
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    .with_system(despawn_gameplay_entities)
-                    .with_system(reset_cursor)
+                    .with_system(cleanup_gameplay_entities)
+                    .with_system(reset_mouse)
                     .into(),
             );
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Component)]
-pub enum GameResult {
-    Lost,
-    Won,
-}
-
-fn setup(mut audio: EventWriter<SoundEvent>) {
-    audio.send(SoundEvent::Music(Some((MusicId::Placeholder, false))));
-}
-
-fn draw_win_lose_placeholder_menu(
+/// === Systems ===
+fn draw_win_lose_debug_menu(
     mut commands: Commands,
     mut audio: EventWriter<SoundEvent>,
     mut egui_context: ResMut<EguiContext>,
@@ -105,13 +108,13 @@ fn draw_win_lose_placeholder_menu(
     });
 }
 
-pub fn despawn_gameplay_entities(
+pub fn cleanup_gameplay_entities(
     mut cmd: Commands,
     mut audio: EventWriter<SoundEvent>,
-    q: Query<Entity, With<CleanupOnGameplayEnd>>,
+    query: Query<Entity, With<CleanupOnGameplayEnd>>,
 ) {
-    for e in q.iter() {
-        cmd.entity(e).despawn_recursive();
+    for entity in query.iter() {
+        cmd.entity(entity).despawn_recursive();
     }
     audio.send(SoundEvent::KillAllMusic);
 }

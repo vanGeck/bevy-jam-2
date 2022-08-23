@@ -1,24 +1,36 @@
 use bevy::prelude::*;
-use iyes_loopless::state::NextState;
-
 use crate::config::config_grid::GridConfig;
 use crate::config::data_items::ItemsData;
 use crate::game::items::Item;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
 use crate::positioning::Depth;
 use crate::positioning::Pos;
-use crate::positioning::{Coords, Dimens};
-use crate::states::AppState;
-
+use crate::positioning::{Coords};
 use super::dragging::BeingDragged;
 
+/// === Resources ===
 pub struct ItemSpawnTimer(Timer);
 
+/// === Events ===
+/// Broadcast this as an event to spawn an item.
+#[derive(Debug)]
+pub struct SpawnItemEvent {
+    item: Item,
+    coords: Coords,
+}
+
+impl SpawnItemEvent {
+    pub fn new(item: Item, coords: Coords) -> Self {
+        SpawnItemEvent { item, coords }
+    }
+}
+
+/// === Systems ===
 pub fn setup_spawn_item_timer(mut commands: Commands) {
     commands.insert_resource(ItemSpawnTimer(Timer::from_seconds(5.0, true))); // Ref 1
 }
 
-pub fn spawn_item_timer_system(
+pub fn update_spawn_item_timer(
     time: Res<Time>,
     grid: Res<GridConfig>,
     items_query: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
@@ -53,20 +65,7 @@ pub fn spawn_item_timer_system(
     }
 }
 
-/// Broadcast this as an event to spawn an item.
-#[derive(Debug)]
-pub struct SpawnItemEvent {
-    item: Item,
-    coords: Coords,
-}
-
-impl SpawnItemEvent {
-    pub fn new(item: Item, coords: Coords) -> Self {
-        SpawnItemEvent { item, coords }
-    }
-}
-
-pub fn spawn_item(
+pub fn spawn_new_items(
     mut commands: Commands,
     mut events: EventReader<SpawnItemEvent>,
     assets: Res<AssetStorage>,

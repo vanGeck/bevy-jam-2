@@ -28,7 +28,7 @@
         (((2, 3)), (
             id: EmptyLantern,
             name: "Empty Lantern",
-            description: "Fill this with oil!",
+            description: "Add a candle stick to this!",
             texture_id: EmptyLantern,
         )),
         (((2, 3)), (

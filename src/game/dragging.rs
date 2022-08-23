@@ -8,11 +8,15 @@ use crate::positioning::Coords;
 use crate::positioning::Depth;
 use crate::positioning::Pos;
 
+/// === Events ===
+
 /// Broadcast this event when completing a dragging operation.
 /// The entity that is being dragged still has the BeingDragged component.
 /// The Pos is the target position that the item is moved towards.
 #[derive(Debug)]
-pub struct DragEvent(Pos);
+pub struct DragEndedEvent(Pos);
+
+/// === Components ===
 
 // TODO: Use this??
 #[derive(Component)]
@@ -31,6 +35,8 @@ pub struct DragGhost {
     cursor_delta: Pos,
     placement_valid: bool,
 }
+
+/// === Systems ===
 
 /// TODO: There's no logic separating normal clicks from drag initiation.
 ///       Needs to be included down the road.
@@ -69,6 +75,7 @@ pub fn check_drag_begin(
                         ..default()
                     },
                     texture: assets.texture(&item.texture_id),
+                    // Can someone please explain the math going on here to me? - Jacques
                     transform: Transform::from_xyz(
                         coords.pos.x as f32 + coords.dimens.x as f32 * 0.5,
                         coords.pos.y as f32 + coords.dimens.y as f32 * 0.5,
@@ -88,20 +95,23 @@ pub fn check_drag_begin(
 }
 
 /// Move the item ghost with the mouse, but in discrete increments, always snapping to the grid.
-pub fn set_ghost_position(
+pub fn update_dragged_ghost_item_position(
     mut query_mouse: Query<&mut Mouse>,
     mut query: Query<(&mut Transform, &mut Coords, &DragGhost)>,
 ) {
     let mouse = query_mouse.single_mut();
     if let Ok((mut transform, mut coords, ghost)) = query.get_single_mut() {
         coords.pos = Pos::from(mouse.position) + ghost.cursor_delta;
+        // Again, can someone please explain the math here to me? I am guessing it's to do with the snapping. - Jacques
         transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
         transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
     }
 }
 
-/// Apply a dark scrim to the item that is being dragged.
-pub fn apply_scrim_to_being_dragged(
+// Jacques: I don't know if this needs to be run on every frame as it's own system,
+// perhaps we can move this logic to the check drag begin and end systems.
+/// Apply a dark tint to the item that is being dragged.
+pub fn update_dragged_item_tint(
     mut query: Query<(&mut Sprite, Option<&BeingDragged>), With<Item>>,
 ) {
     for (mut sprite, being_dragged) in query.iter_mut() {
@@ -114,7 +124,7 @@ pub fn apply_scrim_to_being_dragged(
 }
 
 /// Checks if the dragging move would be valid. If not, tints the ghost red.
-pub fn check_ghost_placement_validity(
+pub fn update_dragged_ghost_item_validity(
     grid: Res<GridConfig>,
     mut query_ghost: Query<(&mut DragGhost, &mut Sprite, &Coords)>,
     query_items: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
@@ -138,7 +148,7 @@ pub fn check_ghost_placement_validity(
 /// - Mark the mouse as no longer in the middle of a drag operation.
 /// - Broadcast a DragEvent.
 pub fn check_drag_end(
-    mut writer: EventWriter<DragEvent>,
+    mut writer: EventWriter<DragEndedEvent>,
     mut query_mouse: Query<&mut Mouse>,
     input: Res<Input<MouseButton>>,
     query_ghost: Query<&Coords, With<DragGhost>>,
@@ -149,25 +159,25 @@ pub fn check_drag_end(
     }
     mouse.is_dragging = false;
     let ghost_coords = query_ghost.single();
-    writer.send(DragEvent(ghost_coords.pos));
+    writer.send(DragEndedEvent(ghost_coords.pos));
 }
 
-pub fn process_drag_event(
+pub fn process_drag_ended_event(
     mut commands: Commands,
-    mut events: EventReader<DragEvent>,
+    mut events: EventReader<DragEndedEvent>,
     query_ghost: Query<(Entity, &DragGhost)>,
     mut query_item: Query<(Entity, &mut Transform, &mut Coords), With<BeingDragged>>,
 ) {
     for event in events.iter() {
-        debug!("Received drag item event: {:?}", event);
-        let DragEvent(end) = event;
+        debug!("Received drag ended event: {:?}", event);
+        let end_pos = event.0;
         if let Ok((entity, mut transform, mut coords)) = query_item.get_single_mut() {
             let (ghost_entity, ghost) = query_ghost.single();
             commands.entity(ghost_entity).despawn_recursive();
             commands.entity(entity).remove::<BeingDragged>();
             if ghost.placement_valid {
-                coords.pos.x = end.x;
-                coords.pos.y = end.y;
+                coords.pos.x = end_pos.x;
+                coords.pos.y = end_pos.y;
                 transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
                 transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
             }

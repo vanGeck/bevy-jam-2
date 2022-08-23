@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::game::camera::GameCamera;
 use crate::game::CleanupOnGameplayEnd;
 
+/// === Components ===
 #[derive(Component, Default)]
 pub struct Mouse {
     /// Position in world coordinates.
@@ -19,33 +20,22 @@ pub struct Mouse {
     pub out_of_bounds: bool,
 }
 
-pub fn configure_cursor(mut commands: Commands) {
-    // let window = windows.get_primary_mut().unwrap();
-    // window.set_cursor_visibility(false);
+/// === Systems ===
+pub fn setup_mouse(mut commands: Commands) {
     commands
         .spawn_bundle(SpatialBundle::default())
-        // .spawn_bundle(SpriteSheetBundle {
-        //     sprite: TextureAtlasSprite {
-        //         custom_size: Some(Dimensions::new(2, 2).as_vec2()),
-        //         index: 0,
-        //         ..default()
-        //     },
-        //     texture_atlas: assets.atlas(&TextureId::Cursor),
-        //     transform: Transform::from_xyz(0., 0., Depth::Cursor.z()),
-        //     ..Default::default()
-        // })
         .insert(Name::new("MouseCursor"))
         .insert(Mouse::default())
         .insert(CleanupOnGameplayEnd);
 }
 
-pub fn reset_cursor(mut windows: ResMut<Windows>) {
+pub fn reset_mouse(mut windows: ResMut<Windows>) {
     let window = windows.get_primary_mut().unwrap();
     window.set_cursor_visibility(true);
     window.set_cursor_icon(CursorIcon::Default);
 }
 
-pub fn calc_mouse_pos(
+pub fn update_mouse_pos(
     windows: Res<Windows>,
     mut query_mouse: Query<(&mut Mouse, &mut Transform)>,
     query_cam: Query<(&Camera, &GlobalTransform), With<GameCamera>>,
@@ -79,14 +69,16 @@ pub fn calc_mouse_pos(
     }
 }
 
-pub fn set_cursor_appearance(mut windows: ResMut<Windows>, query: Query<&Mouse>) {
+pub fn update_mouse_cursor_icon(mut windows: ResMut<Windows>, query: Query<&Mouse>) {
     let mouse = query.single();
     let window = windows.get_primary_mut().unwrap();
-    window.set_cursor_icon(if mouse.is_dragging {
-        CursorIcon::Grabbing
-    } else if mouse.can_drag {
-        CursorIcon::Move
-    } else {
-        CursorIcon::Default
-    });
+    window.set_cursor_icon(
+        if mouse.is_dragging {
+            CursorIcon::Grabbing
+        } else if mouse.can_drag {
+            CursorIcon::Move
+        } else {
+            CursorIcon::Default
+        }
+    );
 }

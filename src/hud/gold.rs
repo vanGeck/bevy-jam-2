@@ -10,6 +10,7 @@ use bevy::ui::Style;
 
 use crate::game::{CleanupOnGameplayEnd, Player};
 
+/// === Components ===
 #[derive(Component, Default)]
 pub struct Gold {
     amount: i32,
@@ -20,7 +21,6 @@ impl Gold {
     pub fn add(&mut self, amount: i32) {
         self.amount += amount;
     }
-
     pub fn remove(&mut self, amount: i32) {
         self.amount -= amount;
     }
@@ -34,6 +34,7 @@ pub struct GoldText;
 #[derive(Component)]
 pub struct ColorText;
 
+/// === Systems ===
 pub fn setup_gold(mut commands: Commands, asset_server: Res<AssetServer>) {
     // Text with multiple sections
     commands
@@ -57,23 +58,23 @@ pub fn setup_gold(mut commands: Commands, asset_server: Res<AssetServer>) {
                     },
                 ),
             ])
-            .with_text_alignment(TextAlignment::TOP_LEFT)
-            .with_style(Style {
-                align_self: AlignSelf::FlexEnd,
-                position_type: PositionType::Absolute,
-                position: UiRect {
-                    right: Val::Px(15.),
-                    top: Val::Px(15.),
+                .with_text_alignment(TextAlignment::TOP_LEFT)
+                .with_style(Style {
+                    align_self: AlignSelf::FlexEnd,
+                    position_type: PositionType::Absolute,
+                    position: UiRect {
+                        right: Val::Px(15.),
+                        top: Val::Px(15.),
+                        ..default()
+                    },
                     ..default()
-                },
-                ..default()
-            }),
+                }),
         )
         .insert(GoldText)
         .insert(CleanupOnGameplayEnd);
 }
 
-pub fn gold_update_system(
+pub fn update_gold_timer(
     time: Res<Time>,
     mut text_query: Query<&mut Text, With<GoldText>>,
     mut player: ResMut<Player>,
