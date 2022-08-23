@@ -47,9 +47,8 @@ pub fn spawn_item_timer_system(
                 }
             }
         }
-        match free_coords {
-            Some(_) => spawn.send(SpawnItemEvent::new(item, free_coords.unwrap())),
-            None => (),
+        if let Some(coords) = free_coords {
+            spawn.send(SpawnItemEvent::new(item, coords))
         };
     }
 }
