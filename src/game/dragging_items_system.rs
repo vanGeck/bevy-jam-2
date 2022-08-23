@@ -147,12 +147,15 @@ pub fn update_dragged_ghost_item_validity(
 
         let possible_overlapped_item_result = query_possible_overlapped_items.iter().find(|(_, _, overlapped_item_coords)| ghost_coords.overlaps(overlapped_item_coords));
         if let Some((overlapped_entity, overlapped_item, _)) = possible_overlapped_item_result {
+            println!("overlapped_item: {:?}", overlapped_item);
             if let Ok((being_dragged_entity, being_dragged_item)) = query_being_dragged_item.get_single() {
+                println!("being_dragged_item: {:?}", being_dragged_item);
                 let overlapped_item_id = &overlapped_item.id;
                 let being_dragged_item_id = &being_dragged_item.id;
                 // Check for possible recipes
                 let possible_recipe = try_get_recipe(&recipesData, being_dragged_item_id.clone(), overlapped_item_id.clone());
                 if let Some(recipe) = possible_recipe {
+                    println!("Found recipe: {:?}", recipe);
                     ghost.placement_valid = true;
                     ghost_sprite.color = Color::rgba(0., 0., 1., 0.5);
                     commands.entity(being_dragged_entity)
@@ -170,6 +173,7 @@ pub fn update_dragged_ghost_item_validity(
                             quantity: 1,
                         });
                 } else {
+                    println!("No recipe found"); // this is print is getting called, but the placement is still allowed and the item doesn't turn red.
                     ghost.placement_valid = false;
                     ghost_sprite.color = Color::rgba(1., 0., 0., 0.5);
                 }
