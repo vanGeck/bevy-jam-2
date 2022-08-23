@@ -1,12 +1,14 @@
 use bevy::prelude::*;
 
 use crate::config::config_grid::GridConfig;
+use crate::config::data_recipes::RecipesData;
 use crate::game::items::Item;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
 use crate::mouse::Mouse;
 use crate::positioning::Coords;
 use crate::positioning::Depth;
 use crate::positioning::Pos;
+use super::combining_items_system::*;
 
 /// === Events ===
 
@@ -109,7 +111,7 @@ pub fn update_dragged_ghost_item_position(
 }
 
 // Jacques: I don't know if this needs to be run on every frame as it's own system,
-// perhaps we can move this logic to the check drag begin and end systems.
+// perhaps we can move this logic to the check drag begin and end systems?
 /// Apply a dark tint to the item that is being dragged.
 pub fn update_dragged_item_tint(
     mut query: Query<(&mut Sprite, Option<&BeingDragged>), With<Item>>,
@@ -126,20 +128,42 @@ pub fn update_dragged_item_tint(
 /// Checks if the dragging move would be valid. If not, tints the ghost red.
 pub fn update_dragged_ghost_item_validity(
     grid: Res<GridConfig>,
-    mut query_ghost: Query<(&mut DragGhost, &mut Sprite, &Coords)>,
-    query_items: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
+    mut query_ghost: Query<(&mut DragGhost, &mut Sprite, &Coords)>, // the ghost of the item that we are dragging
+    query_possible_overlapped_items: Query<(&Coords, &Item), Without<BeingDragged>>, // other items in the grid
+    query_being_dragged_item: Query<&Item, With<BeingDragged>>, // this is the item that we are dragging
+    recipesData: Res<RecipesData>,
 ) {
-    if let Ok((mut ghost, mut sprite, coords)) = query_ghost.get_single_mut() {
-        let conflicts_with_item = query_items.iter().any(|item| coords.overlaps(item));
-        if !conflicts_with_item
-            && (grid.inventory.encloses(coords) || grid.crafting.encloses(coords))
-        {
-            ghost.placement_valid = true;
-            sprite.color = Color::rgba(1., 1., 1., 0.5);
-        } else {
+    if let Ok((mut ghost, mut ghost_sprite, ghost_coords)) = query_ghost.get_single_mut() {
+        let is_inside_a_grid = grid.inventory.encloses(ghost_coords) ||
+            grid.crafting.encloses(ghost_coords);
+
+        if !is_inside_a_grid {
             ghost.placement_valid = false;
-            sprite.color = Color::rgba(1., 0., 0., 0.5);
+            ghost_sprite.color = Color::rgba(1., 0., 0., 0.5);
+            return;
         }
+
+        let possible_overlapped_item = query_possible_overlapped_items.iter().find(|(overlapped_item_coords, _)| ghost_coords.overlaps(overlapped_item_coords));
+        if let Some((_, overlapped_item)) = possible_overlapped_item {
+            if let Ok(being_dragged_item) = query_being_dragged_item.get_single() {
+                let overlapped_item_id = &overlapped_item.id;
+                let being_dragged_item_id = &being_dragged_item.id;
+                // Check if they can combine, else they can't place the item.
+
+                let can_combine = is_valid_recipe(&recipesData, being_dragged_item_id.clone(), overlapped_item_id.clone());
+
+                if let Some(recipe) = can_combine {
+                    // change to a different color, add Combine Component, remove the two items in that system, spawn a new item that is the result
+                } else {
+                    ghost.placement_valid = false;
+                    ghost_sprite.color = Color::rgba(1., 0., 0., 0.5);
+                }
+            }
+        }
+
+        // Good to move
+        ghost.placement_valid = true;
+        ghost_sprite.color = Color::rgba(1., 1., 1., 0.5);
     }
 }
 

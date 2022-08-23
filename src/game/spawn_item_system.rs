@@ -6,7 +6,7 @@ use crate::game::{AssetStorage, CleanupOnGameplayEnd};
 use crate::positioning::Depth;
 use crate::positioning::Pos;
 use crate::positioning::{Coords};
-use super::dragging::BeingDragged;
+use super::dragging_items_system::BeingDragged;
 
 /// === Resources ===
 pub struct ItemSpawnTimer(Timer);

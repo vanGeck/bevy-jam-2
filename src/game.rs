@@ -3,7 +3,7 @@ use bevy_egui::EguiContext;
 use iyes_loopless::prelude::*;
 
 pub use assets::*;
-pub use combining_system::*;
+pub use combining_items_system::*;
 pub use components::*;
 pub use spawn_item_system::*;
 
@@ -11,7 +11,7 @@ use crate::audio::sound_event::SoundEvent;
 use crate::audio::audio::*;
 use crate::game::camera::create_camera;
 use crate::game::create_grid_system::create_grids;
-use crate::game::dragging::{
+use crate::game::dragging_items_system::{
     update_dragged_item_tint,
     check_drag_begin,
     check_drag_end,
@@ -32,10 +32,10 @@ use crate::AppState;
 
 pub mod assets;
 pub mod camera;
-mod combining_system;
+mod combining_items_system;
 mod components;
 mod create_grid_system;
-mod dragging;
+mod dragging_items_system;
 pub mod items;
 pub mod recipes;
 mod spawn_item_system;
