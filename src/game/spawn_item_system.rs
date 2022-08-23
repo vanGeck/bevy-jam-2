@@ -1,14 +1,15 @@
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use super::components::Item;
 use crate::config;
 use crate::config::config_items::ItemsConfig;
 use crate::game::CleanupOnGameplayEnd;
-use crate::positioning::coordinates::Coordinates;
-use crate::positioning::depth::Depth;
-use crate::positioning::dimensions::Dimensions;
-use crate::positioning::position::Position;
+use crate::positioning::Coords;
+use crate::positioning::Depth;
+use crate::positioning::Dimens;
+use crate::positioning::Pos;
+
+use super::components::Item;
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 pub struct ItemData {
@@ -41,11 +42,11 @@ pub fn spawn_item_timer_system(
             width: item_data.width,
             height: item_data.height,
         };
-        let coordinates = Coordinates {
-            position: Position::new(0, 0),
-            dimensions: Dimensions::new(item.width, item.height),
+        let coords = Coords {
+            pos: Pos::new(0, 0),
+            dimens: Dimens::new(item.width, item.height),
         };
-        spawn.send(SpawnItemEvent::new(item, coordinates));
+        spawn.send(SpawnItemEvent::new(item, coords));
     }
 }
 
@@ -53,11 +54,11 @@ pub fn spawn_item_timer_system(
 #[derive(Debug)]
 pub struct SpawnItemEvent {
     item: Item,
-    coords: Coordinates,
+    coords: Coords,
 }
 
 impl SpawnItemEvent {
-    pub fn new(item: Item, coords: Coordinates) -> Self {
+    pub fn new(item: Item, coords: Coords) -> Self {
         SpawnItemEvent { item, coords }
     }
 }
@@ -78,13 +79,13 @@ pub fn spawn_item(
                 commands
                     .spawn_bundle(SpriteBundle {
                         sprite: Sprite {
-                            custom_size: Some(coords.dimensions.as_vec2()),
+                            custom_size: Some(coords.dimens.as_vec2()),
                             ..default()
                         },
                         texture: asset_server.load(sprite_path),
                         transform: Transform::from_xyz(
-                            coords.position.x as f32 + coords.dimensions.x as f32 * 0.5,
-                            coords.position.y as f32 + coords.dimensions.y as f32 * 0.5,
+                            coords.pos.x as f32 + coords.dimens.x as f32 * 0.5,
+                            coords.pos.y as f32 + coords.dimens.y as f32 * 0.5,
                             Depth::Item.z(),
                         ),
                         ..Default::default()

@@ -3,15 +3,15 @@ use bevy::prelude::*;
 use crate::config::config_grid::GridConfig;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, Item, SpriteType};
 use crate::mouse::Mouse;
-use crate::positioning::coordinates::Coordinates;
-use crate::positioning::depth::Depth;
-use crate::positioning::position::Position;
+use crate::positioning::Coords;
+use crate::positioning::Depth;
+use crate::positioning::Pos;
 
 /// Broadcast this event when completing a dragging operation.
 /// The entity that is being dragged still has the BeingDragged component.
 /// The Pos is the target position that the item is moved towards.
 #[derive(Debug)]
-pub struct DragEvent(Position);
+pub struct DragEvent(Pos);
 
 // TODO: Use this??
 #[derive(Component)]
@@ -27,7 +27,7 @@ pub struct BeingDragged;
 pub struct DragGhost {
     /// Difference between where the cursor is and where the DragGhost's bottom-left corner is.
     /// Accounts for cases where the player didn't start the dragging on the bottom-left corner.
-    cursor_delta: Position,
+    cursor_delta: Pos,
     placement_valid: bool,
 }
 
@@ -44,13 +44,13 @@ pub fn check_drag_begin(
     asset_server: Res<AssetServer>,
     input: Res<Input<MouseButton>>,
     mut query_mouse: Query<&mut Mouse>,
-    query: Query<(&Coordinates, Entity, &Item)>,
+    query: Query<(&Coords, Entity, &Item)>,
 ) {
     let mut mouse = query_mouse.single_mut();
     if mouse.is_dragging {
         return;
     }
-    let hovered_over_cell = Position::from(mouse.position);
+    let hovered_over_cell = Pos::from(mouse.position);
     if !input.just_pressed(MouseButton::Left) {
         mouse.can_drag = query
             .iter()
@@ -64,7 +64,7 @@ pub fn check_drag_begin(
                 .spawn_bundle(SpriteBundle {
                     sprite: Sprite {
                         color: Color::rgba(1., 1., 1., 0.5),
-                        custom_size: Some(coords.dimensions.as_vec2()),
+                        custom_size: Some(coords.dimens.as_vec2()),
                         ..default()
                     },
                     texture: asset_server.load(
@@ -73,15 +73,15 @@ pub fn check_drag_begin(
                             .join(&item.sprite_path),
                     ),
                     transform: Transform::from_xyz(
-                        coords.position.x as f32 + coords.dimensions.x as f32 * 0.5,
-                        coords.position.y as f32 + coords.dimensions.y as f32 * 0.5,
+                        coords.pos.x as f32 + coords.dimens.x as f32 * 0.5,
+                        coords.pos.y as f32 + coords.dimens.y as f32 * 0.5,
                         Depth::FloatingItem.z(),
                     ),
                     ..Default::default()
                 })
                 .insert(coords.clone())
                 .insert(DragGhost {
-                    cursor_delta: coords.position - hovered_over_cell,
+                    cursor_delta: coords.pos - hovered_over_cell,
                     ..default()
                 })
                 .insert(CleanupOnGameplayEnd);
@@ -93,13 +93,13 @@ pub fn check_drag_begin(
 /// Move the item ghost with the mouse, but in discrete increments, always snapping to the grid.
 pub fn set_ghost_position(
     mut query_mouse: Query<&mut Mouse>,
-    mut query: Query<(&mut Transform, &mut Coordinates, &DragGhost)>,
+    mut query: Query<(&mut Transform, &mut Coords, &DragGhost)>,
 ) {
     let mouse = query_mouse.single_mut();
     if let Ok((mut transform, mut coords, ghost)) = query.get_single_mut() {
-        coords.position = Position::from(mouse.position) + ghost.cursor_delta;
-        transform.translation.x = coords.position.x as f32 + coords.dimensions.x as f32 * 0.5;
-        transform.translation.y = coords.position.y as f32 + coords.dimensions.y as f32 * 0.5;
+        coords.pos = Pos::from(mouse.position) + ghost.cursor_delta;
+        transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
+        transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
     }
 }
 
@@ -119,8 +119,8 @@ pub fn apply_scrim_to_being_dragged(
 /// Checks if the dragging move would be valid. If not, tints the ghost red.
 pub fn check_ghost_placement_validity(
     grid: Res<GridConfig>,
-    mut query_ghost: Query<(&mut DragGhost, &mut Sprite, &Coordinates)>,
-    query_items: Query<&Coordinates, (With<Item>, Without<BeingDragged>)>,
+    mut query_ghost: Query<(&mut DragGhost, &mut Sprite, &Coords)>,
+    query_items: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
 ) {
     if let Ok((mut ghost, mut sprite, coords)) = query_ghost.get_single_mut() {
         let conflicts_with_item = query_items.iter().any(|item| coords.overlaps(item));
@@ -144,7 +144,7 @@ pub fn check_drag_end(
     mut writer: EventWriter<DragEvent>,
     mut query_mouse: Query<&mut Mouse>,
     input: Res<Input<MouseButton>>,
-    query_ghost: Query<&Coordinates, With<DragGhost>>,
+    query_ghost: Query<&Coords, With<DragGhost>>,
 ) {
     let mut mouse = query_mouse.single_mut();
     if !mouse.is_dragging || !input.just_released(MouseButton::Left) {
@@ -152,14 +152,14 @@ pub fn check_drag_end(
     }
     mouse.is_dragging = false;
     let ghost_coords = query_ghost.single();
-    writer.send(DragEvent(ghost_coords.position));
+    writer.send(DragEvent(ghost_coords.pos));
 }
 
 pub fn process_drag_event(
     mut commands: Commands,
     mut events: EventReader<DragEvent>,
     query_ghost: Query<(Entity, &DragGhost)>,
-    mut query_item: Query<(Entity, &mut Transform, &mut Coordinates), With<BeingDragged>>,
+    mut query_item: Query<(Entity, &mut Transform, &mut Coords), With<BeingDragged>>,
 ) {
     for event in events.iter() {
         debug!("Received drag item event: {:?}", event);
@@ -169,12 +169,10 @@ pub fn process_drag_event(
             commands.entity(ghost_entity).despawn_recursive();
             commands.entity(entity).remove::<BeingDragged>();
             if ghost.placement_valid {
-                coords.position.x = end.x;
-                coords.position.y = end.y;
-                transform.translation.x =
-                    coords.position.x as f32 + coords.dimensions.x as f32 * 0.5;
-                transform.translation.y =
-                    coords.position.y as f32 + coords.dimensions.y as f32 * 0.5;
+                coords.pos.x = end.x;
+                coords.pos.y = end.y;
+                transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
+                transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
             }
         }
     }

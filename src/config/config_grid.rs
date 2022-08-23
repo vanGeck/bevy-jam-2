@@ -6,14 +6,14 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
-use crate::positioning::coordinates::Coordinates;
+use crate::positioning::Coords;
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]
 pub struct GridConfig {
-    pub drop_in: Coordinates,
-    pub equipment: Coordinates,
-    pub crafting: Coordinates,
+    pub drop_in: Coords,
+    pub equipment: Coords,
+    pub crafting: Coords,
 }
 
 impl GridConfig {

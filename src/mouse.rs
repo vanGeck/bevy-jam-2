@@ -2,8 +2,8 @@ use bevy::prelude::*;
 
 use crate::game::camera::GameCamera;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, SpriteType};
-use crate::positioning::depth::Depth;
-use crate::positioning::dimensions::Dimensions;
+use crate::positioning::Depth;
+use crate::positioning::Dimens;
 
 #[derive(Component, Default)]
 pub struct Mouse {

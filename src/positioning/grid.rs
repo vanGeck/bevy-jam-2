@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use super::coordinates::Coordinates;
+use super::coordinates::Coords;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum TileType {
@@ -11,12 +11,12 @@ pub enum TileType {
 #[derive(Component, Debug, Clone)]
 pub struct Tile {
     index: usize,
-    coords: Coordinates,
+    coords: Coords,
     tile_type: TileType,
 }
 
 impl Tile {
-    pub fn new(index: usize, coords: Coordinates, tile_type: TileType) -> Self {
+    pub fn new(index: usize, coords: Coords, tile_type: TileType) -> Self {
         Tile {
             index,
             coords,

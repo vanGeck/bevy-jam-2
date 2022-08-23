@@ -1,14 +1,14 @@
 (
     drop_in: (
-        position: ((0, 16)),
-        dimensions: ((32, 16)),
+        pos: ((0, 16)),
+        dimens: ((32, 16)),
     ),
     equipment: (
-        position: ((0, 0)),
-        dimensions: ((32, 16)),
+        pos: ((0, 0)),
+        dimens: ((32, 16)),
     ),
     crafting: (
-        position: ((34, 0)),
-        dimensions: ((5, 5)),
+        pos: ((34, 0)),
+        dimens: ((5, 5)),
     ),
 )

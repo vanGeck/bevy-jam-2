@@ -9,37 +9,37 @@ use serde::{Deserialize, Serialize};
 /// Defines a width and height in terms of discrete grid coordinates.
 /// Wraps an IVec2, which works well together with bevy.
 #[derive(Deserialize, Serialize, Default, Copy, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Dimensions(pub IVec2);
+pub struct Dimens(pub IVec2);
 
-impl Dimensions {
+impl Dimens {
     #[must_use]
     pub fn new(x: i32, y: i32) -> Self {
-        Dimensions(IVec2::new(x, y))
+        Dimens(IVec2::new(x, y))
     }
 
     #[must_use]
     pub fn unit() -> Self {
-        Dimensions(IVec2::new(1, 1))
+        Dimens(IVec2::new(1, 1))
     }
 
     #[must_use]
     pub fn plus_x(self, x: i32) -> Self {
-        Dimensions::new(self.x + x, self.y)
+        Dimens::new(self.x + x, self.y)
     }
 
     #[must_use]
     pub fn plus_y(self, y: i32) -> Self {
-        Dimensions::new(self.x, self.y + y)
+        Dimens::new(self.x, self.y + y)
     }
 
     /// If you have got another Dimens, consider simply adding them together using the + operator.
     #[must_use]
     pub fn plus_xy(self, x: i32, y: i32) -> Self {
-        Dimensions::new(self.x + x, self.y + y)
+        Dimens::new(self.x + x, self.y + y)
     }
 }
 
-impl Deref for Dimensions {
+impl Deref for Dimens {
     type Target = IVec2;
 
     fn deref(&self) -> &Self::Target {
@@ -47,14 +47,14 @@ impl Deref for Dimensions {
     }
 }
 
-impl DerefMut for Dimensions {
+impl DerefMut for Dimens {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
 
 /// Order by x first, then y.
-impl PartialOrd<Self> for Dimensions {
+impl PartialOrd<Self> for Dimens {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         if self.x < other.x {
             Some(Ordering::Less)
@@ -70,24 +70,24 @@ impl PartialOrd<Self> for Dimensions {
     }
 }
 
-impl Ord for Dimensions {
+impl Ord for Dimens {
     fn cmp(&self, other: &Self) -> Ordering {
         self.partial_cmp(other).unwrap()
     }
 }
 
-impl Sub for Dimensions {
-    type Output = Dimensions;
+impl Sub for Dimens {
+    type Output = Dimens;
 
-    fn sub(self, other: Dimensions) -> Dimensions {
-        Dimensions::new(self.x - other.x, self.y - other.y)
+    fn sub(self, other: Dimens) -> Dimens {
+        Dimens::new(self.x - other.x, self.y - other.y)
     }
 }
 
-impl Add for Dimensions {
-    type Output = Dimensions;
+impl Add for Dimens {
+    type Output = Dimens;
 
-    fn add(self, other: Dimensions) -> Dimensions {
-        Dimensions::new(self.x + other.x, self.y + other.y)
+    fn add(self, other: Dimens) -> Dimens {
+        Dimens::new(self.x + other.x, self.y + other.y)
     }
 }

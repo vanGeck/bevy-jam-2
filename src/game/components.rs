@@ -1,16 +1,12 @@
 use bevy::prelude::*;
 
-use crate::{
-    hud::gold::Gold,
-    positioning::{coordinates::Coordinates, grid::Tile},
-};
-
 /// Deprecated
 #[derive(Component, Debug)]
 pub struct Grid2 {
-    pub coords: Coordinates,
+    pub coords: Coords,
     pub tiles: Vec<Tile>,
 }
+use crate::hud::gold::Gold;
 
 #[derive(Default)]
 pub struct Player {
