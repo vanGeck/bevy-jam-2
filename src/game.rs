@@ -1,3 +1,4 @@
+use std::time::Duration;
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
@@ -21,6 +22,7 @@ use crate::game::items::{Item, ItemId};
 use crate::positioning::{Coords, Dimens, Pos};
 
 use self::items::CraftItem;
+use crate::game::dungeonsim::{dungeon_text_test, DungeonState, init_dungeon};
 
 pub mod assets;
 pub mod camera;
@@ -28,6 +30,10 @@ mod combining_system;
 mod components;
 mod create_grid_system;
 pub mod dragging;
+mod dragging;
+mod item_spawner;
+mod spawn_grid;
+mod dungeonsim;
 pub mod items;
 pub mod recipes;
 mod spawn_item_system;
@@ -39,6 +45,7 @@ impl Plugin for GamePlugin {
         app.add_event::<SpawnItemEvent>()
             .add_event::<DragEvent>()
             .init_resource::<Player>()
+            .insert_resource(DungeonState{msg_cooldown: Timer::new(Duration::from_millis(3000), true), running: true })
             .add_enter_system_set(
                 AppState::InGame,
                 ConditionSet::new()
@@ -48,6 +55,8 @@ impl Plugin for GamePlugin {
                     .with_system(setup_spawn_item_timer)
                     .with_system(create_camera)
                     .with_system(create_grids)
+                    .with_system(configure_cursor)
+                    .with_system(init_dungeon)
                     .with_system(create_debug_items)
                     .into(),
             )
@@ -65,6 +74,7 @@ impl Plugin for GamePlugin {
                     .with_system(process_drag_event)
                     .with_system(combine_items_system)
                     .with_system(gold_update_system)
+                    .with_system(dungeon_text_test)
                     .with_system(animate)
                     .with_system(track_combine_button_hover)
                     .into(),

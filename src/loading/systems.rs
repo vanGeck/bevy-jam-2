@@ -13,6 +13,9 @@ use crate::config::data_recipes::RecipesData;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
+use crate::AppState;
+use crate::config::dungeon_params::DungeonParams;
+use crate::config::dungeon_texts::DungeonTexts;
 use crate::{AppState, WindowMode};
 
 pub fn load_configs(mut commands: Commands) {
@@ -21,6 +24,8 @@ pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(AudioConfig::load_from_file());
     commands.insert_resource(ItemsData::load_from_file());
     commands.insert_resource(RecipesData::load_from_file());
+    commands.insert_resource(DungeonTexts::load_from_file());
+    commands.insert_resource(DungeonParams::load_from_file());
 }
 
 pub fn load_assets(

@@ -1,0 +1,10 @@
+(
+  // Corridor
+  enter_room: [
+   "You enter a dark, silent corridor dug out in a rocky wall.",
+   "This damp passage smells weird. Falling water droplets splash somewhere far ahead.",
+   "Pieces of ancient sprung traps litter this corridor, along with some with equally ancient pieces of unfortunate souls.",
+   "This passage is so dusty, you can barely see anything in the torchlight. You sneeze, and the echo parrots you.",
+   "Thick cobwebs hang from the ceiling of the tunnel, flowing down onto the floor. Your footsteps are muffled by the soft, sticky fabric.",
+   ]
+)
