@@ -36,6 +36,7 @@ pub fn dungeon_text_test(texts: Res<DungeonTexts>, time: Res<Time>, mut state: R
 
 pub fn tick_dungeon(texts: Res<DungeonTexts>, time: Res<Time>, mut state: ResMut<DungeonState>) {
     if state.msg_cooldown.tick(time.delta()).just_finished() {
+        let cbt_state = state.combat_state.clone();
         let current_room_idx = state.current_room_idx as usize;
         if let Some(level) = &mut state.current_level {
             let room = &mut level.rooms[current_room_idx as usize];
@@ -51,7 +52,7 @@ pub fn tick_dungeon(texts: Res<DungeonTexts>, time: Res<Time>, mut state: ResMut
                 return;
             }
             if let Some(_) = &room.monster {
-                let mut cbt_state = state.combat_state.clone();
+                
                 if cbt_state == CombatState::Init {
                     info!("{}", pick_random_from_series(&texts.enemy_encounter));
                     state.combat_state = CombatState::InProgress;
