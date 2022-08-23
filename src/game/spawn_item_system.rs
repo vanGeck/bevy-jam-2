@@ -1,14 +1,12 @@
 use bevy::prelude::*;
-use iyes_loopless::state::NextState;
 
 use crate::config::config_grid::GridConfig;
 use crate::config::data_items::ItemsData;
 use crate::game::items::Item;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
+use crate::positioning::Coords;
 use crate::positioning::Depth;
 use crate::positioning::Pos;
-use crate::positioning::{Coords, Dimens};
-use crate::states::AppState;
 
 use super::dragging::BeingDragged;
 

@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy_egui::EguiContext;
 use iyes_loopless::prelude::*;
 
 pub use assets::*;
@@ -50,7 +49,6 @@ impl Plugin for GamePlugin {
             .add_system_set(
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    .with_system(draw_win_lose_placeholder_menu)
                     .with_system(spawn_item_timer_system)
                     .with_system(spawn_item)
                     .with_system(calc_mouse_pos)
@@ -83,26 +81,6 @@ pub enum GameResult {
 
 fn setup(mut audio: EventWriter<SoundEvent>) {
     audio.send(SoundEvent::Music(Some((MusicId::Placeholder, false))));
-}
-
-fn draw_win_lose_placeholder_menu(
-    mut commands: Commands,
-    mut audio: EventWriter<SoundEvent>,
-    mut egui_context: ResMut<EguiContext>,
-    mut result: ResMut<State<GameResult>>,
-) {
-    egui::Window::new("Gameplay").show(egui_context.ctx_mut(), |ui| {
-        if ui.button("Win").clicked() {
-            audio.send(SoundEvent::Sfx(SoundId::Placeholder));
-            commands.insert_resource(NextState(AppState::GameEnded));
-            result.replace(GameResult::Won).ok();
-        }
-        if ui.button("Lose").clicked() {
-            audio.send(SoundEvent::Sfx(SoundId::Placeholder));
-            commands.insert_resource(NextState(AppState::GameEnded));
-            result.replace(GameResult::Lost).ok();
-        }
-    });
 }
 
 pub fn despawn_gameplay_entities(

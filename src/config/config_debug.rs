@@ -10,6 +10,9 @@ use crate::config::file_utils::{get_config_default_dir, get_config_override_dir}
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DebugConfig {
+    /// Filters logs using the [`EnvFilter`] format
+    pub log_filter: String,
+    pub show_debug_window: bool,
     /// If true, the loader will bypass the menu and drop you straight into the game.
     /// Can be very handy for rapid testing, not having to click the play button every time.
     pub skip_straight_to_game: bool,
