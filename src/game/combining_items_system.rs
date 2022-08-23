@@ -1,7 +1,9 @@
+use bevy::prelude::*;
 use crate::Commands;
 use crate::config::data_recipes::RecipesData;
 use crate::game::items::{Item, ItemId};
-use crate::game::recipes::Recipe;
+use crate::game::recipes::{Ingredient, Recipe};
+use crate::positioning::Coords;
 
 
 /// === Helpers ===
@@ -23,6 +25,7 @@ pub fn try_get_recipe(data: &RecipesData, dragged_item_id: ItemId, over_item_id:
 
             if recipe_has_dragged_item && recipe_has_over_item {
                 recipe_clone = Some(recipe);
+                // is there some way to break out of the for_each loops here?
             }
 
             recipe_has_dragged_item = false;
@@ -34,4 +37,6 @@ pub fn try_get_recipe(data: &RecipesData, dragged_item_id: ItemId, over_item_id:
 }
 
 /// === Systems ===
-pub fn combine_items_system(mut commands: Commands) {}
+pub fn combine_items_system(mut commands: Commands, recipe_query: Query<(Entity, &Recipe, &Coords)>, ingredient_query: Query<(Entity, &Ingredient)>) {
+    // get the result item from the recipe, delete the entities that have ingredient components, create a spawn event for the result item at the coords of the recipe entity item (if space permits?).
+}
