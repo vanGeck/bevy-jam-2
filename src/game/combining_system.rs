@@ -23,7 +23,7 @@ impl Recipes {
         let mut recipe_has_dragged_item: bool = false;
         let mut recipe_has_over_item: bool = false;
 
-        let mut recipe_clone: &Recipe;
+        let mut recipe_clone: Option<&Recipe> = None;
 
         self.recipes.values().for_each(|recipe| {
             recipe.ingredients.iter().for_each(|ingredient| {
@@ -35,16 +35,15 @@ impl Recipes {
                 }
 
                 if recipe_has_dragged_item && recipe_has_over_item {
-                    recipe_clone = recipe;
+                    recipe_clone = Some(recipe);
                 }
+
+                recipe_has_dragged_item = false;
+                recipe_has_over_item = false;
             });
         });
 
-        if recipe_clone.is_some() {
-            Some(recipe_clone)
-        } else {
-            None
-        }
+        recipe_clone
     }
 }
 
