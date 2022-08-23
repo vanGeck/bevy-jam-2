@@ -7,8 +7,22 @@ pub struct Combatant {
     pub damage_bonus: i32
 }
 
+#[derive(Default, PartialEq, Eq, Copy, Clone)]
+pub enum CombatState {
+    #[default]
+    Init, 
+    InProgress,
+    EnemyDead,
+    HeroDead,
+    Ended
+}
+
 #[derive(Component)]
 pub struct Hero;
 
 #[derive(Component)]
 pub struct Enemy;
+
+pub fn combat_tick(){
+    
+}
