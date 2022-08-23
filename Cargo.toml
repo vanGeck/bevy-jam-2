@@ -1,5 +1,5 @@
 [package]
-name = "bevy-jam-2"
+name = "bag_goblin"
 version = "0.1.0"
 edition = "2021"
 resolver = "2"

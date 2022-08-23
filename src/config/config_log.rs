@@ -10,7 +10,8 @@ use crate::config::file_utils::{get_config_default_dir, get_config_override_dir}
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]
 pub struct LogConfig {
-    pub level: String,
+    /// Filters logs using the [`EnvFilter`] format
+    pub filter: String,
 }
 
 impl LogConfig {
