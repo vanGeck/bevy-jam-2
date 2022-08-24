@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use crate::game::TextureId;
 use crate::positioning::Pos;
 
+// Marker Component
 #[derive(Component)]
 pub struct CraftItem;
 

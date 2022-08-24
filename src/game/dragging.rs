@@ -166,15 +166,17 @@ pub fn process_drag_event(
             let (ghost_entity, ghost) = query_ghost.single();
             commands.entity(ghost_entity).despawn_recursive();
             commands.entity(entity).remove::<BeingDragged>();
-            if grid.crafting.encloses(&coords) {
-                commands.entity(entity).insert(CraftItem);
-            }
             if ghost.placement_valid {
                 coords.pos.x = end.x;
                 coords.pos.y = end.y;
                 transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
                 transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
             }
+            if grid.crafting.encloses(&coords) {
+                debug!("the item has been placed in the crafting area: {:?}", entity);
+                commands.entity(entity).insert(CraftItem);
+            }
+            // TODO: Remove CraftItem Component if moved into Backpack grid.
         }
     }
 }

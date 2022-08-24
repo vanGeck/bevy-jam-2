@@ -3,6 +3,10 @@ use crate::game::items::Item;
 use crate::game::recipes::Recipe;
 use crate::positioning::Coords;
 use bevy::prelude::*;
+use crate::config::config_grid::GridConfig;
+use crate::config::data_items::ItemsData;
+use crate::game::dragging::BeingDragged;
+use crate::game::SpawnItemEvent;
 
 use super::items::CraftItem;
 
@@ -11,37 +15,70 @@ pub struct CombineButton {
     pub coords: Coords,
 }
 
-pub fn combine(mut commands: Commands, craft_items: Query<Entity, With<CraftItem>>) {
-    //TODO: find_free_space in inventory, Spawn the new item there and despawn the craft_items
+// use events here so this doesn't run once a frame?
+pub fn combine_items_system(
+    mut commands: Commands,
+    crafting_items_query: Query<(Entity, &Item), With<CraftItem>>,
+    items_query: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
+    recipes_data: Res<RecipesData>,
+    items_data: Res<ItemsData>,
+    grid: Res<GridConfig>,
+    mut spawn_event_writer: EventWriter<SpawnItemEvent>,
+) {
+    let number_of_crafting_items = crafting_items_query.iter().count();
+    if number_of_crafting_items <= 1 { return; }
+
+    let mut items = Vec::new();
+
+    for (_, item) in crafting_items_query.iter() {
+        items.push(item.clone());
+    }
+
+    let possible_recipe = try_get_recipe(&recipes_data, &items[0], &items[1]);
+
+    debug!("found possible recipe: {:?}", possible_recipe);
+
+    if let Some(recipe) = possible_recipe {
+        if let Some((dimens, item)) = items_data.try_get_item(recipe.result) {
+            if let Some(free_coords) = grid.find_free_space(dimens, items_query) {
+                // Spawn the result of the recipe
+                spawn_event_writer.send((SpawnItemEvent::new(item, free_coords)));
+                // Delete the craft items entities
+                for (entity, _) in crafting_items_query.iter() {
+                    commands.entity(entity).despawn_recursive();
+                }
+            }
+        }
+    }
 }
 
 // Sorry the parameter names aren't the greatest here, over_item is the item that the dragged_item is currently 'hovering' over.
-pub fn is_valid_recipe(data: &RecipesData, dragged_item: Item, over_item: Item) -> Option<&Recipe> {
-    let dragged_item_id = dragged_item.id;
-    let over_item_id = over_item.id;
+pub fn try_get_recipe(data: &RecipesData, first_item: &Item, second_item: &Item) -> Option<Recipe> {
+    let mut recipe_has_first_item: bool = false;
+    let mut recipe_has_second_item: bool = false;
 
-    let mut recipe_has_dragged_item: bool = false;
-    let mut recipe_has_over_item: bool = false;
+    let mut possible_recipe: Option<Recipe> = None;
 
-    let mut recipe_clone: Option<&Recipe> = None;
+    if first_item.id == second_item.id {
+        return None;
+    }
 
     data.recipes.iter().for_each(|recipe| {
         recipe.ingredients.iter().for_each(|ingredient| {
-            if ingredient.item_id == dragged_item_id {
-                recipe_has_dragged_item = true;
+            if ingredient.item_id == first_item.id {
+                recipe_has_first_item = true;
             }
-            if ingredient.item_id == over_item_id {
-                recipe_has_over_item = true;
-            }
-
-            if recipe_has_dragged_item && recipe_has_over_item {
-                recipe_clone = Some(recipe);
+            if ingredient.item_id == second_item.id {
+                recipe_has_second_item = true;
             }
 
-            recipe_has_dragged_item = false;
-            recipe_has_over_item = false;
+            if recipe_has_first_item && recipe_has_second_item {
+                possible_recipe = Some(recipe.clone());
+            }
         });
+        recipe_has_first_item = false;
+        recipe_has_second_item = false;
     });
 
-    recipe_clone
+    possible_recipe
 }

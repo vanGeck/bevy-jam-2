@@ -13,6 +13,12 @@
             description: "Any liquid may be stored inside.",
             texture_id: Vial,
         )),
+        (((3, 2)), (
+            id: HealthPotion,
+            name: "HealthPotion",
+            description: "A potion to heal the hero!",
+            texture_id: Vial,
+        )),
         (((2, 2)), (
             id: TurtleHerb,
             name: "Turtle Herb",

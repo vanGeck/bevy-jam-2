@@ -17,6 +17,8 @@ use crate::game::dragging::{
 use crate::hud::gold::{gold_update_system, setup_gold};
 use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
 use crate::AppState;
+use crate::game::items::{Item, ItemId};
+use crate::positioning::{Coords, Dimens, Pos};
 
 use self::items::CraftItem;
 
@@ -46,12 +48,13 @@ impl Plugin for GamePlugin {
                     .with_system(setup_spawn_item_timer)
                     .with_system(create_camera)
                     .with_system(create_grids)
+                    .with_system(create_debug_items)
                     .into(),
             )
             .add_system_set(
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    .with_system(spawn_item_timer_system)
+                    // .with_system(spawn_item_timer_system)
                     .with_system(spawn_item)
                     .with_system(set_cursor_appearance)
                     .with_system(check_drag_begin)
@@ -60,6 +63,7 @@ impl Plugin for GamePlugin {
                     .with_system(check_ghost_placement_validity)
                     .with_system(check_drag_end)
                     .with_system(process_drag_event)
+                    .with_system(combine_items_system)
                     .with_system(gold_update_system)
                     .with_system(animate)
                     .with_system(track_combine_button_hover)
@@ -82,6 +86,7 @@ pub enum GameResult {
     Won,
 }
 
+// TODO: Move this to it's own system?
 fn setup(mut audio: EventWriter<SoundEvent>) {
     audio.send(SoundEvent::Music(Some((MusicId::Placeholder, false))));
 }
@@ -124,4 +129,57 @@ pub fn track_combine_button_hover(
     } else if let Ok((mut sprite, _, _)) = button.get_single_mut() {
         sprite.color = Color::rgba(0.2, 0.2, 0.2, 0.8);
     }
+}
+
+pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            id: ItemId::CandleStick,
+            texture_id: TextureId::CandleStick,
+            name: "".to_string(),
+            description: "".to_string(),
+            wearable: None,
+        },
+        Coords::new(Pos::new(10, 10), Dimens::new(1, 2)),
+    ));
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            id: ItemId::EmptyLantern,
+            texture_id: TextureId::EmptyLantern,
+            name: "".to_string(),
+            description: "".to_string(),
+            wearable: None,
+        },
+        Coords::new(Pos::new(5, 5), Dimens::new(2, 3)),
+    ));
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            id: ItemId::FireEssence,
+            texture_id: TextureId::FireEssence,
+            name: "".to_string(),
+            description: "".to_string(),
+            wearable: None,
+        },
+        Coords::new(Pos::new(15, 15), Dimens::new(1, 1)),
+    ));
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            id: ItemId::Vial,
+            texture_id: TextureId::Vial,
+            name: "".to_string(),
+            description: "".to_string(),
+            wearable: None,
+        },
+        Coords::new(Pos::new(20, 20), Dimens::new(3, 2)),
+    ));
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            id: ItemId::TurtleHerb,
+            texture_id: TextureId::TurtleHerb,
+            name: "".to_string(),
+            description: "".to_string(),
+            wearable: None,
+        },
+        Coords::new(Pos::new(25, 25), Dimens::new(2, 3)),
+    ));
 }
