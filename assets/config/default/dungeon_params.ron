@@ -1,0 +1,8 @@
+(
+    max_depth: 3,
+    chance_corridor: 0.15,
+    chance_empty: 0.35,
+    chance_fight: 0.50,
+    chance_fight_easy: 0.70,
+    chance_fight_hard: 0.30,
+)
