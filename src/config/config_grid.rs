@@ -24,6 +24,7 @@ pub struct GridConfig {
     pub lower_bar: Coords,
     pub crafting: Coords,
     pub equipped: EquipmentGrid,
+    pub combine: Coords,
 }
 
 #[derive(Deserialize, Serialize, Default, Debug)]

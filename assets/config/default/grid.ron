@@ -20,7 +20,10 @@
         pos: ((18, 2)),
         dimens: ((28, 4)),
     ),
-
+    combine: (
+        pos: ((48,2)),
+        dimens: ((14, 4)),
+    ),
     crafting: (
         pos: ((48, 8)),
         dimens: ((14, 8)),

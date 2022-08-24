@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::config_grid::GridConfig;
-use crate::game::items::Item;
+use crate::game::items::{CraftItem, Item};
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
 use crate::mouse::Mouse;
 use crate::positioning::Coords;
@@ -154,6 +154,7 @@ pub fn check_drag_end(
 
 pub fn process_drag_event(
     mut commands: Commands,
+    grid: Res<GridConfig>,
     mut events: EventReader<DragEvent>,
     query_ghost: Query<(Entity, &DragGhost)>,
     mut query_item: Query<(Entity, &mut Transform, &mut Coords), With<BeingDragged>>,
@@ -165,6 +166,9 @@ pub fn process_drag_event(
             let (ghost_entity, ghost) = query_ghost.single();
             commands.entity(ghost_entity).despawn_recursive();
             commands.entity(entity).remove::<BeingDragged>();
+            if grid.crafting.encloses(&coords) {
+                commands.entity(entity).insert(CraftItem);
+            }
             if ghost.placement_valid {
                 coords.pos.x = end.x;
                 coords.pos.y = end.y;

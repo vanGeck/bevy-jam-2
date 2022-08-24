@@ -18,6 +18,7 @@ impl AssetStorage {
     pub fn put_texture(&mut self, asset_type: TextureId, asset: Handle<Image>) {
         self.textures.insert(asset_type, asset);
     }
+
     pub fn texture(&self, asset_type: &TextureId) -> Handle<Image> {
         (*self
             .textures

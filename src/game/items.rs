@@ -4,6 +4,9 @@ use serde::{Deserialize, Serialize};
 use crate::game::TextureId;
 use crate::positioning::Pos;
 
+#[derive(Component)]
+pub struct CraftItem;
+
 #[derive(Component, Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
     pub id: ItemId,

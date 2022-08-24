@@ -6,7 +6,6 @@ use crate::game::items::Item;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
 use crate::positioning::Coords;
 use crate::positioning::Depth;
-use crate::positioning::Coords;
 
 use crate::game::dragging::BeingDragged;
 

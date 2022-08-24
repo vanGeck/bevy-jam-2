@@ -9,6 +9,8 @@ use crate::positioning::Dimens;
 use crate::positioning::{Coords, Pos};
 use crate::positioning::{Grid, GridCell};
 
+use super::CombineButton;
+
 pub fn create_grids(mut commands: Commands, config: Res<GridConfig>, assets: Res<AssetStorage>) {
     create_grid(&mut commands, &config.inventory);
     create_grid(&mut commands, &config.crafting);
@@ -90,6 +92,27 @@ pub fn create_grids(mut commands: Commands, config: Res<GridConfig>, assets: Res
             ..default()
         })
         .insert(Name::new("LowerBar"))
+        .insert(CleanupOnGameplayEnd);
+
+    commands
+        .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                color: Color::rgba(0.2, 0.2, 0.2, 0.8),
+                custom_size: Some(config.combine.dimens.as_vec2()),
+                ..default()
+            },
+
+            transform: Transform::from_xyz(
+                config.combine.pos.x as f32 + config.combine.dimens.x as f32 * 0.5,
+                config.combine.pos.y as f32 + config.combine.dimens.y as f32 * 0.5,
+                Depth::Grid.z(),
+            ),
+            ..default()
+        })
+        .insert(Name::new("Combine Trigger"))
+        .insert(CombineButton {
+            coords: config.combine,
+        })
         .insert(CleanupOnGameplayEnd);
 
     commands
