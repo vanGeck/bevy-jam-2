@@ -1,27 +1,34 @@
 ﻿use bevy::log::{debug, info};
+use bevy::prelude::Commands;
 use rand::Rng;
 use crate::config::dungeon_params::DungeonParams;
 use crate::default;
-use crate::game::dungeonsim::combat::Combatant;
+use crate::game::dungeonsim::combat::{Combatant, Enemy};
 use crate::game::dungeonsim::dungeon_components::{DungeonLevel, Room};
 
-pub fn generate_level(len: i32, params: &DungeonParams) -> DungeonLevel {
+pub fn generate_level(len: i32, params: &DungeonParams, mut cmd: &mut Commands) -> DungeonLevel {
     let mut rooms = Vec::<Room>::new();
+    let mut fights = Vec::<Combatant>::new();
     let mut rng = rand::thread_rng();
     
     rooms.push(generate_first_room());
+    fights.push(Combatant::default());
     
     for i in 1..(len-1) {
         let x = rng.gen_range(0.0..1.0);
         if x < params.chance_corridor {
-            rooms.push(generate_corridor())
+            rooms.push(generate_corridor());
+            fights.push(Combatant::default());
         } else if x < params.chance_empty + params.chance_corridor {
-            rooms.push(generate_empty())
+            rooms.push(generate_empty());
+            fights.push(Combatant::default());
         } else if x < params.chance_empty + params.chance_corridor + params.chance_fight {
-            rooms.push(generate_fight())
+            rooms.push(generate_fight());
+            fights.push(get_enemy());
         }
     }
     rooms.push(generate_last_room());
+    fights.push(Combatant::default());
 
     info!("Dungeon generation results: ");
     for s in 0..rooms.len(){
@@ -30,7 +37,8 @@ pub fn generate_level(len: i32, params: &DungeonParams) -> DungeonLevel {
 
     return DungeonLevel{
         depth: 0,
-        rooms
+        rooms,
+        enemies: fights
     }
 }
 
@@ -69,12 +77,16 @@ fn generate_fight() -> Room {
         door: true,
         description: true,
         search: true,
-        monster: Option::from(Combatant {
-            health: 10,
-            proficiency: 0,
-            damage_res: 0,
-            damage_bonus: 0
-        }),
+        combat: true,
         ..Default::default()
+    }
+}
+
+fn get_enemy() -> Combatant{
+    Combatant{
+        health: 8,
+        proficiency: 0,
+        damage_res: 0,
+        damage_bonus: 0
     }
 }

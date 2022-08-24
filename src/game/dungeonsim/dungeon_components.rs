@@ -1,27 +1,31 @@
 ﻿use bevy::log::{debug, info};
 use crate::game::dungeonsim::combat::Combatant;
 
-pub struct Room{
+pub struct Room {
     // Flags used in room processing. Determine message ordering and room types.
+    pub init: bool,
     pub corridor: bool,
     pub door: bool,
     pub description: bool,
     pub search: bool,
+    pub post_search: bool,
     pub end: bool,
     pub start: bool,
-    pub monster: Option<Combatant>,
+    pub combat: bool,
 }
 
 impl Default for Room {
     fn default() -> Self {
         Room {
+            init: true,
             corridor: false,
             door: false,
             description: false,
             search: false,
+            post_search: false,
             end: false,
             start: false,
-            monster: None,
+            combat: false
         }
     }
 }
@@ -35,7 +39,7 @@ impl Room {
             info!("{}","|First|".to_string());
         } else if self.end {
             info!("{}","|Last|".to_string());
-        } else if let Some(comb) = &self.monster {
+        } else if self.combat {
             info!("{}","|Fight|".to_string());
         } else {
             info!("{}","|Empty|".to_string());
@@ -45,5 +49,6 @@ impl Room {
 
 pub struct DungeonLevel {
     pub depth: i32,
-    pub rooms: Vec<Room>
+    pub rooms: Vec<Room>,
+    pub enemies: Vec<Combatant>
 }
