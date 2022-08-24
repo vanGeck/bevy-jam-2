@@ -7,28 +7,25 @@ pub use combining_items_system::*;
 pub use components::*;
 pub use spawn_item_system::*;
 
-use crate::audio::sound_event::SoundEvent;
+use crate::AppState;
 use crate::audio::audio::*;
+use crate::audio::sound_event::SoundEvent;
+use crate::config::config_grid::GridConfig;
+use crate::config::data_items::ItemsData;
 use crate::game::camera::create_camera;
 use crate::game::create_grid_system::create_grids;
-use crate::game::dragging_items_system::{
-    update_dragged_item_tint,
-    check_drag_begin,
-    check_drag_end,
-    update_dragged_ghost_item_validity,
-    process_drag_ended_event,
-    update_dragged_ghost_item_position,
-    DragEndedEvent,
-};
+use crate::game::dragging_items_system::{BeingDragged, check_drag_begin, check_drag_end, DragEndedEvent, process_drag_ended_event, update_dragged_ghost_item_position, update_dragged_ghost_item_validity, update_dragged_item_tint};
+use crate::game::items::{Item, ItemId};
+use crate::game::items::ItemId::CandleStick;
 use crate::hud::gold::{
-    update_gold_timer,
-    setup_gold};
+    setup_gold,
+    update_gold_timer};
 use crate::mouse::{
-    update_mouse_pos,
-    setup_mouse,
     reset_mouse,
-    update_mouse_cursor_icon};
-use crate::AppState;
+    setup_mouse,
+    update_mouse_cursor_icon,
+    update_mouse_pos};
+use crate::positioning::{Coords, Dimens, Pos};
 
 pub mod assets;
 pub mod camera;
@@ -52,6 +49,7 @@ impl Plugin for GamePlugin {
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
                     .with_system(create_camera)
+                    .with_system(create_debug_items)
                     .with_system(create_grids)
                     .with_system(setup_audio)
                     .with_system(setup_gold)
@@ -86,6 +84,25 @@ impl Plugin for GamePlugin {
                     .into(),
             );
     }
+}
+
+pub fn create_debug_items(
+    mut spawn: EventWriter<SpawnItemEvent>,
+) {
+    spawn.send(SpawnItemEvent::new(Item {
+        id: ItemId::CandleStick,
+        texture_id: TextureId::CandleStick,
+        name:"".to_string(),
+        description:"".to_string(),
+        wearable:None,
+    }, Coords::new(Pos::new(10, 10), Dimens::new(1, 2))));
+    spawn.send(SpawnItemEvent::new(Item {
+        id: ItemId::EmptyLantern,
+        texture_id: TextureId::EmptyLantern,
+        name:"".to_string(),
+        description:"".to_string(),
+        wearable:None,
+    }, Coords::new(Pos::new(5, 5), Dimens::new(2, 3))));
 }
 
 /// === Systems ===
