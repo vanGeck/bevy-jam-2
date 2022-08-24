@@ -11,7 +11,13 @@ use crate::positioning::{Grid, GridCell};
 
 use super::CombineButton;
 
-pub fn create_grids(mut commands: Commands, config: Res<GridConfig>, assets: Res<AssetStorage>) {
+// TODO: Jazz idk how to use AssetStorage for fonts
+pub fn create_grids(
+    mut commands: Commands,
+    config: Res<GridConfig>,
+    assets: Res<AssetStorage>,
+    asset_server: Res<AssetServer>,
+) {
     create_grid(&mut commands, &config.inventory);
     create_grid(&mut commands, &config.crafting);
 

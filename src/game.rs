@@ -15,8 +15,10 @@ use crate::game::dragging::{
     process_drag_event, set_ghost_position, DragEvent,
 };
 use crate::hud::gold::{gold_update_system, setup_gold};
-use crate::mouse::{reset_cursor, set_cursor_appearance};
+use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
 use crate::AppState;
+
+use self::items::CraftItem;
 
 pub mod assets;
 pub mod camera;
@@ -60,6 +62,7 @@ impl Plugin for GamePlugin {
                     .with_system(process_drag_event)
                     .with_system(gold_update_system)
                     .with_system(animate)
+                    .with_system(track_combine_button_hover)
                     .into(),
             )
             .add_exit_system_set(
@@ -92,4 +95,33 @@ pub fn despawn_gameplay_entities(
         cmd.entity(e).despawn_recursive();
     }
     audio.send(SoundEvent::KillAllMusic);
+}
+
+// This feels overkill, with a set window size we could use regular UI entities instead that
+// come with the interactions component premade
+pub fn track_combine_button_hover(
+    mut audio: EventWriter<SoundEvent>,
+    input: Res<Input<MouseButton>>,
+    query_mouse: Query<&Mouse>,
+    mut button: Query<(&mut Sprite, &Transform, &CombineButton)>,
+) {
+    let mouse = query_mouse.single();
+    let mouse_hovers_over_button = button.get_single().map_or(false, |(_, transform, button)| {
+        mouse.position.x > transform.translation.x - button.coords.dimens.x as f32 * 0.5
+            && mouse.position.x < transform.translation.x + button.coords.dimens.x as f32 * 0.5
+            && mouse.position.y > transform.translation.y - button.coords.dimens.y as f32 * 0.5
+            && mouse.position.y < transform.translation.y + button.coords.dimens.y as f32 * 0.5
+    });
+
+    if mouse_hovers_over_button && input.just_pressed(MouseButton::Left) {
+        audio.send(SoundEvent::Sfx(SoundId::Placeholder));
+        if let Ok((mut sprite, _, _)) = button.get_single_mut() {
+            if mouse_hovers_over_button {
+                sprite.color = Color::rgba(255.0, 255.0, 255.0, 0.8);
+            }
+        }
+        // TODO: Check is_valid_recipe with craft_items, combine()
+    } else if let Ok((mut sprite, _, _)) = button.get_single_mut() {
+        sprite.color = Color::rgba(0.2, 0.2, 0.2, 0.8);
+    }
 }
