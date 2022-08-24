@@ -7,8 +7,9 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
-use crate::game::items::EquipmentSlot;
-use crate::positioning::Coords;
+use crate::game::dragging::BeingDragged;
+use crate::game::items::{EquipmentSlot, Item};
+use crate::positioning::{Coords, Dimens, Pos};
 
 #[derive(Deserialize, Serialize, Default, Debug)]
 #[serde(deny_unknown_fields)]
@@ -48,6 +49,28 @@ impl GridConfig {
         } else {
             load_from_path(&get_config_default_dir().join("grid.ron"))
         }
+    }
+
+    pub fn find_free_space(
+        &self,
+        dimens: Dimens,
+        items_query: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
+    ) -> Option<Coords> {
+        for y in 0..self.inventory.dimens.y {
+            for x in 0..self.inventory.dimens.x {
+                let coords = Coords {
+                    pos: Pos::new(x, y),
+                    dimens,
+                };
+
+                let overlap_conflict = items_query.iter().any(|item| coords.overlaps(item));
+                let bound_conflict = !self.inventory.encloses(&coords);
+                if !overlap_conflict && !bound_conflict {
+                    return Some(coords);
+                }
+            }
+        }
+        None
     }
 }
 

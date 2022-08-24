@@ -23,7 +23,7 @@ pub mod camera;
 mod combining_system;
 mod components;
 mod create_grid_system;
-mod dragging;
+pub mod dragging;
 pub mod items;
 pub mod recipes;
 mod spawn_item_system;
