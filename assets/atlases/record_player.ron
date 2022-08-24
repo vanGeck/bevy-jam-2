@@ -1,5 +1,5 @@
 (
-    texture: "sheet_cursor.png",
+    texture: "sheet_record_player.png",
     tile_size: (32., 32.),
     columns: 2,
     rows: 1,

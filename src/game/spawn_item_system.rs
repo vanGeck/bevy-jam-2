@@ -1,18 +1,14 @@
-use bevy::prelude::*;
+use super::dragging_items_system::BeingDragged;
 use crate::config::config_grid::GridConfig;
 use crate::config::data_items::ItemsData;
 use crate::game::items::Item;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
+use crate::positioning::Coords;
 use crate::positioning::Depth;
-use crate::positioning::Pos;
-use crate::positioning::{Coords};
-use super::dragging_items_system::BeingDragged;
+use bevy::prelude::*;
 
-/// === Resources ===
 pub struct ItemSpawnTimer(Timer);
 
-/// === Events ===
-/// Broadcast this as an event to spawn an item.
 #[derive(Debug)]
 pub struct SpawnItemEvent {
     item: Item,
@@ -25,18 +21,17 @@ impl SpawnItemEvent {
     }
 }
 
-/// === Systems ===
 pub fn setup_spawn_item_timer(mut commands: Commands) {
-    commands.insert_resource(ItemSpawnTimer(Timer::from_seconds(5.0, true))); // Ref 1
+    commands.insert_resource(ItemSpawnTimer(Timer::from_seconds(2.0, true))); // Ref 1
 }
 
 pub fn update_spawn_item_timer(
     time: Res<Time>,
     grid: Res<GridConfig>,
-    items_query: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
     mut timer: ResMut<ItemSpawnTimer>,
     items_data: Res<ItemsData>,
     mut spawn: EventWriter<SpawnItemEvent>,
+    items_query: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
 ) {
     // update our timer with the time elapsed since the last update
     if timer.0.tick(time.delta()).just_finished() {
@@ -44,21 +39,8 @@ pub fn update_spawn_item_timer(
 
         // can we move this logic into the spawn_new_items system?
         let mut free_coords: Option<Coords> = None;
-        for y in 0..grid.inventory.dimens.y {
-            for x in 0..grid.inventory.dimens.x {
-                let coords = Coords {
-                    pos: Pos::new(x, y),
-                    dimens,
-                };
+        let free_coords = grid.find_free_space(dimens, items_query);
 
-                let overlap_conflict = items_query.iter().any(|item| coords.overlaps(item));
-                let bound_conflict = !grid.inventory.encloses(&coords);
-                if !overlap_conflict && !bound_conflict {
-                    free_coords = Some(coords);
-                    break;
-                }
-            }
-        }
         if let Some(coords) = free_coords {
             spawn.send(SpawnItemEvent::new(item, coords))
         };

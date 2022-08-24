@@ -2,14 +2,15 @@ use bevy::prelude::*;
 
 use crate::config::config_grid::GridConfig;
 use crate::config::data_recipes::RecipesData;
-use crate::game::items::Item;
-use crate::game::{AssetStorage, CleanupOnGameplayEnd};
+use crate::game::items::{CraftItem, Item};
 use crate::game::recipes::{Ingredient, Recipe};
+use crate::game::{AssetStorage, CleanupOnGameplayEnd};
 use crate::mouse::Mouse;
 use crate::positioning::Coords;
 use crate::positioning::Depth;
 use crate::positioning::Pos;
-use super::combining_items_system::*;
+
+use super::combining_system::try_get_recipe;
 
 /// === Events ===
 
@@ -17,7 +18,7 @@ use super::combining_items_system::*;
 /// The entity that is being dragged still has the BeingDragged component.
 /// The Pos is the target position that the item is moved towards.
 #[derive(Debug)]
-pub struct DragEndedEvent(Pos);
+pub struct DragEvent(Pos);
 
 /// === Components ===
 
@@ -105,7 +106,6 @@ pub fn update_dragged_ghost_item_position(
     let mouse = query_mouse.single_mut();
     if let Ok((mut transform, mut coords, ghost)) = query.get_single_mut() {
         coords.pos = Pos::from(mouse.position) + ghost.cursor_delta;
-        // Again, can someone please explain the math here to me? I am guessing it's to do with the snapping. - Jacques
         transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
         transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
     }
@@ -136,8 +136,8 @@ pub fn update_dragged_ghost_item_validity(
     recipes_data: Res<RecipesData>,
 ) {
     if let Ok((mut ghost, mut ghost_sprite, ghost_coords)) = query_ghost.get_single_mut() {
-        let is_inside_a_grid = grid.inventory.encloses(ghost_coords) ||
-            grid.crafting.encloses(ghost_coords);
+        let is_inside_a_grid =
+            grid.inventory.encloses(ghost_coords) || grid.crafting.encloses(ghost_coords);
 
         if !is_inside_a_grid {
             ghost.placement_valid = false;
@@ -145,30 +145,36 @@ pub fn update_dragged_ghost_item_validity(
             return;
         }
 
-        let possible_overlapped_item_result = query_possible_overlapped_items.iter().find(|(_, _, overlapped_item_coords)| ghost_coords.overlaps(overlapped_item_coords));
+        let possible_overlapped_item_result = query_possible_overlapped_items
+            .iter()
+            .find(|(_, _, overlapped_item_coords)| ghost_coords.overlaps(overlapped_item_coords));
         if let Some((overlapped_entity, overlapped_item, _)) = possible_overlapped_item_result {
-            if let Ok((being_dragged_entity, being_dragged_item)) = query_being_dragged_item.get_single() {
+            if let Ok((being_dragged_entity, being_dragged_item)) =
+                query_being_dragged_item.get_single()
+            {
                 let overlapped_item_id = &overlapped_item.id;
                 let being_dragged_item_id = &being_dragged_item.id;
                 // Check for possible recipes
-                let possible_recipe = try_get_recipe(&recipes_data, being_dragged_item_id.clone(), overlapped_item_id.clone());
+                let possible_recipe = try_get_recipe(
+                    &recipes_data,
+                    being_dragged_item_id.clone(),
+                    overlapped_item_id.clone(),
+                );
                 if let Some(recipe) = possible_recipe {
                     ghost.placement_valid = true;
                     ghost_sprite.color = Color::rgba(0., 0., 1., 0.5);
-                    commands.entity(being_dragged_entity)
-                        .insert(Ingredient {
-                            item_id: being_dragged_item_id.clone(),
-                            quantity: 1,
-                        });
+                    commands.entity(being_dragged_entity).insert(Ingredient {
+                        item_id: being_dragged_item_id.clone(),
+                        quantity: 1,
+                    });
                     commands.spawn().insert(Recipe {
                         result: being_dragged_item_id.clone(),
                         ingredients: vec![],
                     });
-                    commands.entity(overlapped_entity)
-                        .insert(Ingredient {
-                            item_id: overlapped_item_id.clone(),
-                            quantity: 1,
-                        });
+                    commands.entity(overlapped_entity).insert(Ingredient {
+                        item_id: overlapped_item_id.clone(),
+                        quantity: 1,
+                    });
                     return;
                 } else {
                     ghost.placement_valid = false;
@@ -189,7 +195,7 @@ pub fn update_dragged_ghost_item_validity(
 /// - Mark the mouse as no longer in the middle of a drag operation.
 /// - Broadcast a DragEvent.
 pub fn check_drag_end(
-    mut writer: EventWriter<DragEndedEvent>,
+    mut writer: EventWriter<DragEvent>,
     mut query_mouse: Query<&mut Mouse>,
     input: Res<Input<MouseButton>>,
     query_ghost: Query<&Coords, With<DragGhost>>,
@@ -200,12 +206,13 @@ pub fn check_drag_end(
     }
     mouse.is_dragging = false;
     let ghost_coords = query_ghost.single(); // this is crashing the game.
-    writer.send(DragEndedEvent(ghost_coords.pos));
+    writer.send(DragEvent(ghost_coords.pos));
 }
 
 pub fn process_drag_ended_event(
     mut commands: Commands,
-    mut events: EventReader<DragEndedEvent>,
+    mut events: EventReader<DragEvent>,
+    grid: Res<GridConfig>,
     query_ghost: Query<(Entity, &DragGhost)>,
     mut query_item: Query<(Entity, &mut Transform, &mut Coords), With<BeingDragged>>,
 ) {
@@ -216,6 +223,9 @@ pub fn process_drag_ended_event(
             let (ghost_entity, ghost) = query_ghost.single();
             commands.entity(ghost_entity).despawn_recursive();
             commands.entity(entity).remove::<BeingDragged>();
+            if grid.crafting.encloses(&coords) {
+                commands.entity(entity).insert(CraftItem);
+            }
             if ghost.placement_valid {
                 coords.pos.x = end_pos.x;
                 coords.pos.y = end_pos.y;

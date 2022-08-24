@@ -58,17 +58,17 @@ pub fn setup_gold(mut commands: Commands, asset_server: Res<AssetServer>) {
                     },
                 ),
             ])
-                .with_text_alignment(TextAlignment::TOP_LEFT)
-                .with_style(Style {
-                    align_self: AlignSelf::FlexEnd,
-                    position_type: PositionType::Absolute,
-                    position: UiRect {
-                        right: Val::Px(15.),
-                        top: Val::Px(15.),
-                        ..default()
-                    },
+            .with_text_alignment(TextAlignment::TOP_LEFT)
+            .with_style(Style {
+                align_self: AlignSelf::FlexEnd,
+                position_type: PositionType::Absolute,
+                position: UiRect {
+                    right: Val::Px(15.),
+                    top: Val::Px(15.),
                     ..default()
-                }),
+                },
+                ..default()
+            }),
         )
         .insert(GoldText)
         .insert(CleanupOnGameplayEnd);

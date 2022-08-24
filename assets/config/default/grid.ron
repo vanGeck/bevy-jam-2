@@ -1,20 +1,37 @@
 (
-    drop_in: (
-        pos: ((0, 16)),
-        dimens: ((32, 16)),
+    event_feed: (
+        pos: ((2, 8)),
+        dimens: ((14, 26)),
     ),
+    record_player: (
+        pos: ((2, 2)),
+        dimens: ((14, 4)),
+    ),
+
     inventory: (
-        pos: ((0, 0)),
-        dimens: ((32, 16)),
+        pos: ((18, 8)),
+        dimens: ((28, 12)),
+    ),
+    drop_in: (
+        pos: ((18, 20)),
+        dimens: ((28, 14)),
+    ),
+    lower_bar: (
+        pos: ((18, 2)),
+        dimens: ((28, 4)),
+    ),
+    combine: (
+        pos: ((48,2)),
+        dimens: ((14, 4)),
     ),
     crafting: (
-        pos: ((34, 0)),
-        dimens: ((6, 6)),
+        pos: ((48, 8)),
+        dimens: ((14, 8)),
     ),
     equipped: (
         coords: (
-            pos: ((33, 7)),
-            dimens: ((8, 13)),
+            pos: ((48, 18)),
+            dimens: ((14, 16)),
         ),
         slots: {
             Helmet: (

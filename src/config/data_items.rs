@@ -34,7 +34,10 @@ impl ItemsData {
     }
 
     pub fn get_item(&self, item_id: ItemId) -> Option<(Dimens, Item)> {
-        self.items.iter().find(|(dimens, item)| item.id == item_id).cloned()
+        self.items
+            .iter()
+            .find(|(dimens, item)| item.id == item_id)
+            .cloned()
     }
 }
 

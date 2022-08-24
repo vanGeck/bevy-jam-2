@@ -23,6 +23,13 @@ pub fn log_state_changes(state: Res<CurrentState<AppState>>) {
     }
 }
 
+pub fn delete_all_entities(mut commands: Commands, query: Query<Entity>) {
+    info!("Deleting all entities...");
+    for entity in query.iter() {
+        commands.entity(entity).despawn_recursive();
+    }
+}
+
 pub fn handle_escape(
     mut commands: Commands,
     mut exit: EventWriter<AppExit>,

@@ -3,7 +3,6 @@ use std::path::PathBuf;
 
 use bevy::asset::LoadState;
 use bevy::prelude::*;
-use bevy_egui::EguiContext;
 use iyes_loopless::prelude::NextState;
 
 use crate::config::config_audio::AudioConfig;
@@ -15,14 +14,6 @@ use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
 use crate::{AppState, WindowMode};
-
-// This is a global look for egui
-pub fn configure_ui_look(mut egui_ctx: ResMut<EguiContext>) {
-    egui_ctx.ctx_mut().set_visuals(egui::Visuals {
-        window_rounding: 0.0.into(),
-        ..Default::default()
-    });
-}
 
 pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(GridConfig::load_from_file());

@@ -28,7 +28,7 @@ impl AssetStorage {
                 self.textures.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-            .clone()
+        .clone()
     }
 
     pub fn put_atlas(&mut self, asset_type: TextureId, asset: Handle<TextureAtlas>) {
@@ -44,7 +44,7 @@ impl AssetStorage {
                 self.atlases.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-            .clone()
+        .clone()
     }
 
     pub fn put_sound(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
@@ -108,8 +108,12 @@ pub struct AtlasId(pub TextureId, pub usize);
 pub enum TextureId {
     /// Fallback sprite. Will be used if the intended sprite failed to load.
     NotFound,
+    /// Large image for the menu screen
+    Backpack,
+    BackpackFlap,
     /// Unused at the moment, but might be used later.
     Cursor,
+    RecordPlayer,
     Croissant,
     Athelas,
     // ^ what is an Athelas? Atlas? - Jacques

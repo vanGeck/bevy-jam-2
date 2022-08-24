@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 use crate::game::camera::GameCamera;
-use crate::game::CleanupOnGameplayEnd;
 
 /// === Components ===
 #[derive(Component, Default)]
@@ -25,8 +24,7 @@ pub fn setup_mouse(mut commands: Commands) {
     commands
         .spawn_bundle(SpatialBundle::default())
         .insert(Name::new("MouseCursor"))
-        .insert(Mouse::default())
-        .insert(CleanupOnGameplayEnd);
+        .insert(Mouse::default());
 }
 
 pub fn reset_mouse(mut windows: ResMut<Windows>) {
@@ -72,13 +70,11 @@ pub fn update_mouse_pos(
 pub fn update_mouse_cursor_icon(mut windows: ResMut<Windows>, query: Query<&Mouse>) {
     let mouse = query.single();
     let window = windows.get_primary_mut().unwrap();
-    window.set_cursor_icon(
-        if mouse.is_dragging {
-            CursorIcon::Grabbing
-        } else if mouse.can_drag {
-            CursorIcon::Move
-        } else {
-            CursorIcon::Default
-        }
-    );
+    window.set_cursor_icon(if mouse.is_dragging {
+        CursorIcon::Grabbing
+    } else if mouse.can_drag {
+        CursorIcon::Move
+    } else {
+        CursorIcon::Default
+    });
 }
