@@ -102,8 +102,12 @@ pub struct AtlasId(pub TextureId, pub usize);
 pub enum TextureId {
     /// Fallback sprite. Will be used if the intended sprite failed to load.
     NotFound,
+    /// Large image for the menu screen
+    Backpack,
+    BackpackFlap,
     /// Unused at the moment, but might be used later.
     Cursor,
+    RecordPlayer,
     Croissant,
     Athelas,
     HealthPotion,

@@ -2,6 +2,7 @@
 (
     textures: {
         NotFound: "not_found.png",
+        Backpack: "backpack.png",
         Croissant: "3x2_croissant.png",
         Athelas: "2x2_turtle_herb.png",
         // HealthPotion: "??.png",
@@ -17,6 +18,8 @@
     atlases: {
         NotFound: "not_found.ron",
         Cursor: "cursor.ron",
+        RecordPlayer: "record_player.ron",
+        BackpackFlap: "backpack_flap.ron",
     },
     sound_effects: {
         Placeholder:"placeholder.ogg",

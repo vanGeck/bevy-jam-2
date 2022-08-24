@@ -3,7 +3,7 @@ use bevy::render::once_cell::sync::Lazy;
 use bevy::render::render_graph::RenderGraph;
 use bevy::render::RenderApp;
 use bevy::window::{CreateWindow, PresentMode, WindowId};
-use bevy_egui::{EguiContext, EguiPlugin};
+use bevy_egui::EguiContext;
 use bevy_inspector_egui::{WorldInspectorParams, WorldInspectorPlugin};
 use iyes_loopless::prelude::{ConditionSet, NextState};
 

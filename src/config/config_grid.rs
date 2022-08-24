@@ -13,11 +13,14 @@ use crate::positioning::Coords;
 #[derive(Deserialize, Serialize, Default, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct GridConfig {
+    pub event_feed: Coords,
+    pub record_player: Coords,
     /// An invisible grid above the inventory grid, this is where new items spawn in.
     pub drop_in: Coords,
     /// This is where items are stored.
     pub inventory: Coords,
     /// A small crafting window used for complex recipes (of more than two ingredients).
+    pub lower_bar: Coords,
     pub crafting: Coords,
     pub equipped: EquipmentGrid,
 }

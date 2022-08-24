@@ -1,0 +1,6 @@
+(
+    texture: "sheet_backpack_flap.png",
+    tile_size: (378., 378.),
+    columns: 2,
+    rows: 1,
+)

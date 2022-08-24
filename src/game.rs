@@ -6,6 +6,7 @@ pub use combining_system::*;
 pub use components::*;
 pub use spawn_item_system::*;
 
+use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
 use crate::game::camera::create_camera;
 use crate::game::create_grid_system::create_grids;
@@ -14,7 +15,7 @@ use crate::game::dragging::{
     process_drag_event, set_ghost_position, DragEvent,
 };
 use crate::hud::gold::{gold_update_system, setup_gold};
-use crate::mouse::{calc_mouse_pos, configure_cursor, reset_cursor, set_cursor_appearance};
+use crate::mouse::{reset_cursor, set_cursor_appearance};
 use crate::AppState;
 
 pub mod assets;
@@ -43,7 +44,6 @@ impl Plugin for GamePlugin {
                     .with_system(setup_spawn_item_timer)
                     .with_system(create_camera)
                     .with_system(create_grids)
-                    .with_system(configure_cursor)
                     .into(),
             )
             .add_system_set(
@@ -51,7 +51,6 @@ impl Plugin for GamePlugin {
                     .run_in_state(AppState::InGame)
                     .with_system(spawn_item_timer_system)
                     .with_system(spawn_item)
-                    .with_system(calc_mouse_pos)
                     .with_system(set_cursor_appearance)
                     .with_system(check_drag_begin)
                     .with_system(set_ghost_position)
@@ -60,6 +59,7 @@ impl Plugin for GamePlugin {
                     .with_system(check_drag_end)
                     .with_system(process_drag_event)
                     .with_system(gold_update_system)
+                    .with_system(animate)
                     .into(),
             )
             .add_exit_system_set(

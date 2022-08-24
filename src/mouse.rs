@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 use crate::game::camera::GameCamera;
-use crate::game::CleanupOnGameplayEnd;
 
 #[derive(Component, Default)]
 pub struct Mouse {
@@ -35,8 +34,7 @@ pub fn configure_cursor(mut commands: Commands) {
         //     ..Default::default()
         // })
         .insert(Name::new("MouseCursor"))
-        .insert(Mouse::default())
-        .insert(CleanupOnGameplayEnd);
+        .insert(Mouse::default());
 }
 
 pub fn reset_cursor(mut windows: ResMut<Windows>) {
