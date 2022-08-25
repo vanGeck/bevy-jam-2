@@ -17,6 +17,28 @@ pub struct Item {
     /// If this is an item that can be worn by the hero, which slot is it in and what is the
     /// offset in the equipment grid?
     pub wearable: Option<(EquipmentSlot, Pos)>,
+    pub stat_bonuses: Option<StatBonus>,
+}
+
+impl Default for Item {
+    fn default() -> Self {
+        Item {
+            id: ItemId::Vial,
+            name: "[EmptyItem]".to_string(),
+            description: "[EmptyDescription]".to_string(),
+            texture_id: TextureId::NotFound,
+            wearable: None,
+            stat_bonuses: Default::default()
+        }
+    }
+}
+
+#[derive(Default, Copy, Clone, Debug, Serialize, Deserialize)]
+pub struct StatBonus{
+    pub max_hp: i32,
+    pub damage: i32,
+    pub damage_res: i32,
+    pub combat_prof: i32,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
@@ -32,6 +54,14 @@ pub enum ItemId {
     LitLantern,
     FireEssence,
     MediumShield,
+    // Actual items
+    RedHerb,
+    GreenHerb,
+    VioletHerb,
+    EssenceMight,
+    EssenceVitality,
+    Essence
+    
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq, Hash)]

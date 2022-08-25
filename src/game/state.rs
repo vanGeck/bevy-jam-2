@@ -145,6 +145,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             name: "".to_string(),
             description: "".to_string(),
             wearable: None,
+            ..default()
         },
         Coords::new(Pos::new(10, 10), Dimens::new(1, 2)),
     ));
@@ -155,6 +156,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             name: "".to_string(),
             description: "".to_string(),
             wearable: None,
+            ..default()
         },
         Coords::new(Pos::new(5, 5), Dimens::new(2, 3)),
     ));
@@ -165,6 +167,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             name: "".to_string(),
             description: "".to_string(),
             wearable: None,
+            ..default()
         },
         Coords::new(Pos::new(15, 15), Dimens::new(1, 1)),
     ));
@@ -175,6 +178,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             name: "".to_string(),
             description: "".to_string(),
             wearable: None,
+            ..default()
         },
         Coords::new(Pos::new(20, 20), Dimens::new(3, 2)),
     ));
@@ -185,6 +189,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             name: "".to_string(),
             description: "".to_string(),
             wearable: None,
+            ..default()
         },
         Coords::new(Pos::new(25, 25), Dimens::new(2, 3)),
     ));
