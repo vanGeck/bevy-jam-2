@@ -14,7 +14,7 @@ pub fn setup_spawn_item_timer(mut commands: Commands) {
     commands.insert_resource(ItemSpawnTimer(Timer::from_seconds(2.0, true))); // Ref 1
 }
 
-pub fn spawn_item_timer_system(
+pub fn spawn_item_on_dungeon_event(
     time: Res<Time>,
     grid: Res<GridConfig>,
     mut timer: ResMut<ItemSpawnTimer>,

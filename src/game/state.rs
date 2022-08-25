@@ -5,7 +5,7 @@ use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
 use crate::game::event_handling::{
     handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
 };
-use crate::game::{apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity, combine_items_system, create_camera, create_grids, process_drag_event, set_ghost_position, setup_spawn_item_timer, spawn_item, AlbumId, CleanupOnGameplayEnd, CombineButton, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent, TextureId, process_drag_ended_event_into_inventory, spawn_item_timer_system};
+use crate::game::{apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity, combine_items_system, create_camera, create_grids, process_drag_event, set_ghost_position, setup_spawn_item_timer, spawn_item, AlbumId, CleanupOnGameplayEnd, CombineButton, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent, TextureId, process_drag_ended_event_into_inventory, spawn_item_on_dungeon_event};
 use crate::hud::gold::{gold_update_system, setup_gold};
 use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
 use crate::positioning::{Coords, Dimens, Pos};
@@ -42,7 +42,7 @@ impl Plugin for GamePlugin {
                     .run_in_state(AppState::InGame)
                     .with_system(setup)
                     .with_system(setup_gold)
-                    .with_system(setup_spawn_item_timer)
+                    //.with_system(setup_spawn_item_timer)
                     .with_system(create_camera)
                     .with_system(create_grids)
                     .with_system(init_dungeon)
@@ -53,7 +53,7 @@ impl Plugin for GamePlugin {
             .add_system_set(
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    .with_system(spawn_item_timer_system)
+                    //.with_system(spawn_item_on_dungeon_event)
                     .with_system(spawn_item)
                     .with_system(set_cursor_appearance)
                     .with_system(check_drag_begin)
