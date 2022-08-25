@@ -52,13 +52,11 @@ pub fn setup_health_bar(mut commands: Commands, config: Res<HealthBarConfig>) {
 // goes straight to 0 somehow....
 pub fn update_health_bar(
     hero: ResMut<Hero>,
-    mut health_bar_query: Query<(&mut Sprite, &HealthBar)>,
+    mut health_bar_query: Query<&mut HealthBar>,
 ) {
-    if let Ok((mut sprite, health_bar)) = health_bar_query.get_single_mut() {
-        sprite.custom_size = Some(bevy::math::Vec2::new(
-                health_bar.coords.dimens.x as f32 * (hero.combat_stats.health / hero.combat_stats.max_health) as f32,
-                health_bar.coords.dimens.y as f32 
-            )
-        );
+    if let Ok(mut health_bar) = health_bar_query.get_single_mut() {
+        debug!("before: {:?}", health_bar.coords.dimens.x);
+        health_bar.coords.dimens.x *= hero.combat_stats.health / hero.combat_stats.max_health;
+        debug!("after: {:?}", health_bar.coords.dimens.x);
     }
 }
