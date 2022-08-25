@@ -66,6 +66,8 @@ impl GridConfig {
 
                 let overlap_conflict = items_query.iter().any(|item| coords.overlaps(item));
                 let bound_conflict = !self.inventory.encloses(&coords);
+                if overlap_conflict { debug!("overlap_conflict!"); }
+                if bound_conflict { debug!("bound_conflict!"); }
                 if !overlap_conflict && !bound_conflict {
                     return Some(coords);
                 }

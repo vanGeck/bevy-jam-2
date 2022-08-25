@@ -160,7 +160,6 @@ pub fn process_drag_event(
     mut query_item: Query<(Entity, &mut Transform, &mut Coords), With<BeingDragged>>,
 ) {
     for event in events.iter() {
-        debug!("Received drag item event: {:?}", event);
         let DragEvent(end) = event;
         if let Ok((entity, mut transform, mut coords)) = query_item.get_single_mut() {
             let (ghost_entity, ghost) = query_ghost.single();
@@ -173,13 +172,24 @@ pub fn process_drag_event(
                 transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
             }
             if grid.crafting.encloses(&coords) {
-                debug!(
-                    "the item has been placed in the crafting area: {:?}",
-                    entity
-                );
                 commands.entity(entity).insert(CraftItem);
             }
-            // TODO: Remove CraftItem Component if moved into Backpack grid.
+        }
+    }
+}
+
+// This is to remove the CraftItem component if an item is moved back into the inventory grid from the crafting grid.
+pub fn process_drag_ended_event_into_inventory(
+    mut commands: Commands,
+    grid: Res<GridConfig>,
+    mut events: EventReader<DragEvent>,
+    query_dragged_item: Query<(Entity, &Coords), With<CraftItem>>,
+) {
+    for _ in events.iter() {
+        for (entity, coords) in query_dragged_item.iter() {
+            if grid.inventory.encloses(&coords) {
+                commands.entity(entity).remove::<CraftItem>();
+            }
         }
     }
 }

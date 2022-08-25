@@ -53,7 +53,7 @@ pub fn spawn_item(
     assets: Res<AssetStorage>,
 ) {
     for event in events.iter() {
-        debug!("Received spawn item event: {:?}", event);
+        // debug!("Received spawn item event: {:?}", event);
 
         let SpawnItemEvent { item, coords } = event;
 

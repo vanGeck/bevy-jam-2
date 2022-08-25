@@ -38,11 +38,16 @@ pub fn combine_items_system(
 
     let possible_recipe = try_get_recipe(&recipes_data, &items[0], &items[1]);
 
-    debug!("found possible recipe: {:?}", possible_recipe);
+    // debug!("found possible recipe: {:?}", possible_recipe);
 
     if let Some(recipe) = possible_recipe {
+        // debug!("found recipe: {:?}", recipe);
         if let Some((dimens, item)) = items_data.try_get_item(recipe.result) {
+            // debug!("got random item: {:?}", item);
+
             if let Some(free_coords) = grid.find_free_space(dimens, &items_query) {
+                // ^ this is failing
+                debug!("found free space to place the item");
                 // Spawn the result of the recipe
                 spawn_event_writer.send(SpawnItemEvent::new(item, free_coords));
                 // Delete the craft items entities
