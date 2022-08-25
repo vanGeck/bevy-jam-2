@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
@@ -6,26 +7,12 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
+use crate::game::dungeonsim::dungeon_components::TextType;
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DungeonTexts {
-    pub enter_room: Vec<String>,
-    pub corridor: Vec<String>,
-    pub door: Vec<String>,
-    pub searching_room: Vec<String>,
-    // pub searching_monster: Vec<String>,
-    pub found_loot: Vec<String>,
-    pub found_nothing: Vec<String>,
-    pub enemy_encounter: Vec<String>,
-    pub combat_enemy_hit: Vec<String>,
-    pub combat_hero_hit: Vec<String>,
-    pub combat_no_resolution: Vec<String>,
-    // pub combat_pause: Vec<String>,
-    pub combat_enemy_died: Vec<String>,
-    pub combat_hero_died: Vec<String>,
-    pub entered_start_room: Vec<String>,
-    pub entered_end_room: Vec<String>,
+    pub map: HashMap<TextType, Vec<String>>,
 }
 
 impl DungeonTexts {

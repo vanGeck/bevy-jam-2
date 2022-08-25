@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 use rand::Rng;
 
+use crate::game::dungeonsim::dungeon_components::TextType;
+use crate::game::dungeonsim::SimMessageEvent;
+
 #[derive(Component, Default, Copy, Clone)]
 pub struct Combatant {
     pub health: i32,
@@ -28,6 +31,7 @@ pub struct Enemy {
 }
 
 pub fn process_combat(
+    events: &mut EventWriter<SimMessageEvent>,
     mut monster: &mut Combatant,
     mut hero: &mut Combatant,
     cmbt_state: &mut CombatState,
@@ -41,14 +45,16 @@ pub fn process_combat(
         let diff = monster_roll - hero_roll;
         let damage = (monster.damage_bonus - hero.damage_res + diff).clamp(0, 500);
         hero.health = hero.health - damage;
-        info!("Monster hits the hero for {} damage.", damage);
+        events.send(SimMessageEvent(TextType::CombatHeroHit));
+        debug!("Hero hit for {}: HP at {}.", damage, hero.health);
     } else if hero_roll > monster_roll {
         let diff = hero_roll - monster_roll;
         let damage = (hero.damage_bonus + diff - monster.damage_res).clamp(0, 500);
         monster.health = monster.health - damage;
-        info!("Hero hits the monster for {} damage.", damage);
+        events.send(SimMessageEvent(TextType::CombatEnemyHit));
+        debug!("Monster hit for {}: HP at {}.", damage, monster.health);
     } else {
-        info!("Blows are exchanged, but no blood is drawn.")
+        events.send(SimMessageEvent(TextType::CombatNoResolution));
     }
 
     if hero.health < 1 {

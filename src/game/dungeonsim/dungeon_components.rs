@@ -1,5 +1,7 @@
-use crate::game::dungeonsim::combat::Combatant;
 use bevy::log::info;
+use serde::{Deserialize, Serialize};
+
+use crate::game::dungeonsim::combat::Combatant;
 
 pub struct Room {
     // Flags used in room processing. Determine message ordering and room types.
@@ -51,4 +53,24 @@ pub struct DungeonLevel {
     pub depth: i32,
     pub rooms: Vec<Room>,
     pub enemies: Vec<Combatant>,
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash)]
+pub enum TextType {
+    RoomStart,
+    RoomEnd,
+    EnteredRoom,
+    Corridor,
+    Door,
+    SearchingRoom,
+    FoundLoot,
+    FoundNothing,
+    EnemyEncounter,
+    CombatEnemyHit,
+    CombatHeroHit,
+    CombatNoResolution,
+    CombatEnemyDied,
+    CombatHeroDied,
+    EnteredStartRoom,
+    EnteredEndRoom,
 }

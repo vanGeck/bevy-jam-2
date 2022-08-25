@@ -1,4 +1,4 @@
-use std::fs;
+﻿use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
 
@@ -10,6 +10,8 @@ use crate::config::file_utils::{get_config_default_dir, get_config_override_dir}
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DungeonParams {
+    /// Time between sim ticks in milliseconds.
+    pub duration_millis: u64,
     pub max_depth: i32,
     pub chance_corridor: f32,
     pub chance_empty: f32,

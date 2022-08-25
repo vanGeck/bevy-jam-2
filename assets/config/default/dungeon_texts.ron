@@ -1,61 +1,69 @@
 (
-    corridor: [
-        "You enter a dark, silent corridor dug out in a rocky wall.",
-        "This damp passage smells weird. Falling water droplets splash somewhere far ahead.",
-        "Pieces of ancient sprung traps litter this corridor, along with some with equally ancient pieces of unfortunate souls.",
-        "This passage is so dusty, you can barely see anything in the torchlight. You sneeze, and the echo parrots you.",
-        "Thick cobwebs hang from the ceiling of the tunnel, flowing down onto the floor. Your footsteps are muffled by the soft, sticky fabric.",
-    ],
-    enter_room: [
-        "The room is dark and dusty. Broken furniture stands slumped against the walls.",
-        "There's a round pool of muddy water in this room. Your torch is casting shimmering reflections onto the walls.",
-        "This room seems to be actively used - torches on walls are lit, and benches lining the walls have various small items strewn around them.",
-        "This room is dark and silent, but seems to have some kind of eerie presence within it. You shiver."
-    ],
-    door: [
-        "A door. You carefully press the handle and push the door open...",
-        "A door. It creaks horribly when you push it open...",
-        "A heavily damaged door. It disassembles itself while you push it open.",
-    ],
-    searching_room: [
-        "You sift through the ancient furniture.",
-        "You carefully inspect the floor for any items.",
-        "You sift through the items littering the floor",
-    ],
-    found_loot: [
-        "You found something!",
-    ],
-    found_nothing: [
-        "Nothing! Oh well...",
-    ],
-    enemy_encounter: [
-        "A nauseating stench of decay hits your nostrils! A shambling corpse lurches towards you!",
-        "An orc warrior's war cry shakes the room! He jumps towards you with weapons raised!",
-        "Eight eyes, eight legs, angry clicking - it's a giant arachind!",
-    ],
-    combat_enemy_hit: [
-        "You kick the enemy off balance, and stick the tip of your weapon right between their ribs!",
-        "You whack the enemy right across the chest with your weapon!"
-    ],
-    combat_hero_hit: [
-        "An unexpected blow pierces through your defenses!",
-        "A strong hit smashes the air out of your lungs. You stagger backwards, wheezing."
-    ],
-    combat_enemy_died: [
-        "You end the fight with a decisive strike! Your enemy falls to the ground with a dull thud, dead before it could figure out what killed it."
-    ],
-    combat_no_resolution: [
-        "You circle each other, looking for openings. Your labored breathing echoes through the dungeon.",
-        "You dive under a mortal blow, and throw the enemy off balance with an elbow strike, buying yourself some time and separation.",
-        "You both jump away as a large rock peels away from the ceiling and crashes into a million pieces where you just stood!"
-    ],
-    combat_hero_died: [
-        "You are dead!",
-    ],
-    entered_start_room: [
-        "You descend into a new level of the dungeon."
-    ],
-    entered_end_room: [
-        "You've reached the final room of this level!"
-    ],
+    map:{
+        RoomStart: [
+            "You descend into the darkness of the dungeon...",
+        ],
+        RoomEnd: [
+            "You've reached the last room. There's a downward staircase here...",
+        ],
+        Corridor: [
+            "You enter a dark, silent corridor dug out in a rocky wall.",
+            "This damp passage smells weird. Falling water droplets splash somewhere far ahead.",
+            "Pieces of ancient sprung traps litter this corridor, along with some with equally ancient pieces of unfortunate souls.",
+            "This passage is so dusty, you can barely see anything in the torchlight. You sneeze, and the echo parrots you.",
+            "Thick cobwebs hang from the ceiling of the tunnel, flowing down onto the floor. Your footsteps are muffled by the soft, sticky fabric.",
+        ],
+        EnteredRoom: [
+            "The room is dark and dusty. Broken furniture stands slumped against the walls.",
+            "There's a round pool of muddy water in this room. Your torch is casting shimmering reflections onto the walls.",
+            "This room seems to be actively used - torches on walls are lit, and benches lining the walls have various small items strewn around them.",
+            "This room is dark and silent, but seems to have some kind of eerie presence within it. You shiver."
+        ],
+        Door: [
+            "A door. You carefully press the handle and push the door open...",
+            "A door. It creaks horribly when you push it open...",
+            "A heavily damaged door. It disassembles itself while you push it open.",
+        ],
+        SearchingRoom: [
+            "You sift through the ancient furniture.",
+            "You carefully inspect the floor for any items.",
+            "You sift through the items littering the floor",
+        ],
+        FoundLoot: [
+            "You found something!",
+        ],
+        FoundNothing: [
+            "Nothing! Oh well...",
+        ],
+        EnemyEncounter: [
+            "A nauseating stench of decay hits your nostrils! A shambling corpse lurches towards you!",
+            "An orc warrior's war cry shakes the room! He jumps towards you with weapons raised!",
+            "Eight eyes, eight legs, angry clicking - it's a giant arachind!",
+        ],
+        CombatEnemyHit: [
+            "You kick the enemy off balance, and stick the tip of your weapon right between their ribs!",
+            "You whack the enemy right across the chest with your weapon!"
+        ],
+        CombatHeroHit: [
+            "An unexpected blow pierces through your defenses!",
+            "A strong hit smashes the air out of your lungs. You stagger backwards, wheezing."
+        ],
+        CombatEnemyDied: [
+            "You end the fight with a decisive strike! Your enemy falls to the ground with a dull thud, dead before it could figure out what killed it."
+        ],
+        CombatNoResolution: [
+            "You circle each other, looking for openings. Your labored breathing echoes through the dungeon.",
+            "You dive under a mortal blow, and throw the enemy off balance with an elbow strike, buying yourself some time and separation.",
+            "You both jump away as a large rock peels away from the ceiling and crashes into a million pieces where you just stood!"
+        ],
+        CombatHeroDied: [
+            "You are dead!",
+        ],
+        EnteredStartRoom: [
+            "You descend into a new level of the dungeon."
+        ],
+        EnteredEndRoom: [
+            "You've reached the final room of this level!"
+        ],
+    },
 )

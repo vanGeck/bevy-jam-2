@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
-use std::time::Duration;
 
 pub use assets::*;
 pub use combining_system::*;
@@ -15,8 +14,9 @@ use crate::game::dragging::{
     apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
     process_drag_event, set_ghost_position, DragEvent,
 };
-use crate::game::dungeonsim::combat::{CombatState, Combatant, Enemy, Hero};
-use crate::game::dungeonsim::{init_dungeon, tick_dungeon, DungeonState};
+use crate::game::dungeonsim::combat::{Combatant, Enemy, Hero};
+use crate::game::dungeonsim::event_handling::{push_message, SimMessageEvent};
+use crate::game::dungeonsim::{init_dungeon, tick_dungeon};
 use crate::game::items::{Item, ItemId};
 use crate::hud::gold::{gold_update_system, setup_gold};
 use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
@@ -29,7 +29,7 @@ mod combining_system;
 mod components;
 mod create_grid_system;
 pub mod dragging;
-mod dungeonsim;
+pub mod dungeonsim;
 pub mod items;
 pub mod recipes;
 mod spawn_item_system;
@@ -40,14 +40,8 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<SpawnItemEvent>()
             .add_event::<DragEvent>()
+            .add_event::<SimMessageEvent>()
             .init_resource::<Player>()
-            .insert_resource(DungeonState {
-                current_room_idx: 0,
-                current_level: None,
-                msg_cooldown: Timer::new(Duration::from_millis(3000), true),
-                running: true,
-                combat_state: CombatState::Init,
-            })
             .insert_resource(Hero {
                 combat_stats: Combatant {
                     health: 20,
@@ -89,6 +83,7 @@ impl Plugin for GamePlugin {
                     .with_system(animate)
                     .with_system(track_combine_button_hover)
                     .with_system(tick_dungeon)
+                    .with_system(push_message)
                     .into(),
             )
             .add_exit_system_set(

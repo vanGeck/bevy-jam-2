@@ -1,14 +1,24 @@
+use std::time::Duration;
+
+use bevy::prelude::*;
+use rand::Rng;
+
+use crate::config::dungeon_params::DungeonParams;
+use crate::game::dungeonsim::combat::{process_combat, CombatState, Enemy, Hero};
+use crate::game::dungeonsim::dungeon::generate_level;
+use crate::game::dungeonsim::dungeon_components::{DungeonLevel, TextType};
+use crate::game::dungeonsim::event_handling::SimMessageEvent;
+
 pub mod combat;
 pub mod dungeon;
 pub mod dungeon_components;
+pub mod event_handling;
 
-use crate::config::dungeon_params::DungeonParams;
-use crate::config::dungeon_texts::DungeonTexts;
-use crate::game::dungeonsim::combat::{process_combat, CombatState, Enemy, Hero};
-use crate::game::dungeonsim::dungeon::generate_level;
-use crate::game::dungeonsim::dungeon_components::DungeonLevel;
-use bevy::prelude::*;
-use rand::Rng;
+/// Handle a looting session.
+pub struct SimLootEvent;
+
+/// Handle a state event. Mainly handle hero's death?
+pub struct SimStateEvent(String);
 
 #[derive(Default)]
 pub struct DungeonState {
@@ -19,16 +29,20 @@ pub struct DungeonState {
     pub combat_state: CombatState,
 }
 
-pub fn init_dungeon(
-    params: Res<DungeonParams>,
-    mut state: ResMut<DungeonState>,
-    mut cmd: Commands,
-) {
-    state.current_level = Option::from(generate_level(12, &params, &mut cmd));
+pub fn init_dungeon(mut commands: Commands, params: Res<DungeonParams>) {
+    let mut state = DungeonState {
+        current_room_idx: 0,
+        current_level: None,
+        msg_cooldown: Timer::new(Duration::from_millis(params.duration_millis), true),
+        running: true,
+        combat_state: CombatState::Init,
+    };
+    state.current_level = Option::from(generate_level(12, &params, &mut commands));
+    commands.insert_resource(state);
 }
 
 pub fn tick_dungeon(
-    texts: Res<DungeonTexts>,
+    mut events: EventWriter<SimMessageEvent>,
     time: Res<Time>,
     mut state: ResMut<DungeonState>,
     mut hero: ResMut<Hero>,
@@ -50,31 +64,32 @@ pub fn tick_dungeon(
 
             if room.corridor {
                 room.corridor = false;
-                info!("{}", pick_random_from_series(&texts.corridor));
+                events.send(SimMessageEvent(TextType::Corridor));
                 return;
             }
             if room.door {
                 room.door = false;
-                info!("{}", pick_random_from_series(&texts.door));
+                events.send(SimMessageEvent(TextType::Door));
                 return;
             }
             if room.combat {
                 if cbt_state == CombatState::Init {
-                    info!("{}", pick_random_from_series(&texts.enemy_encounter));
+                    events.send(SimMessageEvent(TextType::EnemyEncounter));
                     state.combat_state = CombatState::InProgress;
                     return;
                 } else if cbt_state == CombatState::EnemyDead {
-                    info!("{}", pick_random_from_series(&texts.combat_enemy_died));
+                    events.send(SimMessageEvent(TextType::CombatEnemyDied));
                     state.combat_state = CombatState::Ended;
                     return;
                 } else if cbt_state == CombatState::HeroDead {
-                    info!("{}", pick_random_from_series(&texts.combat_hero_died));
+                    events.send(SimMessageEvent(TextType::CombatHeroDied));
                     state.combat_state = CombatState::Ended;
                     state.running = false;
                     // TODO: change state to endgame, hero is dead!
                     return;
                 } else if cbt_state == CombatState::InProgress {
                     process_combat(
+                        &mut events,
                         &mut enemy.combat_stats,
                         &mut hero.combat_stats,
                         &mut state.combat_state,
@@ -86,12 +101,12 @@ pub fn tick_dungeon(
             }
             if room.description {
                 room.description = false;
-                info!("{}", pick_random_from_series(&texts.enter_room));
+                events.send(SimMessageEvent(TextType::EnteredRoom));
                 return;
             }
             if room.search {
                 room.search = false;
-                info!("{}", pick_random_from_series(&texts.searching_room));
+                events.send(SimMessageEvent(TextType::SearchingRoom));
                 room.post_search = true;
                 return;
             }
@@ -104,20 +119,20 @@ pub fn tick_dungeon(
                 let mut rng = rand::thread_rng();
                 let x = rng.gen_range(0..100);
                 if x < 35 {
-                    info!("{}", pick_random_from_series(&texts.found_loot));
+                    events.send(SimMessageEvent(TextType::FoundLoot));
                 } else {
-                    info!("{}", pick_random_from_series(&texts.found_nothing));
+                    events.send(SimMessageEvent(TextType::FoundNothing));
                 }
             }
 
             if room.start {
                 room.start = false;
-                info!("You descend into the darkness of the dungeon...");
+                events.send(SimMessageEvent(TextType::RoomStart));
                 return;
             }
             if room.end {
                 room.end = false;
-                info!("You've reached the last room. There's a downward staircase here...");
+                events.send(SimMessageEvent(TextType::RoomEnd));
                 return;
             }
 
@@ -125,19 +140,6 @@ pub fn tick_dungeon(
                 state.current_room_idx += 1;
             }
         }
-    }
-}
-
-fn pick_random_from_series(strings: &Vec<String>) -> &String {
-    let len = strings.len() as i32;
-    if len == 1 {
-        return &strings[0];
-    } else if len == 0 {
-        panic!("Empty string vector! Check .ron file with dungeon texts!");
-    } else {
-        let mut rng = rand::thread_rng();
-        let idx = rng.gen_range(0..len) as usize;
-        return &strings[idx];
     }
 }
 
