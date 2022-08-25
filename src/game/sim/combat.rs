@@ -7,6 +7,7 @@ use crate::game::sim::event_handling::SimMessageEvent;
 #[derive(Component, Default, Copy, Clone)]
 pub struct Combatant {
     pub health: i32,
+    pub max_health: i32,
     pub proficiency: i32,
     pub damage_res: i32,
     pub damage_bonus: i32,

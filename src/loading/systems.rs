@@ -12,6 +12,7 @@ use crate::config::config_sim::SimConfig;
 use crate::config::data_items::ItemsData;
 use crate::config::data_recipes::RecipesData;
 use crate::config::data_sim_texts::DungeonTexts;
+use crate::config::health_bar::HealthBarConfig;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
@@ -25,6 +26,7 @@ pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(RecipesData::load_from_file());
     commands.insert_resource(DungeonTexts::load_from_file());
     commands.insert_resource(SimConfig::load_from_file());
+    commands.insert_resource(HealthBarConfig::load_from_file());
 }
 
 pub fn load_assets(

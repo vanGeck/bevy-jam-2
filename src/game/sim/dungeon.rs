@@ -83,6 +83,7 @@ fn generate_fight() -> Room {
 fn get_enemy() -> Combatant {
     Combatant {
         health: 8,
+        max_health: 8,
         proficiency: 0,
         damage_res: 0,
         damage_bonus: 0,

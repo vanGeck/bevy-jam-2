@@ -2,7 +2,9 @@ use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
 use crate::game::combat::{Combatant, Enemy, Hero};
 use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
-use crate::game::event_handling::{handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent};
+use crate::game::event_handling::{
+    handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
+};
 use crate::game::{
     apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
     combine_items_system, create_camera, create_grids, process_drag_event, set_ghost_position,
@@ -16,6 +18,8 @@ use crate::AppState;
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
+use super::{setup_health_bar, update_health_bar};
+
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
@@ -27,7 +31,8 @@ impl Plugin for GamePlugin {
             .init_resource::<Player>()
             .insert_resource(Hero {
                 combat_stats: Combatant {
-                    health: 20,
+                    health: 100,
+                    max_health: 100,
                     proficiency: 1,
                     damage_res: 1,
                     damage_bonus: 0,
@@ -47,6 +52,7 @@ impl Plugin for GamePlugin {
                     .with_system(create_grids)
                     .with_system(init_dungeon)
                     .with_system(create_debug_items)
+                    .with_system(setup_health_bar)
                     .into(),
             )
             .add_system_set(
@@ -68,6 +74,7 @@ impl Plugin for GamePlugin {
                     .with_system(tick_dungeon)
                     .with_system(handle_sim_message)
                     .with_system(handle_sim_loot)
+                    .with_system(update_health_bar)
                     .into(),
             )
             .add_exit_system_set(
@@ -103,8 +110,6 @@ pub fn despawn_gameplay_entities(
     audio.send(SoundEvent::KillAllMusic);
 }
 
-// This feels overkill, with a set window size we could use regular UI entities instead that
-// come with the interactions component premade
 pub fn track_combine_button_hover(
     mut audio: EventWriter<SoundEvent>,
     input: Res<Input<MouseButton>>,
