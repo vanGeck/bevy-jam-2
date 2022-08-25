@@ -55,7 +55,7 @@ impl GridConfig {
     pub fn find_free_space(
         &self,
         dimens: Dimens,
-        items_query: Query<&Coords, (With<Item>, Without<BeingDragged>)>, // is there any way to call this function without this query? it forces you to have the exact same query in whichever query you're calling this function from. - Jacques
+        items_query: &Query<&Coords, (With<Item>, Without<BeingDragged>)>, // is there any way to call this function without this query? it forces you to have the exact same query in whichever query you're calling this function from. - Jacques
     ) -> Option<Coords> {
         for y in 0..self.inventory.dimens.y {
             for x in 0..self.inventory.dimens.x {

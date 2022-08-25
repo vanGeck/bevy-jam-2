@@ -148,7 +148,6 @@ pub enum SoundId {
 /// Identifies a music track or album.
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub enum AlbumId {
-    Placeholder,
     Jazz,
     Ominous,
 }

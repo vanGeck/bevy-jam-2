@@ -3,19 +3,11 @@ use std::time::Duration;
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::config::dungeon_params::DungeonParams;
-use crate::game::dungeonsim::combat::{process_combat, CombatState, Enemy, Hero};
-use crate::game::dungeonsim::dungeon::generate_level;
-use crate::game::dungeonsim::dungeon_components::{DungeonLevel, TextType};
-use crate::game::dungeonsim::event_handling::SimMessageEvent;
-
-pub mod combat;
-pub mod dungeon;
-pub mod dungeon_components;
-pub mod event_handling;
-
-/// Handle a looting session.
-pub struct SimLootEvent;
+use crate::config::config_sim::SimConfig;
+use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
+use crate::game::sim::dungeon::generate_level;
+use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
+use crate::game::sim::event_handling::{SimLootEvent, SimMessageEvent};
 
 /// Handle a state event. Mainly handle hero's death?
 pub struct SimStateEvent(String);
@@ -29,7 +21,7 @@ pub struct DungeonState {
     pub combat_state: CombatState,
 }
 
-pub fn init_dungeon(mut commands: Commands, params: Res<DungeonParams>) {
+pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>) {
     let mut state = DungeonState {
         current_room_idx: 0,
         current_level: None,
@@ -42,8 +34,10 @@ pub fn init_dungeon(mut commands: Commands, params: Res<DungeonParams>) {
 }
 
 pub fn tick_dungeon(
-    mut events: EventWriter<SimMessageEvent>,
+    mut msg_events: EventWriter<SimMessageEvent>,
+    mut loot_events: EventWriter<SimLootEvent>,
     time: Res<Time>,
+    config: ResMut<SimConfig>,
     mut state: ResMut<DungeonState>,
     mut hero: ResMut<Hero>,
     mut enemy: ResMut<Enemy>,
@@ -64,32 +58,32 @@ pub fn tick_dungeon(
 
             if room.corridor {
                 room.corridor = false;
-                events.send(SimMessageEvent(TextType::Corridor));
+                msg_events.send(SimMessageEvent(TextType::Corridor));
                 return;
             }
             if room.door {
                 room.door = false;
-                events.send(SimMessageEvent(TextType::Door));
+                msg_events.send(SimMessageEvent(TextType::Door));
                 return;
             }
             if room.combat {
                 if cbt_state == CombatState::Init {
-                    events.send(SimMessageEvent(TextType::EnemyEncounter));
+                    msg_events.send(SimMessageEvent(TextType::EnemyEncounter));
                     state.combat_state = CombatState::InProgress;
                     return;
                 } else if cbt_state == CombatState::EnemyDead {
-                    events.send(SimMessageEvent(TextType::CombatEnemyDied));
+                    msg_events.send(SimMessageEvent(TextType::CombatEnemyDied));
                     state.combat_state = CombatState::Ended;
                     return;
                 } else if cbt_state == CombatState::HeroDead {
-                    events.send(SimMessageEvent(TextType::CombatHeroDied));
+                    msg_events.send(SimMessageEvent(TextType::CombatHeroDied));
                     state.combat_state = CombatState::Ended;
                     state.running = false;
                     // TODO: change state to endgame, hero is dead!
                     return;
                 } else if cbt_state == CombatState::InProgress {
                     process_combat(
-                        &mut events,
+                        &mut msg_events,
                         &mut enemy.combat_stats,
                         &mut hero.combat_stats,
                         &mut state.combat_state,
@@ -101,12 +95,12 @@ pub fn tick_dungeon(
             }
             if room.description {
                 room.description = false;
-                events.send(SimMessageEvent(TextType::EnteredRoom));
+                msg_events.send(SimMessageEvent(TextType::EnteredRoom));
                 return;
             }
             if room.search {
                 room.search = false;
-                events.send(SimMessageEvent(TextType::SearchingRoom));
+                msg_events.send(SimMessageEvent(TextType::SearchingRoom));
                 room.post_search = true;
                 return;
             }
@@ -117,22 +111,22 @@ pub fn tick_dungeon(
                 // Use halt/resume methods to allow for looting in peace.
                 room.post_search = false;
                 let mut rng = rand::thread_rng();
-                let x = rng.gen_range(0..100);
-                if x < 35 {
-                    events.send(SimMessageEvent(TextType::FoundLoot));
+                if rng.gen_bool(config.loot_probability) {
+                    loot_events.send(SimLootEvent);
+                    msg_events.send(SimMessageEvent(TextType::FoundLoot));
                 } else {
-                    events.send(SimMessageEvent(TextType::FoundNothing));
+                    msg_events.send(SimMessageEvent(TextType::FoundNothing));
                 }
             }
 
             if room.start {
                 room.start = false;
-                events.send(SimMessageEvent(TextType::RoomStart));
+                msg_events.send(SimMessageEvent(TextType::RoomStart));
                 return;
             }
             if room.end {
                 room.end = false;
-                events.send(SimMessageEvent(TextType::RoomEnd));
+                msg_events.send(SimMessageEvent(TextType::RoomEnd));
                 return;
             }
 

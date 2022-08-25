@@ -1,38 +1,20 @@
-use bevy::prelude::*;
-use iyes_loopless::prelude::*;
-
-pub use assets::*;
-pub use combining_system::*;
-pub use components::*;
-pub use spawn_item_system::*;
-
 use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
-use crate::game::camera::create_camera;
-use crate::game::create_grid_system::create_grids;
-use crate::game::dragging::{
+use crate::game::combat::{Combatant, Enemy, Hero};
+use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
+use crate::game::event_handling::{handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent};
+use crate::game::{
     apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
-    process_drag_event, set_ghost_position, DragEvent,
+    combine_items_system, create_camera, create_grids, process_drag_event, set_ghost_position,
+    setup_spawn_item_timer, spawn_item, AlbumId, CleanupOnGameplayEnd, CombineButton, DragEvent,
+    Item, ItemId, Player, SoundId, SpawnItemEvent, TextureId,
 };
-use crate::game::dungeonsim::combat::{Combatant, Enemy, Hero};
-use crate::game::dungeonsim::event_handling::{push_message, SimMessageEvent};
-use crate::game::dungeonsim::{init_dungeon, tick_dungeon};
-use crate::game::items::{Item, ItemId};
 use crate::hud::gold::{gold_update_system, setup_gold};
 use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
 use crate::positioning::{Coords, Dimens, Pos};
 use crate::AppState;
-
-pub mod assets;
-pub mod camera;
-mod combining_system;
-mod components;
-mod create_grid_system;
-pub mod dragging;
-pub mod dungeonsim;
-pub mod items;
-pub mod recipes;
-mod spawn_item_system;
+use bevy::prelude::*;
+use iyes_loopless::prelude::*;
 
 pub struct GamePlugin;
 
@@ -41,6 +23,7 @@ impl Plugin for GamePlugin {
         app.add_event::<SpawnItemEvent>()
             .add_event::<DragEvent>()
             .add_event::<SimMessageEvent>()
+            .add_event::<SimLootEvent>()
             .init_resource::<Player>()
             .insert_resource(Hero {
                 combat_stats: Combatant {
@@ -83,7 +66,8 @@ impl Plugin for GamePlugin {
                     .with_system(animate)
                     .with_system(track_combine_button_hover)
                     .with_system(tick_dungeon)
-                    .with_system(push_message)
+                    .with_system(handle_sim_message)
+                    .with_system(handle_sim_loot)
                     .into(),
             )
             .add_exit_system_set(

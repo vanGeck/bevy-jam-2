@@ -1,10 +1,10 @@
-use crate::config::dungeon_params::DungeonParams;
-use crate::game::dungeonsim::combat::Combatant;
-use crate::game::dungeonsim::dungeon_components::{DungeonLevel, Room};
+use crate::config::config_sim::SimConfig;
+use crate::game::sim::combat::Combatant;
+use crate::game::sim::dungeon_components::{DungeonLevel, Room};
 use bevy::prelude::*;
 use rand::Rng;
 
-pub fn generate_level(len: i32, params: &DungeonParams, mut _cmd: &mut Commands) -> DungeonLevel {
+pub fn generate_level(len: i32, params: &SimConfig, mut _cmd: &mut Commands) -> DungeonLevel {
     let mut rooms = Vec::<Room>::new();
     let mut fights = Vec::<Combatant>::new();
     let mut rng = rand::thread_rng();

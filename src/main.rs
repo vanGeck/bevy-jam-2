@@ -25,7 +25,7 @@ pub mod animation;
 mod audio;
 mod config;
 mod debug_window;
-mod game;
+pub mod game;
 mod game_ended;
 mod hud;
 mod loading;

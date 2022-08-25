@@ -42,7 +42,7 @@ pub fn combine_items_system(
 
     if let Some(recipe) = possible_recipe {
         if let Some((dimens, item)) = items_data.try_get_item(recipe.result) {
-            if let Some(free_coords) = grid.find_free_space(dimens, items_query) {
+            if let Some(free_coords) = grid.find_free_space(dimens, &items_query) {
                 // Spawn the result of the recipe
                 spawn_event_writer.send(SpawnItemEvent::new(item, free_coords));
                 // Delete the craft items entities

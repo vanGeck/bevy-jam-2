@@ -1,7 +1,7 @@
 use bevy::log::info;
 use serde::{Deserialize, Serialize};
 
-use crate::game::dungeonsim::combat::Combatant;
+use crate::game::sim::combat::Combatant;
 
 pub struct Room {
     // Flags used in room processing. Determine message ordering and room types.

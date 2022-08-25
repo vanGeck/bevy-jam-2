@@ -2,12 +2,11 @@ use bevy::prelude::*;
 
 use crate::config::config_grid::GridConfig;
 use crate::config::data_items::ItemsData;
-use crate::game::items::Item;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
+use crate::game::dragging::BeingDragged;
+use crate::game::items::Item;
 use crate::positioning::Coords;
 use crate::positioning::Depth;
-
-use crate::game::dragging::BeingDragged;
 
 pub struct ItemSpawnTimer(Timer);
 
@@ -27,10 +26,10 @@ pub fn spawn_item_timer_system(
     if timer.0.tick(time.delta()).just_finished() {
         let (dimens, item) = items_data.get_random_item();
 
-        let free_coords = grid.find_free_space(dimens, items_query);
+        let free_coords = grid.find_free_space(dimens, &items_query);
 
         if let Some(coords) = free_coords {
-            spawn.send(SpawnItemEvent::new(item, coords))
+            spawn.send(SpawnItemEvent::new(item, coords));
         };
     }
 }

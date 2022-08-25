@@ -52,7 +52,7 @@ pub fn play_sfx(
                     resource.current = Some(CurrentTrack {
                         album: *album,
                         track: next_track,
-                        instance: instance,
+                        instance,
                     });
                     resource.skipping = false;
                 } else {

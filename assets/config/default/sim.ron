@@ -1,5 +1,6 @@
 (
     duration_millis: 3000,
+    loot_probability: 0.35,
     max_depth: 3,
     chance_corridor: 0.15,
     chance_empty: 0.35,

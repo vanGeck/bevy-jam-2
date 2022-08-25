@@ -25,7 +25,6 @@
         Placeholder:"placeholder.ogg",
     },
     music: {
-        Placeholder: "placeholder.mp3",
         Jazz: "jazz/",
         Ominous: "ominous/",
     },

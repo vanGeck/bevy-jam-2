@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 use rand::Rng;
 
-use crate::game::dungeonsim::dungeon_components::TextType;
-use crate::game::dungeonsim::SimMessageEvent;
+use crate::game::sim::dungeon_components::TextType;
+use crate::game::sim::event_handling::SimMessageEvent;
 
 #[derive(Component, Default, Copy, Clone)]
 pub struct Combatant {
