@@ -1,12 +1,11 @@
-use crate::config::config_grid::GridConfig;
+use bevy::prelude::*;
+
 use crate::config::data_items::ItemsData;
 use crate::config::data_recipes::RecipesData;
-use crate::game::dragging::BeingDragged;
 use crate::game::items::Item;
 use crate::game::recipes::Recipe;
-use crate::game::SpawnItemEvent;
-use crate::positioning::Coords;
-use bevy::prelude::*;
+use crate::game::{find_free_space, SpawnItemEvent};
+use crate::positioning::{Coords, GridData};
 
 use super::items::CraftItem;
 
@@ -18,12 +17,12 @@ pub struct CombineButton {
 // use events here so this doesn't run once a frame?
 pub fn combine_items_system(
     mut commands: Commands,
-    crafting_items_query: Query<(Entity, &Item), With<CraftItem>>,
-    items_query: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
+    mut spawn_event_writer: EventWriter<SpawnItemEvent>,
     recipes_data: Res<RecipesData>,
     items_data: Res<ItemsData>,
-    grid: Res<GridConfig>,
-    mut spawn_event_writer: EventWriter<SpawnItemEvent>,
+    grid: Res<GridData>,
+    crafting_items_query: Query<(Entity, &Item), With<CraftItem>>,
+    items_query: Query<&Coords, With<Item>>,
 ) {
     let number_of_crafting_items = crafting_items_query.iter().count();
     if number_of_crafting_items <= 1 {
@@ -31,21 +30,19 @@ pub fn combine_items_system(
     }
 
     let mut items = Vec::new();
-
     for (_, item) in crafting_items_query.iter() {
         items.push(item.clone());
     }
 
     let possible_recipe = try_get_recipe(&recipes_data, &items[0], &items[1]);
-
-    // debug!("found possible recipe: {:?}", possible_recipe);
+    trace!("found possible recipe: {:?}", possible_recipe);
 
     if let Some(recipe) = possible_recipe {
         // debug!("found recipe: {:?}", recipe);
         if let Some((dimens, item)) = items_data.try_get_item(recipe.result) {
             // debug!("got random item: {:?}", item);
 
-            if let Some(free_coords) = grid.find_free_space(dimens, &items_query) {
+            if let Some(free_coords) = find_free_space(&grid, dimens, &items_query) {
                 // ^ this is failing
                 debug!("found free space to place the item");
                 // Spawn the result of the recipe
@@ -54,6 +51,8 @@ pub fn combine_items_system(
                 for (entity, _) in crafting_items_query.iter() {
                     commands.entity(entity).despawn_recursive();
                 }
+            } else {
+                warn!("Tried to find free space but failed.");
             }
         }
     }

@@ -8,9 +8,9 @@ use iyes_loopless::prelude::NextState;
 
 use crate::config::config_audio::AudioConfig;
 use crate::config::config_debug::DebugConfig;
-use crate::config::config_grid::GridConfig;
 use crate::config::config_sim::SimConfig;
 use crate::config::data_items::ItemsData;
+use crate::config::data_layout::LayoutData;
 use crate::config::data_recipes::RecipesData;
 use crate::config::data_sim_texts::DungeonTexts;
 use crate::config::health_bar::HealthBarConfig;
@@ -20,7 +20,6 @@ use crate::loading::config::LoadingConfig;
 use crate::{AppState, WindowMode};
 
 pub fn load_configs(mut commands: Commands) {
-    commands.insert_resource(GridConfig::load_from_file());
     commands.insert_resource(DebugConfig::load_from_file());
     commands.insert_resource(AudioConfig::load_from_file());
     commands.insert_resource(ItemsData::load_from_file());
@@ -28,6 +27,7 @@ pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(DungeonTexts::load_from_file());
     commands.insert_resource(SimConfig::load_from_file());
     commands.insert_resource(HealthBarConfig::load_from_file());
+    commands.insert_resource(LayoutData::load_from_file());
 }
 
 pub fn load_assets(
@@ -85,14 +85,14 @@ pub fn load_assets(
             storage.put_music(music_type, handle, path.clone());
         } else if file.is_dir() {
             for child in get_children(&file) {
-                let handle = assets.load(asset_path.join(child.clone()));
+                let handle = assets.load(child.clone().canonicalize().unwrap());
                 storage.put_music(
                     music_type,
                     handle,
                     child
                         .clone()
                         .file_name()
-                        .unwrap_or(&OsStr::new("Filename not found"))
+                        .unwrap_or(OsStr::new("Filename not found"))
                         .to_str()
                         .unwrap_or("Filename not found")
                         .to_string(),

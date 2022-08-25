@@ -5,7 +5,13 @@ use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
 use crate::game::event_handling::{
     handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
 };
-use crate::game::{apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity, combine_items_system, create_camera, create_grids, process_drag_event, set_ghost_position, setup_spawn_item_timer, spawn_item, AlbumId, CleanupOnGameplayEnd, CombineButton, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent, TextureId, process_drag_ended_event_into_inventory, spawn_item_on_dungeon_event};
+use crate::game::{
+    apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
+    combine_items_system, create_camera, create_layout_feed, create_layout_foo,
+    create_layout_grids, create_layout_hero, create_layout_music, create_layout_toasts,
+    process_drag_event, set_ghost_position, spawn_item, AlbumId, CleanupOnGameplayEnd,
+    CombineButton, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent, TextureId,
+};
 use crate::hud::gold::{gold_update_system, setup_gold};
 use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
 use crate::positioning::{Coords, Dimens, Pos};
@@ -42,9 +48,13 @@ impl Plugin for GamePlugin {
                     .run_in_state(AppState::InGame)
                     .with_system(setup)
                     .with_system(setup_gold)
-                    //.with_system(setup_spawn_item_timer)
                     .with_system(create_camera)
-                    .with_system(create_grids)
+                    .with_system(create_layout_music)
+                    .with_system(create_layout_feed)
+                    .with_system(create_layout_grids)
+                    .with_system(create_layout_toasts)
+                    .with_system(create_layout_foo)
+                    .with_system(create_layout_hero)
                     .with_system(init_dungeon)
                     // .with_system(create_debug_items)
                     .with_system(setup_health_bar)
@@ -53,7 +63,6 @@ impl Plugin for GamePlugin {
             .add_system_set(
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    //.with_system(spawn_item_on_dungeon_event)
                     .with_system(spawn_item)
                     .with_system(set_cursor_appearance)
                     .with_system(check_drag_begin)
@@ -62,7 +71,6 @@ impl Plugin for GamePlugin {
                     .with_system(check_ghost_placement_validity)
                     .with_system(check_drag_end)
                     .with_system(process_drag_event)
-                    .with_system(process_drag_ended_event_into_inventory)
                     .with_system(combine_items_system)
                     .with_system(gold_update_system)
                     .with_system(animate)
@@ -109,10 +117,9 @@ pub fn despawn_gameplay_entities(
 pub fn track_combine_button_hover(
     mut audio: EventWriter<SoundEvent>,
     input: Res<Input<MouseButton>>,
-    query_mouse: Query<&Mouse>,
+    mouse: Res<Mouse>,
     mut button: Query<(&mut Sprite, &Transform, &CombineButton)>,
 ) {
-    let mouse = query_mouse.single();
     let mouse_hovers_over_button = button.get_single().map_or(false, |(_, transform, button)| {
         mouse.position.x > transform.translation.x - button.coords.dimens.x as f32 * 0.5
             && mouse.position.x < transform.translation.x + button.coords.dimens.x as f32 * 0.5
@@ -143,29 +150,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(10, 10), Dimens::new(1, 2)),
-    ));
-    spawn.send(SpawnItemEvent::new(
-        Item {
-            id: ItemId::EmptyLantern,
-            texture_id: TextureId::EmptyLantern,
-            name: "".to_string(),
-            description: "".to_string(),
-            wearable: None,
-            ..default()
-        },
-        Coords::new(Pos::new(5, 5), Dimens::new(2, 3)),
-    ));
-    spawn.send(SpawnItemEvent::new(
-        Item {
-            id: ItemId::HerbRed,
-            texture_id: TextureId::HerbRed,
-            name: "".to_string(),
-            description: "".to_string(),
-            wearable: None,
-            ..default()
-        },
-        Coords::new(Pos::new(15, 15), Dimens::new(1, 2)),
+        Coords::new(Pos::new(0, 0), Dimens::new(1, 2)),
     ));
     spawn.send(SpawnItemEvent::new(
         Item {
@@ -176,7 +161,29 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(20, 20), Dimens::new(1, 2)),
+        Coords::new(Pos::new(1, 0), Dimens::new(1, 2)),
+    ));
+    // spawn.send(SpawnItemEvent::new(
+    //     Item {
+    //         id: ItemId::EmptyLantern,
+    //         texture_id: TextureId::EmptyLantern,
+    //         name: "".to_string(),
+    //         description: "".to_string(),
+    //         wearable: None,
+    //         ..default()
+    //     },
+    //     Coords::new(Pos::new(5, 5), Dimens::new(2, 3)),
+    // ));
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            id: ItemId::HerbRed,
+            texture_id: TextureId::HerbRed,
+            name: "".to_string(),
+            description: "".to_string(),
+            wearable: None,
+            ..default()
+        },
+        Coords::new(Pos::new(2, 0), Dimens::new(1, 1)),
     ));
     spawn.send(SpawnItemEvent::new(
         Item {
@@ -187,6 +194,6 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(25, 25), Dimens::new(1, 2)),
+        Coords::new(Pos::new(2, 1), Dimens::new(1, 1)),
     ));
 }

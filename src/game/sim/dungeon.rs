@@ -33,11 +33,11 @@ pub fn generate_level(len: i32, params: &SimConfig, mut _cmd: &mut Commands) -> 
         rooms[s].print_diag_name();
     }
 
-    return DungeonLevel {
+    DungeonLevel {
         depth: 0,
         rooms,
         enemies: fights,
-    };
+    }
 }
 
 fn generate_first_room() -> Room {

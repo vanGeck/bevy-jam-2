@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::game::camera::GameCamera;
 
-#[derive(Component, Default)]
+#[derive(Default)]
 pub struct Mouse {
     /// Position in world coordinates.
     pub position: Vec2,
@@ -18,38 +18,17 @@ pub struct Mouse {
     pub out_of_bounds: bool,
 }
 
-pub fn configure_cursor(mut commands: Commands) {
-    // let window = windows.get_primary_mut().unwrap();
-    // window.set_cursor_visibility(false);
-    commands
-        .spawn_bundle(SpatialBundle::default())
-        // .spawn_bundle(SpriteSheetBundle {
-        //     sprite: TextureAtlasSprite {
-        //         custom_size: Some(Dimensions::new(2, 2).as_vec2()),
-        //         index: 0,
-        //         ..default()
-        //     },
-        //     texture_atlas: assets.atlas(&TextureId::Cursor),
-        //     transform: Transform::from_xyz(0., 0., Depth::Cursor.z()),
-        //     ..Default::default()
-        // })
-        .insert(Name::new("MouseCursor"))
-        .insert(Mouse::default());
-}
-
 pub fn reset_cursor(mut windows: ResMut<Windows>) {
     let window = windows.get_primary_mut().unwrap();
-    window.set_cursor_visibility(true);
     window.set_cursor_icon(CursorIcon::Default);
 }
 
 pub fn calc_mouse_pos(
     windows: Res<Windows>,
-    mut query_mouse: Query<(&mut Mouse, &mut Transform)>,
+    mut mouse: ResMut<Mouse>,
     query_cam: Query<(&Camera, &GlobalTransform), With<GameCamera>>,
 ) {
     if let Ok((camera, camera_transform)) = query_cam.get_single() {
-        let (mut mouse, mut mouse_transform) = query_mouse.single_mut();
         // Bevy will not return anything here if the mouse is out of screen bounds...
         // ... unless a mouse button is pressed, for whatever reason.
         // That's why there's a double check for mouse being out of bounds.
@@ -61,9 +40,6 @@ pub fn calc_mouse_pos(
                 camera_transform.compute_matrix() * camera.projection_matrix().inverse();
             let world_position = ndc_to_world.project_point3(ndc.extend(-1.0));
             let world_position: Vec2 = world_position.truncate();
-
-            mouse_transform.translation.x = mouse.position.x;
-            mouse_transform.translation.y = mouse.position.y;
 
             mouse.position = world_position;
             mouse.screen_position = screen_pos;
@@ -77,8 +53,10 @@ pub fn calc_mouse_pos(
     }
 }
 
-pub fn set_cursor_appearance(mut windows: ResMut<Windows>, query: Query<&Mouse>) {
-    let mouse = query.single();
+pub fn set_cursor_appearance(mut windows: ResMut<Windows>, mouse: Res<Mouse>) {
+    if mouse.out_of_bounds {
+        return;
+    }
     let window = windows.get_primary_mut().unwrap();
     window.set_cursor_icon(if mouse.is_dragging {
         CursorIcon::Grabbing

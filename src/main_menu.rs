@@ -96,13 +96,12 @@ pub fn track_backpack_hover(
     mut commands: Commands,
     mut audio: EventWriter<SoundEvent>,
     input: Res<Input<MouseButton>>,
-    query_mouse: Query<&Mouse>,
+    mouse: Res<Mouse>,
     mut queries: ParamSet<(
         Query<(&Transform, &Backpack)>,
         Query<(&mut Transform, &BackpackFlap, &mut TextureAtlasSprite)>,
     )>,
 ) {
-    let mouse = query_mouse.single();
     let mouse_hovers_over_backpack =
         queries
             .p0()

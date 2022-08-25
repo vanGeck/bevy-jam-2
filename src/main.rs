@@ -17,7 +17,7 @@ use crate::game::GamePlugin;
 use crate::game_ended::GameEndedPlugin;
 use crate::loading::state::LoadingPlugin;
 use crate::main_menu::MainMenuPlugin;
-use crate::mouse::{calc_mouse_pos, configure_cursor};
+use crate::mouse::{calc_mouse_pos, Mouse};
 use crate::states::{handle_escape, log_state_changes, AppState};
 use crate::window_event_handler::handle_window;
 
@@ -66,7 +66,7 @@ fn main() {
     .add_system(log_state_changes)
     .add_system(handle_escape)
     .add_system(set_cam_scale)
-    .add_startup_system(configure_cursor)
+    .init_resource::<Mouse>()
     .add_system(calc_mouse_pos);
     if config.show_debug_window {
         app.add_plugin(DebugWindowPlugin);

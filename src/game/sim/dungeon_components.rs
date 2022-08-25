@@ -1,4 +1,4 @@
-use bevy::log::info;
+use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::game::sim::combat::Combatant;
@@ -36,15 +36,15 @@ impl Room {
     // Helper method for listing reults of dungeon generation.
     pub fn print_diag_name(&self) {
         if self.corridor {
-            info!("{}", "|Corridor|".to_string());
+            debug!("{}", "|Corridor|".to_string());
         } else if self.start {
-            info!("{}", "|First|".to_string());
+            debug!("{}", "|First|".to_string());
         } else if self.end {
-            info!("{}", "|Last|".to_string());
+            debug!("{}", "|Last|".to_string());
         } else if self.combat {
-            info!("{}", "|Fight|".to_string());
+            debug!("{}", "|Fight|".to_string());
         } else {
-            info!("{}", "|Empty|".to_string());
+            debug!("{}", "|Empty|".to_string());
         }
     }
 }

@@ -87,8 +87,7 @@ impl AssetStorage {
     ) -> Option<(Handle<AudioSource>, String)> {
         self.music
             .get(album)
-            .map(|vec| vec.get(track).cloned())
-            .flatten()
+            .and_then(|vec| vec.get(track).cloned())
     }
     /// Returns a random track from the given music set.
     pub fn music_random(&self, album: &AlbumId) -> Option<(Handle<AudioSource>, String)> {
@@ -133,6 +132,7 @@ pub enum TextureId {
     /// Large image for the menu screen
     Backpack,
     BackpackFlap,
+    Overseer,
     /// Unused at the moment, but might be used later.
     Cursor,
     RecordPlayer,
@@ -156,7 +156,7 @@ pub enum TextureId {
     HerbViolet,
     EssenceMight,
     EssenceVitality,
-    EssenceAlacrity
+    EssenceAlacrity,
 }
 
 impl Default for TextureId {

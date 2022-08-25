@@ -1,0 +1,48 @@
+#![enable(implicit_some)]
+(
+    factor: 0.333333333,
+    text_factor: 192.,
+    screen_pos: (-1., 1.),
+    screen_dimens: (64., 36.),
+    c_left: (
+        margin_left: 2.,
+        margin_right: 2.,
+        music: (
+            margin_bottom: 2.,
+            height: 4.
+        ),
+        feed: (
+            margin_bottom: 2.,
+            margin_top: 2.,
+        ),
+    ),
+    c_mid: (
+        x: 22.,
+        width: 24.,
+        toasts: (
+            margin_bottom: 2.,
+            height: 2.
+        ),
+        inventory: (
+            margin_bottom: 2.,
+            height: 15.,
+        ),
+   ),
+    c_right: (
+        margin_left: 2.,
+        margin_right: 2.,
+        foo: (
+            margin_bottom: 2.,
+            height: 4.
+        ),
+        crafting: (
+            margin_bottom: 3.,
+            height: 9.
+        ),
+        hero: (
+            margin_bottom: 3.,
+            margin_top: 2.,
+        ),
+    ),
+    overseer_baseline: 0.5,
+)

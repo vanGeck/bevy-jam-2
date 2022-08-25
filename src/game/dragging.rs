@@ -1,12 +1,11 @@
 use bevy::prelude::*;
 
-use crate::config::config_grid::GridConfig;
 use crate::game::items::{CraftItem, Item};
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
 use crate::mouse::Mouse;
-use crate::positioning::Coords;
 use crate::positioning::Depth;
 use crate::positioning::Pos;
+use crate::positioning::{Coords, GridData};
 
 /// Broadcast this event when completing a dragging operation.
 /// The entity that is being dragged still has the BeingDragged component.
@@ -43,15 +42,15 @@ pub struct DragGhost {
 pub fn check_drag_begin(
     mut commands: Commands,
     assets: Res<AssetStorage>,
+    grid: Res<GridData>,
     input: Res<Input<MouseButton>>,
-    mut query_mouse: Query<&mut Mouse>,
+    mut mouse: ResMut<Mouse>,
     query: Query<(&Coords, Entity, &Item)>,
 ) {
-    let mut mouse = query_mouse.single_mut();
     if mouse.is_dragging {
         return;
     }
-    let hovered_over_cell = Pos::from(mouse.position);
+    let hovered_over_cell = Pos::from(mouse.position - grid.offset);
     if !input.just_pressed(MouseButton::Left) {
         mouse.can_drag = query
             .iter()
@@ -70,8 +69,8 @@ pub fn check_drag_begin(
                     },
                     texture: assets.texture(&item.texture_id),
                     transform: Transform::from_xyz(
-                        coords.pos.x as f32 + coords.dimens.x as f32 * 0.5,
-                        coords.pos.y as f32 + coords.dimens.y as f32 * 0.5,
+                        grid.calc_x(coords),
+                        grid.calc_y(coords),
                         Depth::FloatingItem.z(),
                     ),
                     ..Default::default()
@@ -89,14 +88,14 @@ pub fn check_drag_begin(
 
 /// Move the item ghost with the mouse, but in discrete increments, always snapping to the grid.
 pub fn set_ghost_position(
-    mut query_mouse: Query<&mut Mouse>,
+    grid: Res<GridData>,
+    mouse: Res<Mouse>,
     mut query: Query<(&mut Transform, &mut Coords, &DragGhost)>,
 ) {
-    let mouse = query_mouse.single_mut();
     if let Ok((mut transform, mut coords, ghost)) = query.get_single_mut() {
-        coords.pos = Pos::from(mouse.position) + ghost.cursor_delta;
-        transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
-        transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
+        coords.pos = Pos::from(mouse.position - grid.offset) + ghost.cursor_delta;
+        transform.translation.x = grid.calc_x(&coords);
+        transform.translation.y = grid.calc_y(&coords);
     }
 }
 
@@ -115,7 +114,7 @@ pub fn apply_scrim_to_being_dragged(
 
 /// Checks if the dragging move would be valid. If not, tints the ghost red.
 pub fn check_ghost_placement_validity(
-    grid: Res<GridConfig>,
+    grid: Res<GridData>,
     mut query_ghost: Query<(&mut DragGhost, &mut Sprite, &Coords)>,
     query_items: Query<&Coords, (With<Item>, Without<BeingDragged>)>,
 ) {
@@ -139,11 +138,10 @@ pub fn check_ghost_placement_validity(
 /// - Broadcast a DragEvent.
 pub fn check_drag_end(
     mut writer: EventWriter<DragEvent>,
-    mut query_mouse: Query<&mut Mouse>,
+    mut mouse: ResMut<Mouse>,
     input: Res<Input<MouseButton>>,
     query_ghost: Query<&Coords, With<DragGhost>>,
 ) {
-    let mut mouse = query_mouse.single_mut();
     if !mouse.is_dragging || !input.just_released(MouseButton::Left) {
         return;
     }
@@ -154,41 +152,25 @@ pub fn check_drag_end(
 
 pub fn process_drag_event(
     mut commands: Commands,
-    grid: Res<GridConfig>,
+    grid: Res<GridData>,
     mut events: EventReader<DragEvent>,
     query_ghost: Query<(Entity, &DragGhost)>,
     mut query_item: Query<(Entity, &mut Transform, &mut Coords), With<BeingDragged>>,
 ) {
-    for event in events.iter() {
-        let DragEvent(end) = event;
+    for DragEvent(end) in events.iter() {
         if let Ok((entity, mut transform, mut coords)) = query_item.get_single_mut() {
             let (ghost_entity, ghost) = query_ghost.single();
             commands.entity(ghost_entity).despawn_recursive();
             commands.entity(entity).remove::<BeingDragged>();
             if ghost.placement_valid {
-                coords.pos.x = end.x;
-                coords.pos.y = end.y;
-                transform.translation.x = coords.pos.x as f32 + coords.dimens.x as f32 * 0.5;
-                transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
-            }
-            if grid.crafting.encloses(&coords) {
-                commands.entity(entity).insert(CraftItem);
-            }
-        }
-    }
-}
-
-// This is to remove the CraftItem component if an item is moved back into the inventory grid from the crafting grid.
-pub fn process_drag_ended_event_into_inventory(
-    mut commands: Commands,
-    grid: Res<GridConfig>,
-    mut events: EventReader<DragEvent>,
-    query_dragged_item: Query<(Entity, &Coords), With<CraftItem>>,
-) {
-    for _ in events.iter() {
-        for (entity, coords) in query_dragged_item.iter() {
-            if grid.inventory.encloses(&coords) {
-                commands.entity(entity).remove::<CraftItem>();
+                coords.pos = *end;
+                transform.translation.x = grid.calc_x(&coords);
+                transform.translation.y = grid.calc_y(&coords);
+                if grid.crafting.encloses(&coords) {
+                    commands.entity(entity).insert(CraftItem);
+                } else if grid.inventory.encloses(&coords) {
+                    commands.entity(entity).remove::<CraftItem>();
+                }
             }
         }
     }

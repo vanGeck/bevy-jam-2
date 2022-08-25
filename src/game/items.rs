@@ -28,13 +28,13 @@ impl Default for Item {
             description: "[EmptyDescription]".to_string(),
             texture_id: TextureId::NotFound,
             wearable: None,
-            stat_bonuses: Default::default()
+            stat_bonuses: Default::default(),
         }
     }
 }
 
 #[derive(Default, Copy, Clone, Debug, Serialize, Deserialize)]
-pub struct StatBonus{
+pub struct StatBonus {
     pub max_hp: i32,
     pub damage: i32,
     pub damage_res: i32,
@@ -60,8 +60,7 @@ pub enum ItemId {
     HerbViolet,
     EssenceMight,
     EssenceVitality,
-    EssenceAlacrity
-    
+    EssenceAlacrity,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq, Hash)]
