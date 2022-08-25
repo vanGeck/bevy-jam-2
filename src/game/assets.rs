@@ -130,6 +130,9 @@ pub enum TextureId {
     LitLantern,
     FireEssence,
     MediumShield,
+    TileSixteen,
+    TileEight,
+    TileThirtyTwo,
 }
 
 impl Default for TextureId {

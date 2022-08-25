@@ -13,8 +13,8 @@ use super::CombineButton;
 
 // TODO: Jazz idk how to use AssetStorage for fonts
 pub fn create_grids(mut commands: Commands, config: Res<GridConfig>, assets: Res<AssetStorage>) {
-    create_grid(&mut commands, &config.inventory);
-    create_grid(&mut commands, &config.crafting);
+    create_grid(&mut commands, &config.inventory, &assets);
+    create_grid(&mut commands, &config.crafting, &assets);
 
     commands
         .spawn_bundle(SpriteBundle {
@@ -173,7 +173,7 @@ pub fn create_grids(mut commands: Commands, config: Res<GridConfig>, assets: Res
         });
 }
 
-fn create_grid(commands: &mut Commands, coords: &Coords) {
+fn create_grid(commands: &mut Commands, coords: &Coords, assets: &Res<AssetStorage>) {
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
@@ -196,10 +196,10 @@ fn create_grid(commands: &mut Commands, coords: &Coords) {
                 for x in 0..coords.dimens.x {
                     grid.spawn_bundle(SpriteBundle {
                         sprite: Sprite {
-                            color: Color::rgba(0.8, 0.8, 0.8, 0.5),
                             custom_size: Some(Dimens::unit().as_vec2()),
                             ..default()
                         },
+                        texture: assets.texture(&TextureId::TileSixteen),
                         transform: Transform::from_xyz(
                             (x as f32 + 0.5) - (coords.dimens.x as f32 * 0.5),
                             (y as f32 + 0.5) - (coords.dimens.y as f32 * 0.5),
