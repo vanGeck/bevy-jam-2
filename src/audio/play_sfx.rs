@@ -1,7 +1,9 @@
 use bevy::prelude::*;
-use bevy_kira_audio::{AudioChannel, AudioControl};
+use bevy_kira_audio::{AudioChannel, AudioControl, PlaybackState};
 
-use crate::audio::sound_event::{MusicChannel, SfxChannel, SoundEvent};
+use crate::audio::sound_event::{
+    AudioResource, CurrentTrack, MusicChannel, SfxChannel, SoundEvent,
+};
 use crate::config::config_audio::AudioConfig;
 use crate::game::AssetStorage;
 
@@ -9,6 +11,7 @@ use crate::game::AssetStorage;
 /// To play any sound effect, just broadcast a `SoundEvent` in the corresponding event channel.
 /// This system will take care of the rest.
 pub fn play_sfx(
+    mut resource: ResMut<AudioResource>,
     mut events: EventReader<SoundEvent>,
     assets: Res<AssetStorage>,
     channel_music: Res<AudioChannel<MusicChannel>>,
@@ -33,24 +36,31 @@ pub fn play_sfx(
                     );
                 }
             }
-            SoundEvent::Music(Some((music_type, looped))) => {
-                if let Some(handle) = assets.music(music_type) {
-                    channel_music.stop();
-                    if *looped {
-                        // TODO: looping.
-                        channel_music.play(handle);
+            SoundEvent::Music(album) => {
+                let next_track = if let Some(current) = &resource.current {
+                    if current.album == *album {
+                        (current.track + 1).rem_euclid(assets.album_len(album))
                     } else {
-                        channel_music.play(handle);
+                        0
                     }
+                } else {
+                    0
+                };
+                if let Some(handle) = assets.album_track(album, next_track) {
+                    channel_music.stop();
+                    let instance = channel_music.play(handle).handle();
+                    resource.current = Some(CurrentTrack {
+                        album: *album,
+                        track: next_track,
+                        instance: instance,
+                    });
+                    resource.skipping = false;
                 } else {
                     info!(
                         "Tried to play MusicType::{:?} but couldn't find that asset.",
-                        music_type
+                        album
                     );
                 }
-            }
-            SoundEvent::Music(None) => {
-                channel_music.stop();
             }
         };
     }
@@ -64,5 +74,22 @@ pub fn change_audio_settings(
     if config.is_changed() {
         channel_music.set_volume(config.music_volume.unwrap_or(0.));
         channel_sfx.set_volume(config.sfx_volume.unwrap_or(0.));
+    }
+}
+
+pub fn skip_to_next_song(
+    mut audio: EventWriter<SoundEvent>,
+    channel: Res<AudioChannel<MusicChannel>>,
+    mut resource: ResMut<AudioResource>,
+) {
+    if resource.skipping {
+        return;
+    }
+    if let Some(current) = &resource.current {
+        let state = channel.state(&current.instance);
+        if state == PlaybackState::Stopped {
+            audio.send(SoundEvent::Music(current.album));
+            resource.skipping = true;
+        }
     }
 }

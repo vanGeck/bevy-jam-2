@@ -1,20 +1,18 @@
-﻿use bevy::log::{debug, info};
-use bevy::prelude::Commands;
-use rand::Rng;
 use crate::config::dungeon_params::DungeonParams;
-use crate::default;
-use crate::game::dungeonsim::combat::{Combatant, Enemy};
+use crate::game::dungeonsim::combat::Combatant;
 use crate::game::dungeonsim::dungeon_components::{DungeonLevel, Room};
+use bevy::prelude::*;
+use rand::Rng;
 
-pub fn generate_level(len: i32, params: &DungeonParams, mut cmd: &mut Commands) -> DungeonLevel {
+pub fn generate_level(len: i32, params: &DungeonParams, mut _cmd: &mut Commands) -> DungeonLevel {
     let mut rooms = Vec::<Room>::new();
     let mut fights = Vec::<Combatant>::new();
     let mut rng = rand::thread_rng();
-    
+
     rooms.push(generate_first_room());
     fights.push(Combatant::default());
-    
-    for i in 1..(len-1) {
+
+    for _ in 1..(len - 1) {
         let x = rng.gen_range(0.0..1.0);
         if x < params.chance_corridor {
             rooms.push(generate_corridor());
@@ -31,40 +29,40 @@ pub fn generate_level(len: i32, params: &DungeonParams, mut cmd: &mut Commands) 
     fights.push(Combatant::default());
 
     info!("Dungeon generation results: ");
-    for s in 0..rooms.len(){
+    for s in 0..rooms.len() {
         rooms[s].print_diag_name();
     }
 
-    return DungeonLevel{
+    return DungeonLevel {
         depth: 0,
         rooms,
-        enemies: fights
-    }
+        enemies: fights,
+    };
 }
 
 fn generate_first_room() -> Room {
-    Room{
+    Room {
         start: true,
         ..Default::default()
     }
 }
 
 fn generate_last_room() -> Room {
-    Room{
+    Room {
         end: true,
         ..Default::default()
     }
 }
 
 fn generate_corridor() -> Room {
-    Room{
+    Room {
         corridor: true,
         ..Default::default()
     }
 }
 
 fn generate_empty() -> Room {
-    Room{
+    Room {
         door: true,
         description: true,
         search: true,
@@ -73,7 +71,7 @@ fn generate_empty() -> Room {
 }
 
 fn generate_fight() -> Room {
-    Room{
+    Room {
         door: true,
         description: true,
         search: true,
@@ -82,11 +80,11 @@ fn generate_fight() -> Room {
     }
 }
 
-fn get_enemy() -> Combatant{
-    Combatant{
+fn get_enemy() -> Combatant {
+    Combatant {
         health: 8,
         proficiency: 0,
         damage_res: 0,
-        damage_bonus: 0
+        damage_bonus: 0,
     }
 }

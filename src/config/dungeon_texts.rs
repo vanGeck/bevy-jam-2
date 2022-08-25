@@ -1,4 +1,4 @@
-﻿use std::fs;
+use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
 

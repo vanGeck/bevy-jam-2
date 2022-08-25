@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
-use crate::game::{MusicId, SoundId, TextureId};
+use crate::game::{AlbumId, SoundId, TextureId};
 use serde::{Deserialize, Serialize};
 
 /// This specifies all assets that must be loaded by the `LoadingState`.
@@ -12,7 +12,7 @@ pub struct LoadingConfig {
     pub textures: HashMap<TextureId, String>,
     pub atlases: HashMap<TextureId, String>,
     pub sound_effects: HashMap<SoundId, String>,
-    pub music: HashMap<MusicId, String>,
+    pub music: HashMap<AlbumId, String>,
 }
 
 impl LoadingConfig {

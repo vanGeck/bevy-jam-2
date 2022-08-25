@@ -10,11 +10,11 @@ use crate::config::config_debug::DebugConfig;
 use crate::config::config_grid::GridConfig;
 use crate::config::data_items::ItemsData;
 use crate::config::data_recipes::RecipesData;
+use crate::config::dungeon_params::DungeonParams;
+use crate::config::dungeon_texts::DungeonTexts;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
-use crate::config::dungeon_params::DungeonParams;
-use crate::config::dungeon_texts::DungeonTexts;
 use crate::{AppState, WindowMode};
 
 pub fn load_configs(mut commands: Commands) {

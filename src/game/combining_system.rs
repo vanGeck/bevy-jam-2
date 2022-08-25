@@ -1,12 +1,12 @@
-use crate::config::data_recipes::RecipesData;
-use crate::game::items::Item;
-use crate::game::recipes::Recipe;
-use crate::positioning::Coords;
-use bevy::prelude::*;
 use crate::config::config_grid::GridConfig;
 use crate::config::data_items::ItemsData;
+use crate::config::data_recipes::RecipesData;
 use crate::game::dragging::BeingDragged;
+use crate::game::items::Item;
+use crate::game::recipes::Recipe;
 use crate::game::SpawnItemEvent;
+use crate::positioning::Coords;
+use bevy::prelude::*;
 
 use super::items::CraftItem;
 
@@ -26,7 +26,9 @@ pub fn combine_items_system(
     mut spawn_event_writer: EventWriter<SpawnItemEvent>,
 ) {
     let number_of_crafting_items = crafting_items_query.iter().count();
-    if number_of_crafting_items <= 1 { return; }
+    if number_of_crafting_items <= 1 {
+        return;
+    }
 
     let mut items = Vec::new();
 
@@ -42,7 +44,7 @@ pub fn combine_items_system(
         if let Some((dimens, item)) = items_data.try_get_item(recipe.result) {
             if let Some(free_coords) = grid.find_free_space(dimens, items_query) {
                 // Spawn the result of the recipe
-                spawn_event_writer.send((SpawnItemEvent::new(item, free_coords)));
+                spawn_event_writer.send(SpawnItemEvent::new(item, free_coords));
                 // Delete the craft items entities
                 for (entity, _) in crafting_items_query.iter() {
                     commands.entity(entity).despawn_recursive();

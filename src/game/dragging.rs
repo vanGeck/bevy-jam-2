@@ -173,7 +173,10 @@ pub fn process_drag_event(
                 transform.translation.y = coords.pos.y as f32 + coords.dimens.y as f32 * 0.5;
             }
             if grid.crafting.encloses(&coords) {
-                debug!("the item has been placed in the crafting area: {:?}", entity);
+                debug!(
+                    "the item has been placed in the crafting area: {:?}",
+                    entity
+                );
                 commands.entity(entity).insert(CraftItem);
             }
             // TODO: Remove CraftItem Component if moved into Backpack grid.

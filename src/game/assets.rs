@@ -11,7 +11,7 @@ pub struct AssetStorage {
     textures: HashMap<TextureId, Handle<Image>>,
     atlases: HashMap<TextureId, Handle<TextureAtlas>>,
     sounds: HashMap<SoundId, Vec<Handle<AudioSource>>>,
-    music: HashMap<MusicId, Vec<Handle<AudioSource>>>,
+    music: HashMap<AlbumId, Vec<Handle<AudioSource>>>,
 }
 
 impl AssetStorage {
@@ -65,18 +65,28 @@ impl AssetStorage {
                 (*(sounds_of_that_type.get(random_index).expect("Should not panic."))).clone()
             })
     }
-    pub fn put_music(&mut self, music_type: MusicId, asset: Handle<AudioSource>) {
+    pub fn put_music(&mut self, music_type: AlbumId, asset: Handle<AudioSource>) {
         self.music
             .entry(music_type)
             .or_insert_with(Vec::new)
             .push(asset);
     }
-    pub fn music(&self, asset_type: &MusicId) -> Option<Handle<AudioSource>> {
+    pub fn album_len(&self, album: &AlbumId) -> usize {
+        self.music.get(album).map_or(0, |vec| vec.len())
+    }
+    pub fn album_track(&self, album: &AlbumId, track: usize) -> Option<Handle<AudioSource>> {
+        self.music
+            .get(album)
+            .map(|vec| vec.get(track).cloned())
+            .flatten()
+    }
+    /// Returns a random track from the given music set.
+    pub fn music_random(&self, album: &AlbumId) -> Option<Handle<AudioSource>> {
         self
             .music
-            .get(asset_type)
+            .get(album)
             .or_else(|| {
-                error!("There is no music of type {:?}. Add it to the LoadingConfig to start using them.", asset_type);
+                error!("There is no music of type {:?}. Add it to the LoadingConfig to start using them.", album);
                 None
             })
             .map(|sounds_of_that_type| {
@@ -135,8 +145,10 @@ pub enum SoundId {
     Placeholder,
 }
 
-/// Identifies a music track.
+/// Identifies a music track or album.
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
-pub enum MusicId {
+pub enum AlbumId {
     Placeholder,
+    Jazz,
+    Ominous,
 }

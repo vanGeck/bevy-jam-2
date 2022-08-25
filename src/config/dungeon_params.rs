@@ -1,4 +1,4 @@
-﻿use std::fs;
+use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
 
@@ -6,7 +6,6 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
-
 
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(deny_unknown_fields)]

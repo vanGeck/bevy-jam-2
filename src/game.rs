@@ -1,6 +1,6 @@
-use std::time::Duration;
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
+use std::time::Duration;
 
 pub use assets::*;
 pub use combining_system::*;
@@ -15,15 +15,13 @@ use crate::game::dragging::{
     apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
     process_drag_event, set_ghost_position, DragEvent,
 };
+use crate::game::dungeonsim::combat::{CombatState, Combatant, Enemy, Hero};
+use crate::game::dungeonsim::{init_dungeon, tick_dungeon, DungeonState};
+use crate::game::items::{Item, ItemId};
 use crate::hud::gold::{gold_update_system, setup_gold};
 use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
-use crate::AppState;
-use crate::game::dungeonsim::combat::{Combatant, CombatState, Enemy, Hero};
-use crate::game::items::{Item, ItemId};
 use crate::positioning::{Coords, Dimens, Pos};
-
-use self::items::CraftItem;
-use crate::game::dungeonsim::{DungeonState, init_dungeon, tick_dungeon};
+use crate::AppState;
 
 pub mod assets;
 pub mod camera;
@@ -43,21 +41,23 @@ impl Plugin for GamePlugin {
         app.add_event::<SpawnItemEvent>()
             .add_event::<DragEvent>()
             .init_resource::<Player>()
-            .insert_resource(DungeonState{ 
-                current_room_idx: 0, 
-                current_level: None, 
-                msg_cooldown: Timer::new(Duration::from_millis(3000), true), 
-                running: true, combat_state: CombatState::Init })
-            .insert_resource(Hero{
-                combat_stats: Combatant{
+            .insert_resource(DungeonState {
+                current_room_idx: 0,
+                current_level: None,
+                msg_cooldown: Timer::new(Duration::from_millis(3000), true),
+                running: true,
+                combat_state: CombatState::Init,
+            })
+            .insert_resource(Hero {
+                combat_stats: Combatant {
                     health: 20,
                     proficiency: 1,
                     damage_res: 1,
-                    damage_bonus: 0
-                }
+                    damage_bonus: 0,
+                },
             })
-            .insert_resource(Enemy{
-                combat_stats: Default::default()
+            .insert_resource(Enemy {
+                combat_stats: Default::default(),
             })
             .add_enter_system_set(
                 AppState::InGame,
@@ -110,7 +110,7 @@ pub enum GameResult {
 
 // TODO: Move this to it's own system?
 fn setup(mut audio: EventWriter<SoundEvent>) {
-    audio.send(SoundEvent::Music(Some((MusicId::Placeholder, false))));
+    audio.send(SoundEvent::Music(AlbumId::Jazz));
 }
 
 pub fn despawn_gameplay_entities(

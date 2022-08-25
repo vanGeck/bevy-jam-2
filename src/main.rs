@@ -1,4 +1,5 @@
 #![forbid(unsafe_code)]
+#![allow(dead_code)]
 
 use bevy::log::Level;
 use bevy::prelude::*;
@@ -42,7 +43,6 @@ fn main() {
     app.insert_resource(bevy::log::LogSettings {
         filter: config.log_filter.clone(),
         level: Level::TRACE,
-        ..Default::default()
     })
     // .add_plugin(LogDiagnosticsPlugin::default())
     // .add_plugin(FrameTimeDiagnosticsPlugin::default())

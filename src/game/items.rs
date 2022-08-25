@@ -19,7 +19,7 @@ pub struct Item {
     pub wearable: Option<(EquipmentSlot, Pos)>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum ItemId {
     Croissant,
     Athelas,
