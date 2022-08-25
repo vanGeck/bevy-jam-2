@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     config::health_bar::HealthBarConfig,
-    positioning::{Coords, Depth},
+    positioning::{Coords, Depth, Dimens},
 };
 
 use super::combat::Hero;
@@ -49,14 +49,18 @@ pub fn setup_health_bar(mut commands: Commands, config: Res<HealthBarConfig>) {
         .insert(Name::new("HealthBarBackground"));
 }
 
-// goes straight to 0 somehow....
 pub fn update_health_bar(
     hero: ResMut<Hero>,
-    mut health_bar_query: Query<&mut HealthBar>,
+    mut health_bar_query: Query<(&HealthBar, &mut Sprite)>,
 ) {
-    if let Ok(mut health_bar) = health_bar_query.get_single_mut() {
-        debug!("before: {:?}", health_bar.coords.dimens.x);
-        health_bar.coords.dimens.x *= hero.combat_stats.health / hero.combat_stats.max_health;
-        debug!("after: {:?}", health_bar.coords.dimens.x);
+    if let Ok((health_bar, mut sprite)) = health_bar_query.get_single_mut() {
+        let new = Dimens::new(
+            (health_bar.coords.dimens.x as f32
+                * (hero.combat_stats.health as f32 / hero.combat_stats.max_health as f32))
+                as i32,
+            health_bar.coords.dimens.y,
+        );
+
+        sprite.custom_size = Some(new.as_vec2());
     }
 }

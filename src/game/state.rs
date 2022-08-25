@@ -31,8 +31,8 @@ impl Plugin for GamePlugin {
             .init_resource::<Player>()
             .insert_resource(Hero {
                 combat_stats: Combatant {
-                    health: 100,
-                    max_health: 100,
+                    health: 20,
+                    max_health: 20,
                     proficiency: 1,
                     damage_res: 1,
                     damage_bonus: 0,

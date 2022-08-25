@@ -42,18 +42,19 @@ pub fn tick_dungeon(
     mut hero: ResMut<Hero>,
     mut enemy: ResMut<Enemy>,
 ) {
-    if state.running == false {
+    if !state.running {
         return;
     }
     if state.msg_cooldown.tick(time.delta()).just_finished() {
-        let cbt_state = state.combat_state.clone();
+        // hero.combat_stats.health -= 1;
+        let cbt_state = state.combat_state;
         let current_room_idx = state.current_room_idx as usize;
         if let Some(level) = &mut state.current_level {
             let room = &mut level.rooms[current_room_idx as usize];
 
             if room.init {
                 room.init = false;
-                enemy.combat_stats = level.enemies[current_room_idx].clone();
+                enemy.combat_stats = level.enemies[current_room_idx];
             }
 
             if room.corridor {
