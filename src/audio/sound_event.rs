@@ -42,3 +42,6 @@ pub struct CurrentTrack {
     /// A kira thing. This is how we track the status of the current playback.
     pub instance: Handle<AudioInstance>,
 }
+
+#[derive(Component)]
+pub struct AudioTextDisplay;

@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_kira_audio::{AudioChannel, AudioControl, PlaybackState};
 
 use crate::audio::sound_event::{
-    AudioResource, CurrentTrack, MusicChannel, SfxChannel, SoundEvent,
+    AudioResource, AudioTextDisplay, CurrentTrack, MusicChannel, SfxChannel, SoundEvent,
 };
 use crate::config::config_audio::AudioConfig;
 use crate::game::AssetStorage;
@@ -16,6 +16,7 @@ pub fn play_sfx(
     assets: Res<AssetStorage>,
     channel_music: Res<AudioChannel<MusicChannel>>,
     channel_sfx: Res<AudioChannel<SfxChannel>>,
+    mut query: Query<&mut Text, With<AudioTextDisplay>>,
 ) {
     for event in events.iter() {
         debug!("Received sound event: {:?}", event);
@@ -46,7 +47,7 @@ pub fn play_sfx(
                 } else {
                     0
                 };
-                if let Some(handle) = assets.album_track(album, next_track) {
+                if let Some((handle, file_name)) = assets.album_track(album, next_track) {
                     channel_music.stop();
                     let instance = channel_music.play(handle).handle();
                     resource.current = Some(CurrentTrack {
@@ -55,6 +56,9 @@ pub fn play_sfx(
                         instance,
                     });
                     resource.skipping = false;
+                    for mut text in &mut query {
+                        text.sections[0].value = format!("Now Playing: {}", file_name);
+                    }
                 } else {
                     info!(
                         "Tried to play MusicType::{:?} but couldn't find that asset.",

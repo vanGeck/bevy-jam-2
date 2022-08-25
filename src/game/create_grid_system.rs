@@ -1,9 +1,12 @@
-use crate::animation::AnimationTimer;
-use bevy::prelude::*;
 use std::time::Duration;
 
+use bevy::prelude::*;
+use bevy::text::Text2dBounds;
+
+use crate::animation::AnimationTimer;
+use crate::audio::sound_event::AudioTextDisplay;
 use crate::config::config_grid::GridConfig;
-use crate::game::{AssetStorage, CleanupOnGameplayEnd, TextureId};
+use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId, TextureId};
 use crate::positioning::Depth;
 use crate::positioning::Dimens;
 use crate::positioning::{Coords, Pos};
@@ -11,7 +14,9 @@ use crate::positioning::{Grid, GridCell};
 
 use super::CombineButton;
 
-// TODO: Jazz idk how to use AssetStorage for fonts
+/// Magic multiplier to make text work at this scale.
+const TEXT_SIZE_MULTIPLIER: f32 = 64.;
+
 pub fn create_grids(mut commands: Commands, config: Res<GridConfig>, assets: Res<AssetStorage>) {
     create_grid(&mut commands, &config.inventory, &assets);
     create_grid(&mut commands, &config.crafting, &assets);
@@ -76,6 +81,41 @@ pub fn create_grids(mut commands: Commands, config: Res<GridConfig>, assets: Res
                     ping_pong: false,
                 })
                 .insert(Name::new("RecordPlayer"));
+            let text_style = TextStyle {
+                font: assets.font(&FontId::Square),
+                font_size: 60.0,
+                color: Color::WHITE,
+            };
+            let text_alignment = TextAlignment {
+                vertical: VerticalAlign::Center,
+                horizontal: HorizontalAlign::Left,
+            };
+            parent
+                .spawn()
+                .insert(AudioTextDisplay)
+                .insert_bundle(Text2dBundle {
+                    // Default text, will probably never be seen:
+                    text: Text::from_section(
+                        "Click the record player to start the music.",
+                        text_style,
+                    )
+                    .with_alignment(text_alignment),
+                    // The max size that it should fit in:
+                    text_2d_bounds: Text2dBounds {
+                        size: Vec2::new(13. * TEXT_SIZE_MULTIPLIER, 2. * TEXT_SIZE_MULTIPLIER),
+                    },
+                    transform: Transform::from_translation(Vec3::new(
+                        4. - config.record_player.dimens.x as f32 * 0.5,
+                        2.0 - config.record_player.dimens.y as f32 * 0.5,
+                        1.0,
+                    ))
+                    .with_scale(Vec3::new(
+                        1. / TEXT_SIZE_MULTIPLIER,
+                        1. / TEXT_SIZE_MULTIPLIER,
+                        1.,
+                    )),
+                    ..default()
+                });
         });
 
     commands
