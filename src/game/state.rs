@@ -136,8 +136,8 @@ pub fn track_combine_button_hover(
 pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
     spawn.send(SpawnItemEvent::new(
         Item {
-            id: ItemId::CandleStick,
-            texture_id: TextureId::CandleStick,
+            id: ItemId::Vial,
+            texture_id: TextureId::Vial,
             name: "".to_string(),
             description: "".to_string(),
             wearable: None,
@@ -158,14 +158,14 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
     ));
     spawn.send(SpawnItemEvent::new(
         Item {
-            id: ItemId::FireEssence,
-            texture_id: TextureId::FireEssence,
+            id: ItemId::HerbRed,
+            texture_id: TextureId::HerbRed,
             name: "".to_string(),
             description: "".to_string(),
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(15, 15), Dimens::new(1, 1)),
+        Coords::new(Pos::new(15, 15), Dimens::new(1, 2)),
     ));
     spawn.send(SpawnItemEvent::new(
         Item {
@@ -176,17 +176,17 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(20, 20), Dimens::new(3, 2)),
+        Coords::new(Pos::new(20, 20), Dimens::new(1, 2)),
     ));
     spawn.send(SpawnItemEvent::new(
         Item {
-            id: ItemId::TurtleHerb,
-            texture_id: TextureId::TurtleHerb,
+            id: ItemId::HerbGreen,
+            texture_id: TextureId::HerbGreen,
             name: "".to_string(),
             description: "".to_string(),
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(25, 25), Dimens::new(2, 3)),
+        Coords::new(Pos::new(25, 25), Dimens::new(1, 2)),
     ));
 }

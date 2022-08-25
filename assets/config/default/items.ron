@@ -63,22 +63,22 @@
             wearable: (Shield, ((0, 0))),
         )),
         (((1, 2)), (
-            id: RedHerb,
+            id: HerbRed,
             name: "Red Herb",
             description: "Basic alchemical ingredient. Associated with vitality.",
-            texture_id: RedHerb,
+            texture_id: HerbRed,
         )),
         (((1, 2)), (
-            id: GreenHerb,
+            id: HerbGreen,
             name: "Red Herb",
             description: "Basic alchemical ingredient. Associated with dexterity.",
-            texture_id: GreenHerb,
+            texture_id: HerbGreen,
         )),
         (((1, 2)), (
-            id: VioletHerb,
+            id: HerbViolet,
             name: "Red Herb",
             description: "Basic alchemical ingredient. Associated with strength.",
-            texture_id: VioletHerb,
+            texture_id: HerbViolet,
         )),
         (((1, 2)), (
             id: EssenceVitality,

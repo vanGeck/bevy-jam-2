@@ -55,9 +55,9 @@ pub enum ItemId {
     FireEssence,
     MediumShield,
     // Actual items
-    RedHerb,
-    GreenHerb,
-    VioletHerb,
+    HerbRed,
+    HerbGreen,
+    HerbViolet,
     EssenceMight,
     EssenceVitality,
     EssenceAlacrity

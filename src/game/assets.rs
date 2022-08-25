@@ -151,9 +151,9 @@ pub enum TextureId {
     TileEight,
     TileThirtyTwo,
     // New items
-    RedHerb,
-    GreenHerb,
-    VioletHerb,
+    HerbRed,
+    HerbGreen,
+    HerbViolet,
     EssenceMight,
     EssenceVitality,
     EssenceAlacrity

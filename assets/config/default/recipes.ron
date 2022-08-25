@@ -47,7 +47,7 @@
                     quantity: 1
                 ),
                 (
-                    item_id: RedHerb,
+                    item_id: HerbRed,
                     quantity: 1
                 )
             ],
@@ -60,7 +60,7 @@
                     quantity: 1
                 ),
                 (
-                    item_id: GreenHerb,
+                    item_id: HerbGreen,
                     quantity: 1
                 )
             ],
@@ -73,7 +73,7 @@
                     quantity: 1
                 ),
                 (
-                    item_id: VioletHerb,
+                    item_id: HerbViolet,
                     quantity: 1
                 )
             ],
