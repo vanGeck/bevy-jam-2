@@ -150,6 +150,13 @@ pub enum TextureId {
     TileSixteen,
     TileEight,
     TileThirtyTwo,
+    // New items
+    RedHerb,
+    GreenHerb,
+    VioletHerb,
+    EssenceMight,
+    EssenceVitality,
+    EssenceAlacrity
 }
 
 impl Default for TextureId {

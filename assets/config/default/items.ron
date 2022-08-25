@@ -62,5 +62,41 @@
             texture_id: MediumShield,
             wearable: (Shield, ((0, 0))),
         )),
+        (((1, 2)), (
+            id: RedHerb,
+            name: "Red Herb",
+            description: "Basic alchemical ingredient. Associated with vitality.",
+            texture_id: RedHerb,
+        )),
+        (((1, 2)), (
+            id: GreenHerb,
+            name: "Red Herb",
+            description: "Basic alchemical ingredient. Associated with dexterity.",
+            texture_id: GreenHerb,
+        )),
+        (((1, 2)), (
+            id: VioletHerb,
+            name: "Red Herb",
+            description: "Basic alchemical ingredient. Associated with strength.",
+            texture_id: VioletHerb,
+        )),
+        (((1, 2)), (
+            id: EssenceVitality,
+            name: "Essence of Vitality",
+            description: "Restores 10 HP on use.",
+            texture_id: EssenceVitality,
+        )),
+        (((1, 2)), (
+            id: EssenceAlacrity,
+            name: "Essence of Vitality",
+            description: "Grants 1 point of combat skill for 30 seconds.",
+            texture_id: EssenceAlacrity,
+        )),
+        (((1, 2)), (
+            id: EssenceMight,
+            name: "Essence of Vitality",
+            description: "Grants 1 point of bonus damage for 30 seconds.",
+            texture_id: EssenceMight,
+        )),
     ]
 )

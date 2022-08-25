@@ -60,7 +60,7 @@ pub enum ItemId {
     VioletHerb,
     EssenceMight,
     EssenceVitality,
-    Essence
+    EssenceAlacrity
     
 }
 

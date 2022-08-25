@@ -39,5 +39,45 @@
                 )
             ],
         ),
-    ]
+        (
+            result: EssenceVitality,
+            ingredients: [
+                (
+                    item_id: Vial,
+                    quantity: 1
+                ),
+                (
+                    item_id: RedHerb,
+                    quantity: 1
+                )
+            ],
+        ),
+        (
+            result: EssenceAlacrity,
+            ingredients: [
+                (
+                    item_id: Vial,
+                    quantity: 1
+                ),
+                (
+                    item_id: GreenHerb,
+                    quantity: 1
+                )
+            ],
+        ),
+        (
+            result: EssenceMight,
+            ingredients: [
+                (
+                    item_id: Vial,
+                    quantity: 1
+                ),
+                (
+                    item_id: VioletHerb,
+                    quantity: 1
+                )
+            ],
+        ),
+    ],
+    
 )

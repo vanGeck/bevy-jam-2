@@ -107,7 +107,7 @@ pub fn tick_dungeon(
             }
             if room.post_search {
                 // TODO:
-                // Plugin in an event to spawn items in pack!
+                // Plug in an event to spawn items in pack!
                 // Plug in loot tables and drop rates.
                 // Use halt/resume methods to allow for looting in peace.
                 room.post_search = false;
