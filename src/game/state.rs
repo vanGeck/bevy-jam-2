@@ -2,7 +2,9 @@ use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
 use crate::game::combat::{Combatant, Enemy, Hero};
 use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
-use crate::game::event_handling::{handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent};
+use crate::game::event_handling::{
+    handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
+};
 use crate::game::{
     apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
     combine_items_system, create_camera, create_grids, process_drag_event, set_ghost_position,

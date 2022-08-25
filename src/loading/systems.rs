@@ -1,5 +1,6 @@
+use std::ffi::OsStr;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use bevy::asset::LoadState;
 use bevy::prelude::*;
@@ -54,6 +55,10 @@ pub fn load_assets(
         let texture_handle = assets.load(PathBuf::new().join("textures/").join(path));
         storage.put_texture(sprite_type, texture_handle);
     }
+    for (font_type, path) in config.fonts {
+        let font_handle = assets.load(PathBuf::new().join("fonts/").join(path));
+        storage.put_font(font_type, font_handle);
+    }
 
     for (sound_type, path) in config.sound_effects {
         let asset_path = PathBuf::new().join("audio/sfx/").join(path);
@@ -71,19 +76,40 @@ pub fn load_assets(
     }
 
     for (music_type, path) in config.music {
-        let asset_path = PathBuf::new().join("audio/music/").join(path);
+        let asset_path = PathBuf::new().join("audio/music/").join(path.clone());
         let file = PathBuf::new().join("assets/").join(&asset_path);
         if file.is_file() {
             let handle = assets.load(asset_path);
-            storage.put_music(music_type, handle);
+            storage.put_music(music_type, handle, path.clone());
         } else if file.is_dir() {
-            for handle in assets.load_folder(asset_path).unwrap() {
-                storage.put_music(music_type, handle.typed());
+            for child in get_children(&file) {
+                let handle = assets.load(asset_path.join(child.clone()));
+                storage.put_music(
+                    music_type,
+                    handle,
+                    child
+                        .clone()
+                        .file_name()
+                        .unwrap_or(&OsStr::new("Filename not found"))
+                        .to_str()
+                        .unwrap_or("Filename not found")
+                        .to_string(),
+                );
             }
         } else {
             warn!("Did not recognise path {:?}", asset_path);
         }
     }
+}
+
+/// Helper function to collect all direct children of the given directory.
+/// This will not return child-directories, only regular files.
+fn get_children(parent: &Path) -> Vec<PathBuf> {
+    fs::read_dir(parent)
+        .unwrap()
+        .map(|entry| entry.unwrap().path())
+        .filter(|path| path.is_file())
+        .collect()
 }
 
 pub fn check_load_state(

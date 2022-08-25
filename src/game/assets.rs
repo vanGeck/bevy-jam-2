@@ -11,7 +11,8 @@ pub struct AssetStorage {
     textures: HashMap<TextureId, Handle<Image>>,
     atlases: HashMap<TextureId, Handle<TextureAtlas>>,
     sounds: HashMap<SoundId, Vec<Handle<AudioSource>>>,
-    music: HashMap<AlbumId, Vec<Handle<AudioSource>>>,
+    music: HashMap<AlbumId, Vec<(Handle<AudioSource>, String)>>,
+    fonts: HashMap<FontId, Handle<Font>>,
 }
 
 impl AssetStorage {
@@ -65,23 +66,32 @@ impl AssetStorage {
                 (*(sounds_of_that_type.get(random_index).expect("Should not panic."))).clone()
             })
     }
-    pub fn put_music(&mut self, music_type: AlbumId, asset: Handle<AudioSource>) {
+    pub fn put_music(
+        &mut self,
+        music_type: AlbumId,
+        asset: Handle<AudioSource>,
+        file_name: String,
+    ) {
         self.music
             .entry(music_type)
             .or_insert_with(Vec::new)
-            .push(asset);
+            .push((asset, file_name));
     }
     pub fn album_len(&self, album: &AlbumId) -> usize {
         self.music.get(album).map_or(0, |vec| vec.len())
     }
-    pub fn album_track(&self, album: &AlbumId, track: usize) -> Option<Handle<AudioSource>> {
+    pub fn album_track(
+        &self,
+        album: &AlbumId,
+        track: usize,
+    ) -> Option<(Handle<AudioSource>, String)> {
         self.music
             .get(album)
             .map(|vec| vec.get(track).cloned())
             .flatten()
     }
     /// Returns a random track from the given music set.
-    pub fn music_random(&self, album: &AlbumId) -> Option<Handle<AudioSource>> {
+    pub fn music_random(&self, album: &AlbumId) -> Option<(Handle<AudioSource>, String)> {
         self
             .music
             .get(album)
@@ -94,6 +104,13 @@ impl AssetStorage {
                 (*(sounds_of_that_type.get(random_index).expect("Should not panic."))).clone()
             })
     }
+    pub fn put_font(&mut self, asset_type: FontId, asset: Handle<Font>) {
+        self.fonts.insert(asset_type, asset);
+    }
+    pub fn font(&self, asset_type: &FontId) -> Handle<Font> {
+        (*self.fonts.get(asset_type).expect("Font asset is missing.")).clone()
+    }
+
     pub fn get_all_handle_ids(&self) -> Vec<HandleId> {
         let vec = self.textures.iter().map(|item| item.1.clone().id).collect();
         // let vec = self.sounds.iter()
@@ -153,4 +170,10 @@ pub enum SoundId {
 pub enum AlbumId {
     Jazz,
     Ominous,
+}
+
+#[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
+pub enum FontId {
+    FiraSansBold,
+    Square,
 }

@@ -31,4 +31,8 @@
         Jazz: "jazz/",
         Ominous: "ominous/",
     },
+    fonts: {
+        FiraSansBold: "FiraSans-Bold.ttf",
+        Square: "square.ttf",
+    }
 )

@@ -1,7 +1,7 @@
+use crate::config::config_grid::GridConfig;
 use crate::config::data_items::ItemsData;
 use bevy::prelude::*;
 use rand::Rng;
-use crate::config::config_grid::GridConfig;
 
 use crate::config::data_sim_texts::DungeonTexts;
 use crate::game::sim::dungeon_components::TextType;
