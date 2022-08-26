@@ -129,6 +129,7 @@ pub struct AtlasId(pub TextureId, pub usize);
 pub enum TextureId {
     /// Fallback sprite. Will be used if the intended sprite failed to load.
     NotFound,
+    UiPanelTexture,
     /// Large image for the menu screen
     Backpack,
     Overseer,

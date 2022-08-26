@@ -1,11 +1,13 @@
 #![forbid(unsafe_code)]
 #![allow(dead_code)]
 
+use std::env;
 use bevy::log::Level;
 use bevy::prelude::*;
 use bevy::window::WindowMode;
 use bevy::DefaultPlugins;
 use bevy_egui::{egui, EguiContext, EguiPlugin};
+use bevy_ninepatch::{NinePatchBuilder, NinePatchPlugin};
 use egui::*;
 use iyes_loopless::prelude::AppLooplessStateExt;
 
@@ -38,6 +40,7 @@ mod window_event_handler;
 pub const GAME_NAME: &str = "Bag Goblin";
 
 fn main() {
+    env::set_var("RUST_BACKTRACE", "1");
     let config = DebugConfig::load_from_file();
     let mut app = App::new();
     app.insert_resource(bevy::log::LogSettings {

@@ -1,3 +1,4 @@
+use std::time::Duration;
 use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
 use crate::game::combat::{Combatant, Enemy, Hero};
@@ -5,19 +6,16 @@ use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
 use crate::game::event_handling::{
     handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
 };
-use crate::game::{
-    apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
-    combine_items_system, process_drag_event, set_ghost_position, spawn_item, AlbumId,
-    CleanupOnGameplayEnd, CombineButton, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent,
-    TextureId,
-};
+use crate::game::{apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity, combine_items_system, process_drag_event, set_ghost_position, spawn_item, AlbumId, CleanupOnGameplayEnd, CombineButton, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent, TextureId, AssetStorage};
 use crate::hud::gold::gold_update_system;
 use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
 use crate::positioning::{Coords, Dimens, Pos};
 use crate::states::handle_state_transition;
 use crate::AppState;
 use bevy::prelude::*;
+use bevy_ninepatch::{NinePatchBuilder, NinePatchBundle};
 use iyes_loopless::prelude::*;
+use crate::game::timed_effect::{test_apply_modifier, tick_temporary_modifiers, TimedEffectTicker};
 use crate::game::item_info_system::*;
 
 use super::{setup_health_bar, update_health_bar, Eyes, Iris};
@@ -31,7 +29,10 @@ impl Plugin for GamePlugin {
             .add_event::<SimMessageEvent>()
             .add_event::<SimLootEvent>()
             .add_event::<MouseOverEvent>()
+            
+            .add_plugin(bevy_ninepatch::NinePatchPlugin::<()>::default())
             .init_resource::<Player>()
+            .insert_resource(TimedEffectTicker { timer: Timer::new(Duration::from_secs(1), true) })
             .insert_resource(Hero {
                 combat_stats: Combatant {
                     health: 20,
@@ -52,6 +53,7 @@ impl Plugin for GamePlugin {
                     .with_system(init_dungeon)
                     .with_system(create_debug_items)
                     .with_system(setup_health_bar)
+                    //.with_system(test_slice)
                     .into(),
             )
             .add_system_set(
@@ -71,6 +73,8 @@ impl Plugin for GamePlugin {
                     .with_system(animate)
                     .with_system(track_combine_button_hover)
                     .with_system(tick_dungeon)
+                    .with_system(tick_temporary_modifiers)
+                    .with_system(test_apply_modifier)
                     .with_system(handle_sim_message)
                     .with_system(handle_sim_loot)
                     .with_system(update_health_bar)
@@ -198,4 +202,47 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         },
         Coords::new(Pos::new(2, 1), Dimens::new(1, 2)),
     ));
+}
+
+fn test_slice(
+    mut commands: Commands,
+    assets: Res<AssetStorage>,
+    mut nine_patches: ResMut<Assets<NinePatchBuilder<()>>>,
+) {
+    // Texture for the base image
+    let panel_texture_handle = Option::<Handle<Image>>::from(assets.texture(&TextureId::UiPanelTexture));
+    
+    if let Some(item) = panel_texture_handle {
+        info!("texture present");
+        let nine_patch_handle = nine_patches.add(NinePatchBuilder::by_margins(30, 30, 30, 30));
+
+        commands.spawn_bundle(
+            // this component bundle will be detected by the plugin, and the 9-Patch UI element will be added as a child
+            // of this entity
+            NinePatchBundle {
+                style: Style {
+                    margin: UiRect::all(Val::Auto),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    size: Size::new(Val::Px(300.), Val::Px(500.)),
+                    ..Default::default()
+                },
+                nine_patch_data: bevy_ninepatch::NinePatchData {
+                    nine_patch: nine_patch_handle,
+                    texture: item,
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+        );
+    } else {
+        error!("texture missing");
+    }
+    
+
+
+    
+    return;
+
+
 }

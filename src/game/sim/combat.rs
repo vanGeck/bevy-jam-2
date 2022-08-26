@@ -4,7 +4,9 @@ use rand::Rng;
 use crate::game::sim::dungeon_components::TextType;
 use crate::game::sim::event_handling::SimMessageEvent;
 
-#[derive(Component, Default, Copy, Clone)]
+use bevy_inspector_egui::Inspectable;
+
+#[derive(Component, Default, Copy, Clone, Inspectable)]
 pub struct Combatant {
     pub health: i32,
     pub max_health: i32,
@@ -23,10 +25,12 @@ pub enum CombatState {
     Ended,
 }
 
+#[derive(Default, Inspectable)]
 pub struct Hero {
     pub combat_stats: Combatant,
 }
 
+#[derive(Default, Inspectable)]
 pub struct Enemy {
     pub combat_stats: Combatant,
 }

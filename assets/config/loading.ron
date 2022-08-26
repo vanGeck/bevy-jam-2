@@ -1,7 +1,8 @@
 // Deserialises to a LoadingConfig struct.
 (
     textures: {
-        NotFound: "not_found.png",
+        NotFound: "not_found.png", 
+        UiPanelTexture: "MyPanel2.png",
         Overseer: "overseer.png",
         OverseerEyesWhite: "overseer_eyes_white.png",
         OverseerIris: "overseer_eyes_black.png",
