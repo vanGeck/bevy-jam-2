@@ -7,14 +7,14 @@ use crate::game::event_handling::{
 };
 use crate::game::{
     apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
-    combine_items_system, create_camera, create_layout_feed, create_layout_foo,
-    create_layout_grids, create_layout_hero, create_layout_music, create_layout_toasts,
-    process_drag_event, set_ghost_position, spawn_item, AlbumId, CleanupOnGameplayEnd,
-    CombineButton, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent, TextureId,
+    combine_items_system, process_drag_event, set_ghost_position, spawn_item, AlbumId,
+    CleanupOnGameplayEnd, CombineButton, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent,
+    TextureId,
 };
-use crate::hud::gold::{gold_update_system, setup_gold};
+use crate::hud::gold::gold_update_system;
 use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
 use crate::positioning::{Coords, Dimens, Pos};
+use crate::states::handle_state_transition;
 use crate::AppState;
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
@@ -47,14 +47,6 @@ impl Plugin for GamePlugin {
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
                     .with_system(setup)
-                    .with_system(setup_gold)
-                    .with_system(create_camera)
-                    .with_system(create_layout_music)
-                    .with_system(create_layout_feed)
-                    .with_system(create_layout_grids)
-                    .with_system(create_layout_toasts)
-                    .with_system(create_layout_foo)
-                    .with_system(create_layout_hero)
                     .with_system(init_dungeon)
                     // .with_system(create_debug_items)
                     .with_system(setup_health_bar)
@@ -63,6 +55,7 @@ impl Plugin for GamePlugin {
             .add_system_set(
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
+                    .with_system(handle_state_transition)
                     .with_system(spawn_item)
                     .with_system(set_cursor_appearance)
                     .with_system(check_drag_begin)
@@ -85,7 +78,6 @@ impl Plugin for GamePlugin {
                 AppState::InGame,
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    .with_system(despawn_gameplay_entities)
                     .with_system(reset_cursor)
                     .into(),
             );

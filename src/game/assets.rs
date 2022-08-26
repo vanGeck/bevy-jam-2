@@ -131,7 +131,6 @@ pub enum TextureId {
     NotFound,
     /// Large image for the menu screen
     Backpack,
-    BackpackFlap,
     Overseer,
     /// Unused at the moment, but might be used later.
     Cursor,

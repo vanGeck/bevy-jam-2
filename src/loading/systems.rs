@@ -131,11 +131,7 @@ pub fn check_load_state(
             } else {
                 WindowMode::Windowed
             });
-            if config.skip_straight_to_game {
-                commands.insert_resource(NextState(AppState::InGame));
-            } else {
-                commands.insert_resource(NextState(AppState::MainMenu));
-            }
+            commands.insert_resource(NextState(AppState::MainMenu));
         }
         _ => (),
     }

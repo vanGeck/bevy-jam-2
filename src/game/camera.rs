@@ -10,32 +10,46 @@ const ASPECT_RATIO_X: f32 = 16.;
 const ASPECT_RATIO_Y: f32 = 9.;
 
 #[derive(Component)]
-pub struct GameCamera;
+pub struct GameCamera {
+    pub menu_zoom: f32,
+    pub game_zoom: f32,
+    pub zoom: f32,
+}
 
-#[derive(Component)]
-pub struct MenuCamera;
+impl Default for GameCamera {
+    fn default() -> Self {
+        Self {
+            /// The zoom factor when in the menu.
+            menu_zoom: 5.,
+            /// The zoom factor during the game.
+            game_zoom: 1.,
+            /// Current zoom factor.
+            zoom: 5.,
+        }
+    }
+}
 
 /// Initialise the camera.
 pub fn create_camera(mut commands: Commands) {
     let bundle = Camera2dBundle::default();
     commands
         .spawn_bundle(bundle)
-        .insert(GameCamera)
+        .insert(GameCamera::default())
         .insert(CleanupOnGameplayEnd);
 }
 
 /// This ensures that the camera scales when the window is resized.
 pub fn set_cam_scale(
     windows: Res<Windows>,
-    mut query: Query<&mut Transform, With<Camera>>,
+    mut query: Query<(&mut Transform, &GameCamera), With<Camera>>,
     layout: Res<LayoutData>,
 ) {
     let window = get_primary_window_size(&windows);
-    for mut transform in query.iter_mut() {
+    for (mut transform, cam) in query.iter_mut() {
         let multiplier = MAGIC * layout.factor;
         let width = ASPECT_RATIO_X * multiplier;
         let height = ASPECT_RATIO_Y * multiplier;
-        let scale = (height / window.y).max(width / window.x);
+        let scale = cam.zoom * (height / window.y).max(width / window.x);
         transform.scale = Vec3::new(scale, scale, 1.);
         transform.translation.x = width * 0.5;
         transform.translation.y = height * 0.5;

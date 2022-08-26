@@ -1,14 +1,8 @@
 use bevy::prelude::*;
-use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, NextState};
+use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet};
 
-use crate::audio::sound_event::SoundEvent;
-use crate::game::camera::create_camera;
-use crate::game::{
-    despawn_gameplay_entities, AssetStorage, CleanupOnGameplayEnd, SoundId, TextureId,
-};
-use crate::mouse::Mouse;
-use crate::positioning::Depth;
-use crate::AppState;
+use crate::states::{handle_state_transition, MenuTransition};
+use crate::{AppState, DebugConfig};
 
 pub struct MainMenuPlugin;
 
@@ -18,68 +12,36 @@ impl Plugin for MainMenuPlugin {
             AppState::MainMenu,
             ConditionSet::new()
                 .run_in_state(AppState::MainMenu)
-                .with_system(create_camera)
-                .with_system(create_menu)
+                .with_system(check_menu_bypass)
                 .into(),
         )
         .add_system_set(
             ConditionSet::new()
                 .run_in_state(AppState::MainMenu)
                 .with_system(track_backpack_hover)
+                .with_system(handle_state_transition)
                 .into(),
         )
         .add_exit_system_set(
             AppState::MainMenu,
-            ConditionSet::new()
-                .run_in_state(AppState::MainMenu)
-                .with_system(despawn_gameplay_entities)
-                .into(),
+            ConditionSet::new().run_in_state(AppState::MainMenu).into(),
         );
     }
 }
 
-fn create_menu(mut commands: Commands, assets: Res<AssetStorage>) {
-    let dimens = Vec2::new(18., 24.);
-    let pos = Vec2::new(32., 18.);
-    let flap_pos = Vec2::new(3.5, 8.85);
-    let flap_dimens = Vec2::splat(dimens.x * 0.63);
-    commands
-        .spawn_bundle(SpriteBundle {
-            sprite: Sprite {
-                custom_size: Some(dimens),
-                ..default()
-            },
-            texture: assets.texture(&TextureId::Backpack),
-            transform: Transform::from_xyz(pos.x, pos.y, Depth::Background.z()),
-            ..Default::default()
-        })
-        .insert(Backpack { dimens })
-        .insert(Name::new("Backpack"))
-        .insert(CleanupOnGameplayEnd);
-
-    let flap_height = pos.y - dimens.y * 0.5 + flap_pos.y + flap_dimens.y * 0.5;
-    commands
-        .spawn_bundle(SpriteSheetBundle {
-            sprite: TextureAtlasSprite {
-                custom_size: Some(flap_dimens),
-                index: 0,
-                ..default()
-            },
-            texture_atlas: assets.atlas(&TextureId::BackpackFlap),
-            transform: Transform::from_xyz(
-                pos.x - dimens.x * 0.5 + flap_pos.x + flap_dimens.x * 0.5,
-                flap_height,
-                Depth::Background.z() + 1.,
-            ),
-            ..Default::default()
-        })
-        .insert(BackpackFlap {
-            dimens: flap_dimens,
-            height: flap_height,
-        })
-        .insert(Name::new("BackpackFlap"))
-        .insert(CleanupOnGameplayEnd);
+pub fn check_menu_bypass(mut query: Query<&mut MenuBackpack>, mut config: ResMut<DebugConfig>) {
+    if config.skip_straight_to_game {
+        config.skip_straight_to_game = false;
+        query.single_mut().transition = MenuTransition::menu_to_game();
+    }
 }
+
+#[derive(Component, Default)]
+pub struct MenuBackpack {
+    pub transition: MenuTransition,
+}
+
+//todo: hover
 
 #[derive(Component)]
 pub struct Backpack {
@@ -93,40 +55,45 @@ pub struct BackpackFlap {
 }
 
 pub fn track_backpack_hover(
-    mut commands: Commands,
-    mut audio: EventWriter<SoundEvent>,
     input: Res<Input<MouseButton>>,
-    mouse: Res<Mouse>,
-    mut queries: ParamSet<(
-        Query<(&Transform, &Backpack)>,
-        Query<(&mut Transform, &BackpackFlap, &mut TextureAtlasSprite)>,
-    )>,
+    mut query: Query<&mut MenuBackpack>,
+    // mut commands: Commands,
+    // mut audio: EventWriter<SoundEvent>,
+    // input: Res<Input<MouseButton>>,
+    // mouse: Res<Mouse>,
+    // mut queries: ParamSet<(
+    //     Query<(&Transform, &Backpack)>,
+    //     Query<(&mut Transform, &BackpackFlap, &mut TextureAtlasSprite)>,
+    // )>,
 ) {
-    let mouse_hovers_over_backpack =
-        queries
-            .p0()
-            .get_single()
-            .map_or(false, |(transform, backpack)| {
-                mouse.position.x > transform.translation.x - backpack.dimens.x * 0.5
-                    && mouse.position.x < transform.translation.x + backpack.dimens.x * 0.5
-                    && mouse.position.y > transform.translation.y - backpack.dimens.y * 0.5
-                    && mouse.position.y < transform.translation.y + backpack.dimens.y * 0.5
-            });
-
-    if mouse_hovers_over_backpack && input.just_pressed(MouseButton::Left) {
-        audio.send(SoundEvent::Sfx(SoundId::Placeholder));
-        commands.insert_resource(NextState(AppState::InGame))
+    if input.just_pressed(MouseButton::Left) {
+        query.single_mut().transition = MenuTransition::menu_to_game();
     }
-
-    if let Ok((mut flap_transform, flap, mut sprite)) = queries.p1().get_single_mut() {
-        if mouse_hovers_over_backpack {
-            sprite.index = 1;
-            flap_transform.translation.y = flap.height + flap.dimens.y - 1.;
-        } else {
-            sprite.index = 0;
-            flap_transform.translation.y = flap.height;
-        }
-    }
+    // let mouse_hovers_over_backpack =
+    //     queries
+    //         .p0()
+    //         .get_single()
+    //         .map_or(false, |(transform, backpack)| {
+    //             mouse.position.x > transform.translation.x - backpack.dimens.x * 0.5
+    //                 && mouse.position.x < transform.translation.x + backpack.dimens.x * 0.5
+    //                 && mouse.position.y > transform.translation.y - backpack.dimens.y * 0.5
+    //                 && mouse.position.y < transform.translation.y + backpack.dimens.y * 0.5
+    //         });
+    //
+    // if mouse_hovers_over_backpack && input.just_pressed(MouseButton::Left) {
+    //     audio.send(SoundEvent::Sfx(SoundId::Placeholder));
+    //     commands.insert_resource(NextState(AppState::InGame))
+    // }
+    //
+    // if let Ok((mut flap_transform, flap, mut sprite)) = queries.p1().get_single_mut() {
+    //     if mouse_hovers_over_backpack {
+    //         sprite.index = 1;
+    //         flap_transform.translation.y = flap.height + flap.dimens.y - 1.;
+    //     } else {
+    //         sprite.index = 0;
+    //         flap_transform.translation.y = flap.height;
+    //     }
+    // }
 }
 
 // fn draw_main_menu(

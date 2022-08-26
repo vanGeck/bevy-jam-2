@@ -16,7 +16,6 @@ pub struct LayoutData {
     /// Divide the layout coordinates by this number.
     pub factor: f32,
     pub text_factor: f32,
-    pub screen_pos: Vec2,
     pub screen_dimens: Vec2,
     pub c_left: ColumnLeft,
     pub c_mid: ColumnMiddle,

@@ -2,7 +2,6 @@
 (
     factor: 0.333333333,
     text_factor: 192.,
-    screen_pos: (-1., 1.),
     screen_dimens: (64., 36.),
     c_left: (
         margin_left: 2.,

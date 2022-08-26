@@ -11,6 +11,7 @@ pub enum Depth {
     /// Some decorative foreground stuff.
     Foreground,
     Particle,
+    Menu,
 }
 
 impl Depth {
@@ -23,6 +24,7 @@ impl Depth {
             Depth::Cursor => 400.,
             Depth::Foreground => 500.,
             Depth::Particle => 600.,
+            Depth::Menu => 700.,
         }
     }
 }
