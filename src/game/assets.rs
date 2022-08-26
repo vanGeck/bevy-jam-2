@@ -132,6 +132,8 @@ pub enum TextureId {
     /// Large image for the menu screen
     Backpack,
     Overseer,
+    OverseerEyesWhite,
+    OverseerIris,
     /// Unused at the moment, but might be used later.
     Cursor,
     RecordPlayer,

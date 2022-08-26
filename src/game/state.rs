@@ -19,7 +19,7 @@ use crate::AppState;
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
 
-use super::{setup_health_bar, update_health_bar};
+use super::{setup_health_bar, update_health_bar, Eyes, Iris};
 
 pub struct GamePlugin;
 
@@ -72,6 +72,7 @@ impl Plugin for GamePlugin {
                     .with_system(handle_sim_message)
                     .with_system(handle_sim_loot)
                     .with_system(update_health_bar)
+                    .with_system(eye_tracking_system)
                     .into(),
             )
             .add_exit_system_set(
@@ -104,6 +105,19 @@ pub fn despawn_gameplay_entities(
         cmd.entity(e).despawn_recursive();
     }
     audio.send(SoundEvent::KillAllMusic);
+}
+
+pub fn eye_tracking_system(
+    mouse: Res<Mouse>,
+    eyes: Query<(&Eyes, &Transform), Without<Iris>>,
+    mut iris: Query<(&Iris, &mut Transform), Without<Eyes>>,
+) {
+    if let Ok((_, white)) = eyes.get_single() {
+        if let Ok((_, mut iris)) = iris.get_single_mut() {
+            iris.translation.x = ((mouse.position.x - white.translation.x) / 100.).clamp_length(0.0, 0.2);
+            iris.translation.y = ((mouse.position.y - white.translation.y) / 100.).clamp_length(0.0, 0.2);
+        }
+    }
 }
 
 pub fn track_combine_button_hover(
