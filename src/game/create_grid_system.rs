@@ -12,6 +12,8 @@ use crate::positioning::Depth;
 use crate::positioning::Dimens;
 use crate::positioning::{Coords, GridData, Pos};
 
+use super::{Eyes, Iris, CombineButton};
+
 pub fn create_layout_background(
     mut commands: Commands,
     layout: Res<LayoutData>,
@@ -218,6 +220,42 @@ pub fn create_layout_grids(
         .insert(Name::new("Overseer"))
         .insert(CleanupOnGameplayEnd);
 
+    commands
+        .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(overseer_width * 0.18, overseer_height * 0.18)),
+                ..default()
+            },
+            texture: assets.texture(&TextureId::OverseerEyesWhite),
+            transform: Transform::from_xyz(
+                overseer_x + overseer_width * 0.5,
+                overseer_y + overseer_height * 0.5 + 0.32,
+                Depth::Grid.z() + 9.,
+            ),
+            ..default()
+        })
+        .insert(Name::new("Overseer Eyes White"))
+        .insert(Eyes)
+        .insert(CleanupOnGameplayEnd);
+
+    commands
+        .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(overseer_width * 0.16, overseer_height * 0.16)),
+                ..default()
+            },
+            texture: assets.texture(&TextureId::OverseerIris),
+            transform: Transform::from_xyz(
+                overseer_x + overseer_width * 0.5,
+                overseer_y + overseer_height * 0.5 + 0.32,
+                Depth::Grid.z() + 10.,
+            ),
+            ..default()
+        })
+        .insert(Name::new("Overseer Iris"))
+        .insert(Iris)
+        .insert(CleanupOnGameplayEnd);
+
     let x_crafting = layout.factor * (layout.right_x() + 1.);
     let foo_y = layout.c_left.music.margin_bottom.unwrap_or(0.);
     let foo_height = layout.c_left.music.height.unwrap();
@@ -256,7 +294,13 @@ pub fn create_layout_foo(mut commands: Commands, layout: Res<LayoutData>) {
             transform: Transform::from_xyz(x + width * 0.5, y + height * 0.5, Depth::Grid.z()),
             ..default()
         })
-        .insert(Name::new("MusicArea"))
+        .insert(Name::new("Combine Button"))
+        .insert(CombineButton {
+            coords: Coords{
+            pos:Pos::new(18, 8),
+            dimens: Dimens::new(14, 4),
+            }
+        })
         .insert(CleanupOnGameplayEnd);
 }
 

@@ -3,6 +3,8 @@
     textures: {
         NotFound: "not_found.png",
         Overseer: "overseer.png",
+        OverseerEyesWhite: "overseer_eyes_white.png",
+        OverseerIris: "overseer_eyes_black.png",
         Croissant: "3x2_croissant.png",
         Athelas: "2x2_turtle_herb.png",
         // HealthPotion: "??.png",
