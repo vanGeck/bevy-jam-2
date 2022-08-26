@@ -29,7 +29,7 @@ impl Plugin for GamePlugin {
             .add_event::<SimMessageEvent>()
             .add_event::<SimLootEvent>()
             .add_event::<MouseOverEvent>()
-            
+
             .add_plugin(bevy_ninepatch::NinePatchPlugin::<()>::default())
             .init_resource::<Player>()
             .insert_resource(TimedEffectTicker { timer: Timer::new(Duration::from_secs(1), true) })
@@ -81,6 +81,7 @@ impl Plugin for GamePlugin {
                     .with_system(eye_tracking_system)
                     .with_system(check_mouse_over_item_system)
                     .with_system(update_mouse_over_item_info_system)
+                    .with_system(update_mouse_over_item_info_style_position_system)
                     .into(),
             )
             .add_exit_system_set(
@@ -211,7 +212,7 @@ fn test_slice(
 ) {
     // Texture for the base image
     let panel_texture_handle = Option::<Handle<Image>>::from(assets.texture(&TextureId::UiPanelTexture));
-    
+
     if let Some(item) = panel_texture_handle {
         info!("texture present");
         let nine_patch_handle = nine_patches.add(NinePatchBuilder::by_margins(30, 30, 30, 30));
@@ -238,11 +239,7 @@ fn test_slice(
     } else {
         error!("texture missing");
     }
-    
 
 
-    
     return;
-
-
 }
