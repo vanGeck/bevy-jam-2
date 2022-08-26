@@ -30,6 +30,7 @@ impl Plugin for GamePlugin {
             .add_event::<DragEvent>()
             .add_event::<SimMessageEvent>()
             .add_event::<SimLootEvent>()
+            .add_event::<MouseOverEvent>()
             .init_resource::<Player>()
             .insert_resource(Hero {
                 combat_stats: Combatant {
@@ -47,7 +48,7 @@ impl Plugin for GamePlugin {
                 AppState::InGame,
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    // .with_system(setup)
+                    .with_system(setup)
                     .with_system(init_dungeon)
                     .with_system(create_debug_items)
                     .with_system(setup_health_bar)
@@ -74,8 +75,8 @@ impl Plugin for GamePlugin {
                     .with_system(handle_sim_loot)
                     .with_system(update_health_bar)
                     .with_system(eye_tracking_system)
-                    .with_system(item_info_system)
-                    .with_system(display_item_info_system)
+                    .with_system(check_mouse_over_item_system)
+                    .with_system(update_mouse_over_item_info_system)
                     .into(),
             )
             .add_exit_system_set(
@@ -158,7 +159,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             id: ItemId::Vial,
             texture_id: TextureId::Vial,
             name: "Vial".to_string(),
-            description: "A Vial".to_string(),
+            description: "Any liquid may be stored inside.".to_string(),
             wearable: None,
             ..default()
         },
@@ -169,43 +170,32 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             id: ItemId::Vial,
             texture_id: TextureId::Vial,
             name: "Vial".to_string(),
-            description: "A glass Vial".to_string(),
+            description: "Any liquid may be stored inside.".to_string(),
             wearable: None,
             ..default()
         },
         Coords::new(Pos::new(1, 0), Dimens::new(1, 2)),
     ));
-    // spawn.send(SpawnItemEvent::new(
-    //     Item {
-    //         id: ItemId::EmptyLantern,
-    //         texture_id: TextureId::EmptyLantern,
-    //         name: "".to_string(),
-    //         description: "".to_string(),
-    //         wearable: None,
-    //         ..default()
-    //     },
-    //     Coords::new(Pos::new(5, 5), Dimens::new(2, 3)),
-    // ));
     spawn.send(SpawnItemEvent::new(
         Item {
             id: ItemId::HerbRed,
             texture_id: TextureId::HerbRed,
             name: "Red Herb".to_string(),
-            description: "A herb the color of blood".to_string(),
+            description: "Basic alchemical ingredient. Associated with vitality.".to_string(),
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(2, 0), Dimens::new(1, 1)),
+        Coords::new(Pos::new(2, 0), Dimens::new(1, 2)),
     ));
     spawn.send(SpawnItemEvent::new(
         Item {
             id: ItemId::HerbGreen,
             texture_id: TextureId::HerbGreen,
             name: "Green Herb".to_string(),
-            description: "A herb the color of nature".to_string(),
+            description: "Basic alchemical ingredient. Associated with dexterity.".to_string(),
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(2, 1), Dimens::new(1, 1)),
+        Coords::new(Pos::new(2, 1), Dimens::new(1, 2)),
     ));
 }

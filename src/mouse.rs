@@ -8,6 +8,8 @@ pub struct Mouse {
     pub position: Vec2,
     /// Position in logical pixels in the window.
     pub screen_position: Vec2,
+    /// Position in logical pixels in the window inverted (needed for UI)
+    pub screen_pos_inverted: Vec2,
     /// Whether or not the mouse is currently in a dragging operation.
     ///
     /// It is handy to store this separately, rather than relying on whether or not the LMB is
@@ -43,6 +45,7 @@ pub fn calc_mouse_pos(
 
             mouse.position = world_position;
             mouse.screen_position = screen_pos;
+            mouse.screen_pos_inverted = Vec2::new(screen_pos.x, window.height() - screen_pos.y);
             mouse.out_of_bounds = screen_pos.x < 0.
                 || screen_pos.x > window.width()
                 || screen_pos.y < 0.
@@ -66,3 +69,7 @@ pub fn set_cursor_appearance(mut windows: ResMut<Windows>, mouse: Res<Mouse>) {
         CursorIcon::Default
     });
 }
+
+// References
+// 1. calc_mouse_pos
+// https://bevy-cheatbook.github.io/cookbook/cursor2world.html

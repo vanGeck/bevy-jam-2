@@ -70,13 +70,13 @@
         )),
         (((1, 2)), (
             id: HerbGreen,
-            name: "Red Herb",
+            name: "Green Herb",
             description: "Basic alchemical ingredient. Associated with dexterity.",
             texture_id: HerbGreen,
         )),
         (((1, 2)), (
             id: HerbViolet,
-            name: "Red Herb",
+            name: "Violet Herb",
             description: "Basic alchemical ingredient. Associated with strength.",
             texture_id: HerbViolet,
         )),
