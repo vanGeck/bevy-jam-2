@@ -23,3 +23,4 @@ pub mod recipes;
 pub mod sim;
 pub mod spawn_item_system;
 pub mod state;
+pub mod item_info_system;

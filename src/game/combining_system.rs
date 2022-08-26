@@ -58,7 +58,6 @@ pub fn combine_items_system(
     }
 }
 
-// Sorry the parameter names aren't the greatest here, over_item is the item that the dragged_item is currently 'hovering' over.
 pub fn try_get_recipe(data: &RecipesData, first_item: &Item, second_item: &Item) -> Option<Recipe> {
     let mut recipe_has_first_item: bool = false;
     let mut recipe_has_second_item: bool = false;

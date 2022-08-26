@@ -18,6 +18,7 @@ use crate::states::handle_state_transition;
 use crate::AppState;
 use bevy::prelude::*;
 use iyes_loopless::prelude::*;
+use crate::game::item_info_system::*;
 
 use super::{setup_health_bar, update_health_bar, Eyes, Iris};
 
@@ -46,9 +47,9 @@ impl Plugin for GamePlugin {
                 AppState::InGame,
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    .with_system(setup)
+                    // .with_system(setup)
                     .with_system(init_dungeon)
-                    // .with_system(create_debug_items)
+                    .with_system(create_debug_items)
                     .with_system(setup_health_bar)
                     .into(),
             )
@@ -73,6 +74,8 @@ impl Plugin for GamePlugin {
                     .with_system(handle_sim_loot)
                     .with_system(update_health_bar)
                     .with_system(eye_tracking_system)
+                    .with_system(item_info_system)
+                    .with_system(display_item_info_system)
                     .into(),
             )
             .add_exit_system_set(
@@ -154,8 +157,8 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         Item {
             id: ItemId::Vial,
             texture_id: TextureId::Vial,
-            name: "".to_string(),
-            description: "".to_string(),
+            name: "Vial".to_string(),
+            description: "A Vial".to_string(),
             wearable: None,
             ..default()
         },
@@ -165,8 +168,8 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         Item {
             id: ItemId::Vial,
             texture_id: TextureId::Vial,
-            name: "".to_string(),
-            description: "".to_string(),
+            name: "Vial".to_string(),
+            description: "A glass Vial".to_string(),
             wearable: None,
             ..default()
         },
@@ -187,8 +190,8 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         Item {
             id: ItemId::HerbRed,
             texture_id: TextureId::HerbRed,
-            name: "".to_string(),
-            description: "".to_string(),
+            name: "Red Herb".to_string(),
+            description: "A herb the color of blood".to_string(),
             wearable: None,
             ..default()
         },
@@ -198,8 +201,8 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         Item {
             id: ItemId::HerbGreen,
             texture_id: TextureId::HerbGreen,
-            name: "".to_string(),
-            description: "".to_string(),
+            name: "Green Herb".to_string(),
+            description: "A herb the color of nature".to_string(),
             wearable: None,
             ..default()
         },
