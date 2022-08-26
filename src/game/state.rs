@@ -114,8 +114,11 @@ pub fn eye_tracking_system(
 ) {
     if let Ok((_, white)) = eyes.get_single() {
         if let Ok((_, mut iris)) = iris.get_single_mut() {
-            iris.translation.x = ((mouse.position.x - white.translation.x) / 100.).clamp_length(0.0, 0.2);
-            iris.translation.y = ((mouse.position.y - white.translation.y) / 100.).clamp_length(0.0, 0.2);
+            let white_pos = white.translation.truncate();
+            let new_iris_trans = white.translation + ((mouse.position - white_pos) / 100.0)
+                .clamp_length(0.0, 0.2)
+                .extend(1.0);
+            iris.translation = new_iris_trans;
         }
     }
 }
