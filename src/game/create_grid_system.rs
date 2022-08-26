@@ -12,7 +12,7 @@ use crate::positioning::Depth;
 use crate::positioning::Dimens;
 use crate::positioning::{Coords, GridData, Pos};
 
-use super::{Eyes, Iris};
+use super::{Eyes, Iris, CombineButton};
 
 pub fn create_layout_background(
     mut commands: Commands,
@@ -294,7 +294,13 @@ pub fn create_layout_foo(mut commands: Commands, layout: Res<LayoutData>) {
             transform: Transform::from_xyz(x + width * 0.5, y + height * 0.5, Depth::Grid.z()),
             ..default()
         })
-        .insert(Name::new("MusicArea"))
+        .insert(Name::new("Combine Button"))
+        .insert(CombineButton {
+            coords: Coords{
+            pos:Pos::new(18, 8),
+            dimens: Dimens::new(14, 4),
+            }
+        })
         .insert(CleanupOnGameplayEnd);
 }
 
