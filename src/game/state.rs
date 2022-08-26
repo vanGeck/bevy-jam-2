@@ -200,7 +200,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(2, 1), Dimens::new(1, 2)),
+        Coords::new(Pos::new(3, 1), Dimens::new(1, 2)),
     ));
 }
 
