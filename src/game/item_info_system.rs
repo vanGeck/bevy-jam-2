@@ -44,69 +44,27 @@ pub fn update_mouse_over_item_info_system(
                 .insert(Name::new("MouseOverItemInfo"))
                 .insert(MouseOverItemInfo {})
                 .with_children(|parent| {
-                    // Name
-                    parent.spawn_bundle(
-                        TextBundle::from_section(
-                            item.name.clone(),
-                            TextStyle {
-                                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                font_size: 20.0,
-                                color: Color::WHITE,
-                            },
-                        )
-                            .with_style(Style {
-                                position_type: PositionType::Absolute,
-                                position: UiRect {
-                                    top: Val::Px(-24.0),
-                                    left: Val::Px(0.0),
-                                    ..default()
-                                },
+                    parent.spawn_bundle(ImageBundle {
+                        style: Style {
+                            size: Size::new(Val::Auto, Val::Auto),
+                            position_type: PositionType::Absolute,
+                            position: UiRect {
+                                top: Val::Px(0.0),
+                                left: Val::Px(0.0),
                                 ..default()
-                            }),
-                    );
-                    // Description
-                    parent.spawn_bundle(
-                        TextBundle::from_section(
-                            item.description.clone(),
-                            TextStyle {
-                                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                font_size: 20.0,
-                                color: Color::WHITE,
                             },
-                        )
-                            .with_style(Style {
-                                position_type: PositionType::Absolute,
-                                position: UiRect {
-                                    top: Val::Px(-12.0),
-                                    left: Val::Px(0.0),
-                                    ..default()
-                                },
-                                ..default()
-                            }),
-                    );
-                    // Wearable
-                    if let Some((slot, _)) = item.wearable.clone() {
-                        let slot_name: String;
-                        match slot {
-                            EquipmentSlot::Armour => {
-                                slot_name = "Armour".to_string();
-                            }
-                            EquipmentSlot::Helmet => {
-                                slot_name = "Helmet".to_string();
-                            }
-                            EquipmentSlot::Necklace => {
-                                slot_name = "Necklace".to_string();
-                            }
-                            EquipmentSlot::Shield => {
-                                slot_name = "Shield".to_string();
-                            }
-                            EquipmentSlot::Weapon => {
-                                slot_name = "Weapon".to_string();
-                            }
-                        }
+                            justify_content: JustifyContent::FlexStart,
+                            align_items: AlignItems::FlexStart,
+                            flex_direction: FlexDirection::ColumnReverse,
+                            ..default()
+                        },
+                        image: asset_server.load("textures/MyPanel2.png").into(),
+                        ..default()
+                    }).with_children(|parent| {
+                        // Name
                         parent.spawn_bundle(
                             TextBundle::from_section(
-                                slot_name,
+                                item.name.clone(),
                                 TextStyle {
                                     font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                     font_size: 20.0,
@@ -114,41 +72,24 @@ pub fn update_mouse_over_item_info_system(
                                 },
                             )
                                 .with_style(Style {
-                                    position_type: PositionType::Absolute,
+                                    position_type: PositionType::Relative,
                                     position: UiRect {
                                         top: Val::Px(0.0),
                                         left: Val::Px(0.0),
                                         ..default()
                                     },
+                                    margin: UiRect {
+                                        top: Val::Px(8.0),
+                                        left: Val::Px(8.0),
+                                        ..default()
+                                    },
                                     ..default()
                                 }),
                         );
-                    }
-                    // Stat Bonuses
-                    if let Some(stat_bonus) = item.stat_bonuses {
-                        let mut stats: String = format!("| Stats: ");
-                        if stat_bonus.combat_prof > 0 {
-                            stats.push_str(&*format!(
-                                "Combat Proficiency: {} | ",
-                                stat_bonus.combat_prof
-                            ));
-                        }
-                        if stat_bonus.damage > 0 {
-                            stats.push_str(&*format!("Damage: {} | ", stat_bonus.damage));
-                        }
-                        if stat_bonus.damage_res > 0 {
-                            stats.push_str(&*format!(
-                                "Damage Resistance: {} | ",
-                                stat_bonus.damage_res
-                            ));
-                        }
-                        if stat_bonus.max_hp > 0 {
-                            stats.push_str(&*format!("Max HP: {} | ", stat_bonus.combat_prof));
-                        }
-
+                        // Description
                         parent.spawn_bundle(
                             TextBundle::from_section(
-                                stats,
+                                item.description.clone(),
                                 TextStyle {
                                     font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                     font_size: 20.0,
@@ -156,16 +97,103 @@ pub fn update_mouse_over_item_info_system(
                                 },
                             )
                                 .with_style(Style {
-                                    position_type: PositionType::Absolute,
+                                    position_type: PositionType::Relative,
                                     position: UiRect {
-                                        top: Val::Px(12.0),
+                                        top: Val::Px(0.0),
                                         left: Val::Px(0.0),
+                                        ..default()
+                                    },
+                                    margin: UiRect {
+                                        top: Val::Px(8.0),
+                                        left: Val::Px(8.0),
                                         ..default()
                                     },
                                     ..default()
                                 }),
                         );
-                    }
+                        // Wearable
+                        if let Some((slot, _)) = item.wearable.clone() {
+                            let slot_name: String;
+                            match slot {
+                                EquipmentSlot::Armour => {
+                                    slot_name = "Armour".to_string();
+                                }
+                                EquipmentSlot::Helmet => {
+                                    slot_name = "Helmet".to_string();
+                                }
+                                EquipmentSlot::Necklace => {
+                                    slot_name = "Necklace".to_string();
+                                }
+                                EquipmentSlot::Shield => {
+                                    slot_name = "Shield".to_string();
+                                }
+                                EquipmentSlot::Weapon => {
+                                    slot_name = "Weapon".to_string();
+                                }
+                            }
+                            parent.spawn_bundle(
+                                TextBundle::from_section(
+                                    slot_name,
+                                    TextStyle {
+                                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                                        font_size: 20.0,
+                                        color: Color::WHITE,
+                                    },
+                                )
+                                    .with_style(Style {
+                                        position_type: PositionType::Absolute,
+                                        position: UiRect {
+                                            top: Val::Px(0.0),
+                                            left: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                        ..default()
+                                    }),
+                            );
+                        }
+                        // Stat Bonuses
+                        if let Some(stat_bonus) = item.stat_bonuses {
+                            let mut stats: String = format!("| Stats: ");
+                            if stat_bonus.combat_prof > 0 {
+                                stats.push_str(&*format!(
+                                    "Combat Proficiency: {} | ",
+                                    stat_bonus.combat_prof
+                                ));
+                            }
+                            if stat_bonus.damage > 0 {
+                                stats.push_str(&*format!("Damage: {} | ", stat_bonus.damage));
+                            }
+                            if stat_bonus.damage_res > 0 {
+                                stats.push_str(&*format!(
+                                    "Damage Resistance: {} | ",
+                                    stat_bonus.damage_res
+                                ));
+                            }
+                            if stat_bonus.max_hp > 0 {
+                                stats.push_str(&*format!("Max HP: {} | ", stat_bonus.combat_prof));
+                            }
+
+                            parent.spawn_bundle(
+                                TextBundle::from_section(
+                                    stats,
+                                    TextStyle {
+                                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                                        font_size: 20.0,
+                                        color: Color::WHITE,
+                                    },
+                                )
+                                    .with_style(Style {
+                                        position_type: PositionType::Absolute,
+                                        position: UiRect {
+                                            top: Val::Px(12.0),
+                                            left: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                        ..default()
+                                    }),
+                            );
+                        }
+                    });
                 });
         }
     }
