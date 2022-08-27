@@ -4,14 +4,15 @@ use bevy::prelude::*;
 use bevy::text::Text2dBounds;
 
 use crate::animation::AnimationTimer;
+use crate::audio::record_player::RecordPlayer;
 use crate::audio::sound_event::AudioTextDisplay;
 use crate::config::data_layout::LayoutData;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId, TextureId};
 use crate::main_menu::MenuBackpack;
 use crate::mouse::MouseInteractive;
+use crate::positioning::{Coords, GridData, Pos};
 use crate::positioning::Depth;
 use crate::positioning::Dimens;
-use crate::positioning::{Coords, GridData, Pos};
 
 use super::{CombineButton, Eyes, Iris};
 
@@ -73,8 +74,8 @@ pub fn create_layout_music(
         .insert(Name::new("MusicArea"))
         .insert(CleanupOnGameplayEnd)
         .with_children(|parent| {
-            let pos_box = Vec2::splat(1. * layout.factor);
-            let dimens_box = Vec2::splat(2. * layout.factor);
+            let pos_box = Vec2::new(0.5 * layout.factor, 0.5 * layout.factor);
+            let dimens_box = Vec2::splat(4. * layout.factor);
             parent
                 .spawn_bundle(SpriteSheetBundle {
                     sprite: TextureAtlasSprite {
@@ -93,10 +94,12 @@ pub fn create_layout_music(
                 .insert(AnimationTimer {
                     timer: Timer::new(Duration::from_millis(200), true),
                     index: 0,
-                    nr_frames: 2,
+                    nr_frames: 1,
                     ping_pong: false,
                 })
-                .insert(Name::new("RecordPlayer"));
+                .insert(Name::new("RecordPlayer"))
+                .insert(RecordPlayer)
+                .insert(MouseInteractive::new(dimens_box, true));
             let text_style = TextStyle {
                 font: assets.font(&FontId::Square),
                 font_size: 60.0,
@@ -107,8 +110,8 @@ pub fn create_layout_music(
                 horizontal: HorizontalAlign::Left,
             };
 
-            let pos_text = Vec2::new(4. * layout.factor, 2. * layout.factor);
-            let dimens_text = Vec2::new(width - 5. * layout.factor, 2. * layout.factor);
+            let pos_text = Vec2::new(5. * layout.factor, 2. * layout.factor);
+            let dimens_text = Vec2::new(width - 6. * layout.factor, 2. * layout.factor);
             parent
                 .spawn()
                 .insert(AudioTextDisplay)
@@ -118,7 +121,7 @@ pub fn create_layout_music(
                         "Click the record player to start the music.",
                         text_style,
                     )
-                    .with_alignment(text_alignment),
+                        .with_alignment(text_alignment),
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
                         size: Vec2::new(
@@ -131,11 +134,11 @@ pub fn create_layout_music(
                         pos_text.y - height * 0.5,
                         1.0,
                     ))
-                    .with_scale(Vec3::new(
-                        1. / layout.text_factor,
-                        1. / layout.text_factor,
-                        1.,
-                    )),
+                        .with_scale(Vec3::new(
+                            1. / layout.text_factor,
+                            1. / layout.text_factor,
+                            1.,
+                        )),
                     ..default()
                 });
         });
@@ -191,8 +194,8 @@ pub fn create_layout_grids(
     let inventory_x = layout.factor * layout.middle_x();
     let inventory_y = layout.factor
         * (layout.c_mid.toasts.margin_bottom.unwrap_or(0.)
-            + layout.c_mid.toasts.height.unwrap()
-            + layout.c_mid.inventory.margin_bottom.unwrap_or(0.));
+        + layout.c_mid.toasts.height.unwrap()
+        + layout.c_mid.inventory.margin_bottom.unwrap_or(0.));
     let inventory_coords = Coords::new(Pos::new(0, 0), Dimens::new(8, 5));
     create_grid(
         &mut commands,
@@ -341,7 +344,7 @@ fn create_grid(commands: &mut Commands, assets: &AssetStorage, dimens: &Dimens, 
                             (y as f32 + 1. * 0.5) - (dimens.y as f32 * 0.5),
                             1., // Relative to parent grid.
                         )
-                        .with_scale(Vec3::new(0.9, 0.9, 1.)),
+                            .with_scale(Vec3::new(0.9, 0.9, 1.)),
                         ..default()
                     });
                 }

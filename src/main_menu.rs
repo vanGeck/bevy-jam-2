@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet};
+use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
 use iyes_loopless::state::NextState;
 
 use crate::game::{
@@ -21,7 +21,6 @@ impl Plugin for MainMenuPlugin {
             ConditionSet::new()
                 .run_in_state(AppState::MainMenu)
                 .with_system(delete_all_entities)
-                .with_system(check_menu_bypass)
                 .with_system(create_camera)
                 .with_system(create_layout_background)
                 .with_system(create_layout_music)
@@ -36,6 +35,7 @@ impl Plugin for MainMenuPlugin {
         .add_system_set(
             ConditionSet::new()
                 .run_in_state(AppState::MainMenu)
+                .with_system(check_menu_bypass.run_if(should_check_bypass))
                 .with_system(track_backpack_hover)
                 .into(),
         )
@@ -44,6 +44,10 @@ impl Plugin for MainMenuPlugin {
             ConditionSet::new().run_in_state(AppState::MainMenu).into(),
         );
     }
+}
+
+pub fn should_check_bypass(config: Res<DebugConfig>) -> bool {
+    config.skip_straight_to_game
 }
 
 pub fn check_menu_bypass(
