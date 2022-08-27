@@ -10,9 +10,11 @@ use crate::game::{AlbumId, SoundId};
 pub enum SoundEvent {
     /// SoundType and whether the music should be interrupted during play.
     Sfx(SoundId),
-    /// MusicType. Play songs from the given album. If the album is already playing, play the
-    /// next song. Whatever song happens to be playing before, stop it.
-    Music(AlbumId),
+    /// Whatever song happens to be playing, stop it. Play songs from the given album.
+    /// If the album was already playing, play the next song.
+    NextTrack(AlbumId),
+    /// Start playing songs from the given album. If the album is already playing, do nothing.
+    PlayAlbum(AlbumId),
     KillAllSoundEffects,
     KillAllMusic,
 }

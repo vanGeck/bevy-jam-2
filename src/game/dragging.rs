@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::game::items::{CraftItem, Item};
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
-use crate::mouse::Mouse;
+use crate::mouse::{Mouse, MouseInteractive};
 use crate::positioning::Depth;
 use crate::positioning::Pos;
 use crate::positioning::{Coords, GridData};
@@ -43,22 +43,15 @@ pub fn check_drag_begin(
     mut commands: Commands,
     assets: Res<AssetStorage>,
     grid: Res<GridData>,
-    input: Res<Input<MouseButton>>,
     mut mouse: ResMut<Mouse>,
-    query: Query<(&Coords, Entity, &Item)>,
+    query: Query<(&Coords, Entity, &Item, &MouseInteractive)>,
 ) {
     if mouse.is_dragging {
         return;
     }
-    let hovered_over_cell = Pos::from(mouse.position - grid.offset);
-    if !input.just_pressed(MouseButton::Left) {
-        mouse.can_drag = query
-            .iter()
-            .any(|(coords, _, _)| coords.overlaps_pos(&hovered_over_cell));
-        return;
-    }
-    for (coords, entity, item) in query.iter() {
-        if coords.overlaps_pos(&hovered_over_cell) {
+    for (coords, entity, item, interactive) in query.iter() {
+        if interactive.clicked {
+            let hovered_over_cell = Pos::from(mouse.position - grid.offset);
             commands.entity(entity).insert(BeingDragged);
             commands
                 .spawn_bundle(SpriteBundle {

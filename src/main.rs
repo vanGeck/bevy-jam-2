@@ -1,13 +1,16 @@
 #![forbid(unsafe_code)]
 #![allow(dead_code)]
 
+extern crate core;
+
 use std::env;
+
 use bevy::log::Level;
+use bevy::prelude::CoreStage::Update;
 use bevy::prelude::*;
 use bevy::window::WindowMode;
 use bevy::DefaultPlugins;
 use bevy_egui::{egui, EguiContext, EguiPlugin};
-use bevy_ninepatch::{NinePatchBuilder, NinePatchPlugin};
 use egui::*;
 use iyes_loopless::prelude::AppLooplessStateExt;
 
@@ -19,8 +22,9 @@ use crate::game::GamePlugin;
 use crate::game_ended::GameEndedPlugin;
 use crate::loading::state::LoadingPlugin;
 use crate::main_menu::MainMenuPlugin;
-use crate::mouse::{calc_mouse_pos, Mouse};
+use crate::mouse::{Mouse, MousePlugin};
 use crate::states::{handle_escape, log_state_changes, AppState};
+use crate::transition_state::TransitionPlugin;
 use crate::window_event_handler::handle_window;
 
 pub mod animation;
@@ -35,6 +39,7 @@ mod main_menu;
 mod mouse;
 mod positioning;
 mod states;
+mod transition_state;
 mod window_event_handler;
 
 pub const GAME_NAME: &str = "Bag Goblin";
@@ -61,16 +66,16 @@ fn main() {
     .add_plugins(DefaultPlugins)
     .add_plugin(EguiPlugin)
     .add_plugin(MyAudioPlugin)
+    .add_plugin(MousePlugin)
     .add_plugin(LoadingPlugin)
     .add_plugin(MainMenuPlugin)
+    .add_plugin(TransitionPlugin)
     .add_plugin(GamePlugin)
     .add_plugin(GameEndedPlugin)
     .add_system(handle_window)
     .add_system(log_state_changes)
     .add_system(handle_escape)
-    .add_system(set_cam_scale)
-    .init_resource::<Mouse>()
-    .add_system(calc_mouse_pos);
+    .add_system(set_cam_scale);
     if config.show_debug_window {
         app.add_plugin(DebugWindowPlugin);
     }

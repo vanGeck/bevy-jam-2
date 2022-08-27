@@ -1,6 +1,8 @@
 use bevy::prelude::*;
+
 use crate::game::{EquipmentSlot, Item};
 use crate::Mouse;
+use crate::mouse::MouseInteractive;
 use crate::positioning::Coords;
 
 /// === Enums ===
@@ -33,34 +35,29 @@ pub struct MouseOverItemInfo {}
 /// === Systems ===
 pub fn check_mouse_over_item_system(
     mut commands: Commands,
-    mouse: Res<Mouse>,
-    new_hover_query: Query<(Entity, &Item, &Transform, &Coords), Without<MouseOver>>,
-    old_hover_query: Query<(Entity, &Item, &Transform, &Coords), With<MouseOver>>,
+    new_hover_query: Query<(Entity, &MouseInteractive), Without<MouseOver>>,
+    old_hover_query: Query<(Entity, &MouseInteractive), With<MouseOver>>,
     mut mouse_over_event_writer: EventWriter<MouseOverEvent>,
 ) {
     // Add and remove Item Info Component
-    for (entity, _, transform, coords) in new_hover_query.iter() {
-        let is_mouse_over_item = mouse.position.x > transform.translation.x - coords.dimens.x as f32 * 0.5
-            && mouse.position.x < transform.translation.x + coords.dimens.x as f32 * 0.5
-            && mouse.position.y > transform.translation.y - coords.dimens.y as f32 * 0.5
-            && mouse.position.y < transform.translation.y + coords.dimens.y as f32 * 0.5;
-
-        if is_mouse_over_item {
+    for (entity, interactive) in new_hover_query.iter() {
+        if interactive.hovered {
             // debug!("new_hover_query - is_mouse_over_item: {:?}", is_mouse_over_item);
-            commands.entity(entity).insert(MouseOver { displayed: false }); // This isn't completing before the event is sent (sometimes)
-            mouse_over_event_writer.send(MouseOverEvent { state: MouseOverState::Started })
+            commands
+                .entity(entity)
+                .insert(MouseOver { displayed: false }); // This isn't completing before the event is sent (sometimes)
+            mouse_over_event_writer.send(MouseOverEvent {
+                state: MouseOverState::Started,
+            })
         }
     }
-    for (entity, _, transform, coords) in old_hover_query.iter() {
-        let is_mouse_over_item = mouse.position.x > transform.translation.x - coords.dimens.x as f32 * 0.5
-            && mouse.position.x < transform.translation.x + coords.dimens.x as f32 * 0.5
-            && mouse.position.y > transform.translation.y - coords.dimens.y as f32 * 0.5
-            && mouse.position.y < transform.translation.y + coords.dimens.y as f32 * 0.5;
-
-        if !is_mouse_over_item {
+    for (entity, interactive) in old_hover_query.iter() {
+        if !interactive.hovered {
             // debug!("old_hover_query - is_mouse_over_item: {:?}", is_mouse_over_item);
             commands.entity(entity).remove::<MouseOver>();
-            mouse_over_event_writer.send(MouseOverEvent { state: MouseOverState::Ended })
+            mouse_over_event_writer.send(MouseOverEvent {
+                state: MouseOverState::Ended,
+            })
         }
     }
 }
@@ -75,8 +72,8 @@ pub fn update_mouse_over_item_info_system(
 ) {
     for (item, mut mouse_over) in mouse_over_items.iter_mut() {
         if !mouse_over.displayed {
-            commands.spawn_bundle(
-                NodeBundle {
+            commands
+                .spawn_bundle(NodeBundle {
                     style: Style {
                         position_type: PositionType::Absolute,
                         position: UiRect {
@@ -87,8 +84,7 @@ pub fn update_mouse_over_item_info_system(
                         ..default()
                     },
                     ..default()
-                }
-            )
+                })
                 .insert(Name::new("MouseOverItemInfo"))
                 .insert(MouseOverItemInfo {})
                 .with_children(|parent| {
@@ -130,17 +126,27 @@ pub fn update_mouse_over_item_info_system(
                                     ..default()
                                 },
                                 ..default()
-                            })
+                            }),
                     );
                     // Wearable
                     if let Some((slot, _)) = item.wearable.clone() {
                         let slot_name: String;
                         match slot {
-                            EquipmentSlot::Armour => { slot_name = "Armour".to_string(); }
-                            EquipmentSlot::Helmet => { slot_name = "Helmet".to_string(); }
-                            EquipmentSlot::Necklace => { slot_name = "Necklace".to_string(); }
-                            EquipmentSlot::Shield => { slot_name = "Shield".to_string(); }
-                            EquipmentSlot::Weapon => { slot_name = "Weapon".to_string(); }
+                            EquipmentSlot::Armour => {
+                                slot_name = "Armour".to_string();
+                            }
+                            EquipmentSlot::Helmet => {
+                                slot_name = "Helmet".to_string();
+                            }
+                            EquipmentSlot::Necklace => {
+                                slot_name = "Necklace".to_string();
+                            }
+                            EquipmentSlot::Shield => {
+                                slot_name = "Shield".to_string();
+                            }
+                            EquipmentSlot::Weapon => {
+                                slot_name = "Weapon".to_string();
+                            }
                         }
                         parent.spawn_bundle(
                             TextBundle::from_section(
@@ -165,10 +171,24 @@ pub fn update_mouse_over_item_info_system(
                     // Stat Bonuses
                     if let Some(stat_bonus) = item.stat_bonuses {
                         let mut stats: String = format!("| Stats: ");
-                        if stat_bonus.combat_prof > 0 { stats.push_str(&*format!("Combat Proficiency: {} | ", stat_bonus.combat_prof)); }
-                        if stat_bonus.damage > 0 { stats.push_str(&*format!("Damage: {} | ", stat_bonus.damage)); }
-                        if stat_bonus.damage_res > 0 { stats.push_str(&*format!("Damage Resistance: {} | ", stat_bonus.damage_res)); }
-                        if stat_bonus.max_hp > 0 { stats.push_str(&*format!("Max HP: {} | ", stat_bonus.combat_prof)); }
+                        if stat_bonus.combat_prof > 0 {
+                            stats.push_str(&*format!(
+                                "Combat Proficiency: {} | ",
+                                stat_bonus.combat_prof
+                            ));
+                        }
+                        if stat_bonus.damage > 0 {
+                            stats.push_str(&*format!("Damage: {} | ", stat_bonus.damage));
+                        }
+                        if stat_bonus.damage_res > 0 {
+                            stats.push_str(&*format!(
+                                "Damage Resistance: {} | ",
+                                stat_bonus.damage_res
+                            ));
+                        }
+                        if stat_bonus.max_hp > 0 {
+                            stats.push_str(&*format!("Max HP: {} | ", stat_bonus.combat_prof));
+                        }
 
                         parent.spawn_bundle(
                             TextBundle::from_section(
@@ -196,7 +216,6 @@ pub fn update_mouse_over_item_info_system(
     }
     for event in mouse_over_events.iter() {
         // debug!("update_mouse_over_item_info_system, state: {:?}", event.state);
-
 
         match event.state {
             MouseOverState::Started => {

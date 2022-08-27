@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 use crate::game::items::Item;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd};
+use crate::mouse::MouseInteractive;
 use crate::positioning::{Coords, GridData};
 use crate::positioning::{Depth, Dimens, Pos};
 
@@ -44,6 +45,7 @@ pub fn spawn_item(
             .insert(Name::new(item.name.clone()))
             .insert(item.clone())
             .insert(*coords)
+            .insert(MouseInteractive::new(coords.dimens.as_vec2(), true))
             .insert(CleanupOnGameplayEnd);
     }
 }

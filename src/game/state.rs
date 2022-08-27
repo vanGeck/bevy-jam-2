@@ -1,24 +1,30 @@
 use std::time::Duration;
+
+use bevy::prelude::*;
+use bevy_ninepatch::{NinePatchBuilder, NinePatchBundle};
+use iyes_loopless::prelude::*;
+
+use crate::AppState;
 use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
+use crate::game::{
+    AlbumId, apply_scrim_to_being_dragged, AssetStorage, check_drag_begin,
+    check_drag_end, check_ghost_placement_validity, CleanupOnGameplayEnd, combine_items_system, CombineButton,
+    DragEvent, Item, ItemId, Player, process_drag_event, set_ghost_position, SoundId, spawn_item,
+    SpawnItemEvent, TextureId,
+};
 use crate::game::combat::{Combatant, Enemy, Hero};
 use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
 use crate::game::event_handling::{
     handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
 };
-use crate::game::{apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity, combine_items_system, process_drag_event, set_ghost_position, spawn_item, AlbumId, CleanupOnGameplayEnd, CombineButton, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent, TextureId, AssetStorage};
-use crate::hud::gold::gold_update_system;
-use crate::mouse::{reset_cursor, set_cursor_appearance, Mouse};
-use crate::positioning::{Coords, Dimens, Pos};
-use crate::states::handle_state_transition;
-use crate::AppState;
-use bevy::prelude::*;
-use bevy_ninepatch::{NinePatchBuilder, NinePatchBundle};
-use iyes_loopless::prelude::*;
-use crate::game::timed_effect::{test_apply_modifier, tick_temporary_modifiers, TimedEffectTicker};
 use crate::game::item_info_system::*;
+use crate::game::timed_effect::{test_apply_modifier, tick_temporary_modifiers, TimedEffectTicker};
+use crate::hud::gold::gold_update_system;
+use crate::mouse::{Mouse, MouseInteractive};
+use crate::positioning::{Coords, Dimens, Pos};
 
-use super::{setup_health_bar, update_health_bar, Eyes, Iris};
+use super::{Eyes, Iris, setup_health_bar, update_health_bar};
 
 pub struct GamePlugin;
 
@@ -29,10 +35,11 @@ impl Plugin for GamePlugin {
             .add_event::<SimMessageEvent>()
             .add_event::<SimLootEvent>()
             .add_event::<MouseOverEvent>()
-
             .add_plugin(bevy_ninepatch::NinePatchPlugin::<()>::default())
             .init_resource::<Player>()
-            .insert_resource(TimedEffectTicker { timer: Timer::new(Duration::from_secs(1), true) })
+            .insert_resource(TimedEffectTicker {
+                timer: Timer::new(Duration::from_secs(1), true),
+            })
             .insert_resource(Hero {
                 combat_stats: Combatant {
                     health: 20,
@@ -59,9 +66,7 @@ impl Plugin for GamePlugin {
             .add_system_set(
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
-                    .with_system(handle_state_transition)
                     .with_system(spawn_item)
-                    .with_system(set_cursor_appearance)
                     .with_system(check_drag_begin)
                     .with_system(set_ghost_position)
                     .with_system(apply_scrim_to_being_dragged)
@@ -86,10 +91,7 @@ impl Plugin for GamePlugin {
             )
             .add_exit_system_set(
                 AppState::InGame,
-                ConditionSet::new()
-                    .run_in_state(AppState::InGame)
-                    .with_system(reset_cursor)
-                    .into(),
+                ConditionSet::new().run_in_state(AppState::InGame).into(),
             );
     }
 }
@@ -102,7 +104,7 @@ pub enum GameResult {
 
 // TODO: Move this to it's own system?
 fn setup(mut audio: EventWriter<SoundEvent>) {
-    audio.send(SoundEvent::Music(AlbumId::Jazz));
+    audio.send(SoundEvent::PlayAlbum(AlbumId::Jazz));
 }
 
 pub fn despawn_gameplay_entities(
@@ -124,7 +126,8 @@ pub fn eye_tracking_system(
     if let Ok((_, white)) = eyes.get_single() {
         if let Ok((_, mut iris)) = iris.get_single_mut() {
             let white_pos = white.translation.truncate();
-            let new_iris_trans = white.translation + ((mouse.position - white_pos) / 100.0)
+            let new_iris_trans = white.translation
+                + ((mouse.position - white_pos) / 100.0)
                 .clamp_length(0.0, 0.2)
                 .extend(1.0);
             iris.translation = new_iris_trans;
@@ -134,27 +137,16 @@ pub fn eye_tracking_system(
 
 pub fn track_combine_button_hover(
     mut audio: EventWriter<SoundEvent>,
-    input: Res<Input<MouseButton>>,
-    mouse: Res<Mouse>,
-    mut button: Query<(&mut Sprite, &Transform, &CombineButton)>,
+    mut button: Query<(&mut Sprite, &MouseInteractive)>,
 ) {
-    let mouse_hovers_over_button = button.get_single().map_or(false, |(_, transform, button)| {
-        mouse.position.x > transform.translation.x - button.coords.dimens.x as f32 * 0.5
-            && mouse.position.x < transform.translation.x + button.coords.dimens.x as f32 * 0.5
-            && mouse.position.y > transform.translation.y - button.coords.dimens.y as f32 * 0.5
-            && mouse.position.y < transform.translation.y + button.coords.dimens.y as f32 * 0.5
-    });
-
-    if mouse_hovers_over_button && input.just_pressed(MouseButton::Left) {
-        audio.send(SoundEvent::Sfx(SoundId::Placeholder));
-        if let Ok((mut sprite, _, _)) = button.get_single_mut() {
-            if mouse_hovers_over_button {
-                sprite.color = Color::rgba(255.0, 255.0, 255.0, 0.8);
-            }
+    if let Ok((mut sprite, interactive)) = button.get_single_mut() {
+        if interactive.clicked {
+            audio.send(SoundEvent::Sfx(SoundId::PositiveAffirmation));
+            sprite.color = Color::rgba(255.0, 255.0, 255.0, 0.8);
+            // TODO: Check is_valid_recipe with craft_items, combine()
+        } else {
+            sprite.color = Color::rgba(0.2, 0.2, 0.2, 0.8);
         }
-        // TODO: Check is_valid_recipe with craft_items, combine()
-    } else if let Ok((mut sprite, _, _)) = button.get_single_mut() {
-        sprite.color = Color::rgba(0.2, 0.2, 0.2, 0.8);
     }
 }
 
@@ -211,7 +203,8 @@ fn test_slice(
     mut nine_patches: ResMut<Assets<NinePatchBuilder<()>>>,
 ) {
     // Texture for the base image
-    let panel_texture_handle = Option::<Handle<Image>>::from(assets.texture(&TextureId::UiPanelTexture));
+    let panel_texture_handle =
+        Option::<Handle<Image>>::from(assets.texture(&TextureId::UiPanelTexture));
 
     if let Some(item) = panel_texture_handle {
         info!("texture present");
@@ -239,7 +232,6 @@ fn test_slice(
     } else {
         error!("texture missing");
     }
-
 
     return;
 }

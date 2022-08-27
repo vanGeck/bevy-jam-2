@@ -7,8 +7,7 @@ use bevy_egui::EguiContext;
 use bevy_inspector_egui::{WorldInspectorParams, WorldInspectorPlugin};
 use iyes_loopless::prelude::{ConditionSet, NextState};
 
-use crate::audio::sound_event::SoundEvent;
-use crate::game::{GameResult, SoundId};
+use crate::game::GameResult;
 use crate::AppState;
 
 static SECOND_WINDOW_ID: Lazy<WindowId> = Lazy::new(WindowId::new);
@@ -69,7 +68,6 @@ pub fn configure_egui_look(mut egui_ctx: ResMut<EguiContext>) {
 
 fn draw_win_lose_placeholder_menu(
     mut commands: Commands,
-    mut audio: EventWriter<SoundEvent>,
     mut egui_context: ResMut<EguiContext>,
     mut result: ResMut<State<GameResult>>,
 ) {
@@ -79,12 +77,10 @@ fn draw_win_lose_placeholder_menu(
     };
     egui::Window::new("Gameplay").show(ctx, |ui| {
         if ui.button("Win").clicked() {
-            audio.send(SoundEvent::Sfx(SoundId::Placeholder));
             commands.insert_resource(NextState(AppState::GameEnded));
             result.replace(GameResult::Won).ok();
         }
         if ui.button("Lose").clicked() {
-            audio.send(SoundEvent::Sfx(SoundId::Placeholder));
             commands.insert_resource(NextState(AppState::GameEnded));
             result.replace(GameResult::Lost).ok();
         }

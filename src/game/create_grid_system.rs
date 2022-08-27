@@ -8,11 +8,12 @@ use crate::audio::sound_event::AudioTextDisplay;
 use crate::config::data_layout::LayoutData;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId, TextureId};
 use crate::main_menu::MenuBackpack;
+use crate::mouse::MouseInteractive;
+use crate::positioning::{Coords, GridData, Pos};
 use crate::positioning::Depth;
 use crate::positioning::Dimens;
-use crate::positioning::{Coords, GridData, Pos};
 
-use super::{Eyes, Iris, CombineButton};
+use super::{CombineButton, Eyes, Iris};
 
 pub fn create_layout_background(
     mut commands: Commands,
@@ -45,6 +46,7 @@ pub fn create_layout_background(
             ..default()
         })
         .insert(MenuBackpack::default())
+        .insert(MouseInteractive::new(Vec2::splat(size), true))
         .insert(CleanupOnGameplayEnd);
 }
 
@@ -116,7 +118,7 @@ pub fn create_layout_music(
                         "Click the record player to start the music.",
                         text_style,
                     )
-                    .with_alignment(text_alignment),
+                        .with_alignment(text_alignment),
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
                         size: Vec2::new(
@@ -129,11 +131,11 @@ pub fn create_layout_music(
                         pos_text.y - height * 0.5,
                         1.0,
                     ))
-                    .with_scale(Vec3::new(
-                        1. / layout.text_factor,
-                        1. / layout.text_factor,
-                        1.,
-                    )),
+                        .with_scale(Vec3::new(
+                            1. / layout.text_factor,
+                            1. / layout.text_factor,
+                            1.,
+                        )),
                     ..default()
                 });
         });
@@ -189,8 +191,8 @@ pub fn create_layout_grids(
     let inventory_x = layout.factor * layout.middle_x();
     let inventory_y = layout.factor
         * (layout.c_mid.toasts.margin_bottom.unwrap_or(0.)
-            + layout.c_mid.toasts.height.unwrap()
-            + layout.c_mid.inventory.margin_bottom.unwrap_or(0.));
+        + layout.c_mid.toasts.height.unwrap()
+        + layout.c_mid.inventory.margin_bottom.unwrap_or(0.));
     let inventory_coords = Coords::new(Pos::new(0, 0), Dimens::new(8, 5));
     create_grid(
         &mut commands,
@@ -296,11 +298,12 @@ pub fn create_layout_foo(mut commands: Commands, layout: Res<LayoutData>) {
         })
         .insert(Name::new("Combine Button"))
         .insert(CombineButton {
-            coords: Coords{
-            pos:Pos::new(18, 8),
-            dimens: Dimens::new(14, 4),
-            }
+            coords: Coords {
+                pos: Pos::new(18, 8),
+                dimens: Dimens::new(14, 4),
+            },
         })
+        .insert(MouseInteractive::new(Vec2::new(width, height), true))
         .insert(CleanupOnGameplayEnd);
 }
 
@@ -338,7 +341,7 @@ fn create_grid(commands: &mut Commands, assets: &AssetStorage, dimens: &Dimens, 
                             (y as f32 + 1. * 0.5) - (dimens.y as f32 * 0.5),
                             1., // Relative to parent grid.
                         )
-                        .with_scale(Vec3::new(0.9, 0.9, 1.)),
+                            .with_scale(Vec3::new(0.9, 0.9, 1.)),
                         ..default()
                     });
                 }
