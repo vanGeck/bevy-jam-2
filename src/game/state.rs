@@ -48,9 +48,7 @@ impl Plugin for GamePlugin {
                     damage_bonus: 0,
                 },
             })
-            .insert_resource(Enemy {
-                combat_stats: Default::default(),
-            })
+            .init_resource::<Enemy>()
             .add_enter_system_set(
                 AppState::InGame,
                 ConditionSet::new()
@@ -179,7 +177,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(2, 0), Dimens::new(1, 2)),
+        Coords::new(Pos::new(2, 0), Dimens::new(1, 1)),
     ));
     spawn.send(SpawnItemEvent::new(
         Item {
@@ -190,7 +188,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             wearable: None,
             ..default()
         },
-        Coords::new(Pos::new(3, 1), Dimens::new(1, 2)),
+        Coords::new(Pos::new(3, 1), Dimens::new(1, 1)),
     ));
 }
 

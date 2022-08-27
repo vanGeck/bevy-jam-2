@@ -1,80 +1,25 @@
 #![enable(implicit_some)]
 (
     items: [
-        // (((3, 2)), (
-        //     id: Croissant,
-        //     name: "Croissant",
-        //     description: "Crazy french curvy bread.",
-        //     texture_id: Croissant,
-        // )),
         (((1, 2)), (
             id: Vial,
             name: "Vial",
             description: "Any liquid may be stored inside.",
             texture_id: Vial,
         )),
-        // (((3, 2)), (
-        //     id: HealthPotion,
-        //     name: "HealthPotion",
-        //     description: "A potion to heal the hero!",
-        //     texture_id: Vial,
-        // )),
-        // (((2, 2)), (
-        //     id: TurtleHerb,
-        //     name: "Turtle Herb",
-        //     description: "Legalize it, man.",
-        //     texture_id: TurtleHerb,
-        // )),
-        // (((1, 2)), (
-        //     id: CandleStick,
-        //     name: "Candle Stick",
-        //     description: "Waxxy.",
-        //     texture_id: CandleStick,
-        // )),
-        // (((2, 3)), (
-        //     id: EmptyLantern,
-        //     name: "Empty Lantern",
-        //     description: "Fill this with oil!",
-        //     texture_id: EmptyLantern,
-        // )),
-        // (((2, 3)), (
-        //     id: FilledLantern,
-        //     name: "Filled Lantern",
-        //     description: "A lantern with a candle stick inside.",
-        //     texture_id: FilledLantern,
-        // )),
-        // (((2, 3)), (
-        //     id: LitLantern,
-        //     name: "Lit Lantern",
-        //     description: "A lit lantern to provide light in dark environments.",
-        //     texture_id: LitLantern,
-        // )),
-        // (((1, 1)), (
-        //     id: FireEssence,
-        //     name: "Fire Essence",
-        //     description: "One of the four elements. Before they discovered all the other ones.",
-        //     texture_id: FireEssence,
-        // )),
-        // (((2, 2)), (
-        //     id: MediumShield,
-        //     name: "Shield",
-        //     description: "Stick and stones may break your bones, so use a shield.",
-        //     texture_id: MediumShield,
-        //     wearable: (Shield, ((0, 0))),
-        // )),
-        (((1, 2)), (
+        (((1, 1)), (
             id: HerbRed,
             name: "Red Herb",
             description: "Basic alchemical ingredient. Associated with vitality.",
             texture_id: HerbRed,
         )),
-        (((1, 2)), (
+        (((1, 1)), (
             id: HerbGreen,
             name: "Green Herb",
             description: "Basic alchemical ingredient. Associated with dexterity.",
             texture_id: HerbGreen,
         )),
-        (((1, 2)), (
+        (((1, 1)), (
             id: HerbViolet,
             name: "Violet Herb",
             description: "Basic alchemical ingredient. Associated with strength.",

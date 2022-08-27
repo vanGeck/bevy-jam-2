@@ -25,20 +25,18 @@
             "A heavily damaged door. It disassembles itself while you push it open.",
         ],
         SearchingRoom: [
-            "You sift through the ancient furniture.",
+            "You poke through the ancient furniture.",
             "You carefully inspect the floor for any items.",
-            "You sift through the items littering the floor",
+            "You sift through the items littering the floor.",
+        ],
+        SearchingBody: [
+            "You search the remains of your enemy.",
         ],
         FoundLoot: [
             "You found something!",
         ],
         FoundNothing: [
             "Nothing! Oh well...",
-        ],
-        EnemyEncounter: [
-            "A nauseating stench of decay hits your nostrils! A shambling corpse lurches towards you!",
-            "An orc warrior's war cry shakes the room! He jumps towards you with weapons raised!",
-            "Eight eyes, eight legs, angry clicking - it's a giant arachind!",
         ],
         CombatEnemyHit: [
             "You kick the enemy off balance, and stick the tip of your weapon right between their ribs!",

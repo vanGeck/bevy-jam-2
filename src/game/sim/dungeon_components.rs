@@ -1,8 +1,9 @@
+use std::fmt::Formatter;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
+use crate::game::combat::{DropTable, Enemy};
 
-use crate::game::sim::combat::Combatant;
-
+#[derive(Debug)]
 pub struct Room {
     // Flags used in room processing. Determine message ordering and room types.
     pub init: bool,
@@ -32,6 +33,13 @@ impl Default for Room {
     }
 }
 
+impl std::fmt::Display for Room {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "init: {}, corr: {}, door: {}, desc: {}, srch: {}, psrch: {}, end: {}, start: {}, cmbt: {}", 
+        self.init, self.corridor, self.door, self.description, self.search, self.post_search, self.end, self.start, self.combat)
+    }
+}
+
 impl Room {
     // Helper method for listing reults of dungeon generation.
     pub fn print_diag_name(&self) {
@@ -52,7 +60,8 @@ impl Room {
 pub struct DungeonLevel {
     pub depth: i32,
     pub rooms: Vec<Room>,
-    pub enemies: Vec<Combatant>,
+    pub enemies: Vec<Enemy>,
+    pub loot: DropTable,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash)]
@@ -63,9 +72,9 @@ pub enum TextType {
     Corridor,
     Door,
     SearchingRoom,
+    SearchingBody,
     FoundLoot,
     FoundNothing,
-    EnemyEncounter,
     CombatEnemyHit,
     CombatHeroHit,
     CombatNoResolution,

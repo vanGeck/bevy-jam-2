@@ -4,6 +4,9 @@ use bevy::prelude::*;
 use rand::Rng;
 
 use crate::config::config_sim::SimConfig;
+use crate::config::data_enemies::EnemiesData;
+use crate::game::combat::{DropTable, EnemyId};
+use crate::game::{Item, ItemId};
 use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
 use crate::game::sim::dungeon::generate_level;
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
@@ -21,7 +24,7 @@ pub struct DungeonState {
     pub combat_state: CombatState,
 }
 
-pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>) {
+pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, enemies: Res<EnemiesData>) {
     let mut state = DungeonState {
         current_room_idx: 0,
         current_level: None,
@@ -29,7 +32,7 @@ pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>) {
         running: true,
         combat_state: CombatState::Init,
     };
-    state.current_level = Option::from(generate_level(12, &params, &mut commands));
+    state.current_level = Option::from(generate_level(15, &params, &mut commands, &enemies));
     commands.insert_resource(state);
 }
 
@@ -47,14 +50,21 @@ pub fn tick_dungeon(
     }
     if state.msg_cooldown.tick(time.delta()).just_finished() {
         // hero.combat_stats.health -= 1;
-        let cbt_state = state.combat_state;
+        let mut cbt_state = state.combat_state.clone();
         let current_room_idx = state.current_room_idx as usize;
         if let Some(level) = &mut state.current_level {
             let room = &mut level.rooms[current_room_idx as usize];
 
             if room.init {
                 room.init = false;
-                enemy.combat_stats = level.enemies[current_room_idx];
+                let new_enemy = level.enemies[current_room_idx].clone();
+                enemy.combat_stats = new_enemy.combat_stats;
+                enemy.enemy_id = new_enemy.enemy_id;
+                enemy.enter_combat_text = new_enemy.enter_combat_text;
+                enemy.drop_table = new_enemy.drop_table;
+                enemy.name = new_enemy.name;
+                debug!("New Room: {}", room);
+                debug!("Enemy: id: {}, stats: {}", enemy.name, enemy.combat_stats);
             }
 
             if room.corridor {
@@ -69,7 +79,10 @@ pub fn tick_dungeon(
             }
             if room.combat {
                 if cbt_state == CombatState::Init {
-                    msg_events.send(SimMessageEvent(TextType::EnemyEncounter));
+                    // Monster enounter texts now come from a different source 
+                    // (each monster has a different one)
+                    //.send(SimMessageEvent(TextType::EnemyEncounter));
+                    println!("{}", enemy.enter_combat_text);
                     state.combat_state = CombatState::InProgress;
                     return;
                 } else if cbt_state == CombatState::EnemyDead {
@@ -79,7 +92,7 @@ pub fn tick_dungeon(
                 } else if cbt_state == CombatState::HeroDead {
                     msg_events.send(SimMessageEvent(TextType::CombatHeroDied));
                     state.combat_state = CombatState::Ended;
-                    state.running = false;
+                    halt_dungeon_sim(state);
                     // TODO: change state to endgame, hero is dead!
                     return;
                 } else if cbt_state == CombatState::InProgress {
@@ -94,29 +107,48 @@ pub fn tick_dungeon(
                     room.combat = false;
                 }
             }
+            
             if room.description {
                 room.description = false;
                 msg_events.send(SimMessageEvent(TextType::EnteredRoom));
                 return;
             }
+            
             if room.search {
+                if enemy.enemy_id == EnemyId::None {
+                    msg_events.send(SimMessageEvent(TextType::SearchingRoom));
+                } else {
+                    msg_events.send(SimMessageEvent(TextType::SearchingBody));
+                }
                 room.search = false;
-                msg_events.send(SimMessageEvent(TextType::SearchingRoom));
                 room.post_search = true;
                 return;
             }
             if room.post_search {
                 // TODO:
-                // Plug in an event to spawn items in pack!
-                // Plug in loot tables and drop rates.
                 // Use halt/resume methods to allow for looting in peace.
                 room.post_search = false;
-                let mut rng = rand::thread_rng();
-                if rng.gen_bool(config.loot_probability) {
-                    loot_events.send(SimLootEvent);
-                    msg_events.send(SimMessageEvent(TextType::FoundLoot));
+                
+                if enemy.enemy_id == EnemyId::None {
+                    let loot = pick_loot_from_drop_table(&level.loot);
+                    if loot.len() > 0{
+                        msg_events.send(SimMessageEvent(TextType::FoundLoot));
+                        for i in loot {
+                            loot_events.send(SimLootEvent(i));
+                        }
+                    } else {
+                        msg_events.send(SimMessageEvent(TextType::FoundNothing));
+                    }
                 } else {
-                    msg_events.send(SimMessageEvent(TextType::FoundNothing));
+                    let loot = pick_loot_from_drop_table(&enemy.drop_table);
+                    if loot.len() > 0{
+                        msg_events.send(SimMessageEvent(TextType::FoundLoot));
+                        for i in loot {
+                            loot_events.send(SimLootEvent(i));
+                        }
+                    } else {
+                        msg_events.send(SimMessageEvent(TextType::FoundNothing));
+                    }
                 }
             }
 
@@ -133,6 +165,7 @@ pub fn tick_dungeon(
 
             if level.rooms.len() - 1 > state.current_room_idx as usize {
                 state.current_room_idx += 1;
+                state.combat_state = CombatState::Init;
             }
         }
     }
@@ -146,4 +179,20 @@ pub fn halt_dungeon_sim(mut state: ResMut<DungeonState>) {
 pub fn resume_dungeon_sim(mut state: ResMut<DungeonState>) {
     info!("Halting dungeon sim.");
     state.running = true;
+}
+
+fn pick_loot_from_drop_table(table: &DropTable) -> Vec<ItemId>{
+    const MAX_ITEMS:i32 = 3;
+    let mut result = Vec::<ItemId>::new();
+    let mut rng = rand::thread_rng();
+    for i in 0..table.items.len() {
+        if result.len() == 3 {
+            break;
+        }
+        let roll = rng.gen_range(1..=100);
+        if roll <= table.chances[i] {
+            result.push(table.items[i].clone());
+        }
+    }
+    return result;
 }
