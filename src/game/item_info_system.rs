@@ -47,6 +47,11 @@ pub fn update_mouse_over_item_info_system(
                     parent.spawn_bundle(ImageBundle {
                         style: Style {
                             size: Size::new(Val::Auto, Val::Auto),
+                            padding: UiRect {
+                                bottom: Val::Px(8.0),
+                                right: Val::Px(8.0),
+                                ..default()
+                            },
                             position_type: PositionType::Absolute,
                             position: UiRect {
                                 top: Val::Px(0.0),
@@ -58,7 +63,7 @@ pub fn update_mouse_over_item_info_system(
                             flex_direction: FlexDirection::ColumnReverse,
                             ..default()
                         },
-                        image: asset_server.load("textures/MyPanel2.png").into(),
+                        image: asset_server.load("textures/Stone_Tablet_Panel_Shrinked_Uniform_Borders.png").into(),
                         ..default()
                     }).with_children(|parent| {
                         // Name
@@ -79,7 +84,7 @@ pub fn update_mouse_over_item_info_system(
                                         ..default()
                                     },
                                     margin: UiRect {
-                                        top: Val::Px(8.0),
+                                        top: Val::Px(4.0),
                                         left: Val::Px(8.0),
                                         ..default()
                                     },
@@ -92,7 +97,7 @@ pub fn update_mouse_over_item_info_system(
                                 item.description.clone(),
                                 TextStyle {
                                     font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                    font_size: 20.0,
+                                    font_size: 16.0,
                                     color: Color::WHITE,
                                 },
                             )
@@ -104,7 +109,7 @@ pub fn update_mouse_over_item_info_system(
                                         ..default()
                                     },
                                     margin: UiRect {
-                                        top: Val::Px(8.0),
+                                        top: Val::Px(4.0),
                                         left: Val::Px(8.0),
                                         ..default()
                                     },
@@ -136,15 +141,15 @@ pub fn update_mouse_over_item_info_system(
                                     slot_name,
                                     TextStyle {
                                         font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                        font_size: 20.0,
+                                        font_size: 16.0,
                                         color: Color::WHITE,
                                     },
                                 )
                                     .with_style(Style {
-                                        position_type: PositionType::Absolute,
+                                        position_type: PositionType::Relative,
                                         position: UiRect {
-                                            top: Val::Px(0.0),
-                                            left: Val::Px(0.0),
+                                            top: Val::Px(4.0),
+                                            left: Val::Px(8.0),
                                             ..default()
                                         },
                                         ..default()
@@ -178,15 +183,15 @@ pub fn update_mouse_over_item_info_system(
                                     stats,
                                     TextStyle {
                                         font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                        font_size: 20.0,
+                                        font_size: 16.0,
                                         color: Color::WHITE,
                                     },
                                 )
                                     .with_style(Style {
-                                        position_type: PositionType::Absolute,
+                                        position_type: PositionType::Relative,
                                         position: UiRect {
-                                            top: Val::Px(12.0),
-                                            left: Val::Px(0.0),
+                                            top: Val::Px(4.0),
+                                            left: Val::Px(8.0),
                                             ..default()
                                         },
                                         ..default()
