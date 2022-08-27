@@ -3,30 +3,33 @@ use crate::game::sim::combat::Combatant;
 use crate::game::sim::dungeon_components::{DungeonLevel, Room};
 use bevy::prelude::*;
 use rand::Rng;
+use crate::config::data_enemies::EnemiesData;
+use crate::game::combat::{DropTable, Enemy, EnemyId};
+use crate::game::ItemId::*;
 
-pub fn generate_level(len: i32, params: &SimConfig, mut _cmd: &mut Commands) -> DungeonLevel {
+pub fn generate_level(len: i32, params: &SimConfig, mut _cmd: &mut Commands, enemies: &Res<EnemiesData>) -> DungeonLevel {
     let mut rooms = Vec::<Room>::new();
-    let mut fights = Vec::<Combatant>::new();
+    let mut fights = Vec::<Enemy>::new();
     let mut rng = rand::thread_rng();
 
     rooms.push(generate_first_room());
-    fights.push(Combatant::default());
+    fights.push(Enemy::default());
 
     for _ in 1..(len - 1) {
-        let x = rng.gen_range(0.0..1.0);
+        let x = rng.gen_range(0.0..=1.0);
         if x < params.chance_corridor {
             rooms.push(generate_corridor());
-            fights.push(Combatant::default());
+            fights.push(Enemy::default());
         } else if x < params.chance_empty + params.chance_corridor {
             rooms.push(generate_empty());
-            fights.push(Combatant::default());
+            fights.push(Enemy::default());
         } else if x < params.chance_empty + params.chance_corridor + params.chance_fight {
             rooms.push(generate_fight());
-            fights.push(get_enemy());
+            fights.push(get_enemy(&enemies));
         }
     }
     rooms.push(generate_last_room());
-    fights.push(Combatant::default());
+    fights.push(Enemy::default());
 
     info!("Dungeon generation results: ");
     for s in 0..rooms.len() {
@@ -37,6 +40,10 @@ pub fn generate_level(len: i32, params: &SimConfig, mut _cmd: &mut Commands) -> 
         depth: 0,
         rooms,
         enemies: fights,
+        loot: DropTable{
+            items: vec![HerbRed, HerbGreen, HerbViolet, Vial],
+            chances: vec![7,7,7,10],
+        }
     }
 }
 
@@ -73,19 +80,17 @@ fn generate_empty() -> Room {
 fn generate_fight() -> Room {
     Room {
         door: true,
-        description: true,
         search: true,
         combat: true,
         ..Default::default()
     }
 }
 
-fn get_enemy() -> Combatant {
-    Combatant {
-        health: 8,
-        max_health: 8,
-        proficiency: 0,
-        damage_res: 0,
-        damage_bonus: 0,
-    }
+fn get_enemy(enemies: &Res<EnemiesData>) -> Enemy {
+    
+    let enemies_len = enemies.enemies.len();
+    let mut rng = rand::thread_rng();
+    let idx = rng.gen_range(0..enemies_len);
+    
+    enemies.enemies[idx].clone()
 }

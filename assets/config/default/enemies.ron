@@ -1,0 +1,106 @@
+(
+    enemies: [
+        (
+            enemy_id: Rat,
+            name: "Rat",
+            enter_combat_text: "A rabid rat, large as a dog, squeaks angrily and jumps towards you!",
+            combat_stats: (
+                health: 5,
+                max_health: 5,
+                proficiency: -1,
+                damage_res: 0,
+                damage_bonus: -2,
+            ),
+            drop_table: (
+                items: [
+                    HerbRed,
+                    HerbViolet,
+                    HerbGreen,
+                ],
+                chances: [
+                    20,
+                    20,
+                    20
+                ]
+            ),
+        ),
+        (
+            enemy_id: GoblinBrat,
+            name: "Goblin Brat",
+            enter_combat_text: "A Goblin Brat dances around you, throwing stones and insults!",
+            combat_stats: (
+                health: 4,
+                max_health: 4,
+                proficiency: 2,
+                damage_res: 0,
+                damage_bonus: -3,
+            ),
+            drop_table: (
+                items: [
+                    Vial,
+                    HerbRed,
+                    HerbViolet,
+                    HerbGreen,
+                ],
+                chances: [
+                    80,
+                    40,
+                    40,
+                    40,
+                ]
+            ),
+        ),
+        (
+            enemy_id: GoblinSwordsman,
+            name: "Goblin Swordsman",
+            enter_combat_text: "A Goblin Swordsman shakes a rusty blade at you!",
+            combat_stats: (
+                health: 6,
+                max_health: 6,
+                proficiency: -1,
+                damage_res: 0,
+                damage_bonus: -1,
+            ),
+            drop_table: (
+                items: [
+                    Vial,
+                    HerbViolet,
+                    HerbGreen,
+                    //SwordRusty,
+                ],
+                chances: [
+                    40,
+                    50,
+                    30,
+                    //66,
+                ]
+            ),
+        ),
+        (
+            enemy_id: GoblinShieldbearer,
+            name: "Goblin Shieldbearer",
+            enter_combat_text: "A Goblin Shieldbearer stands in your way - steady, unflinching and very, very stinky.",
+            combat_stats: (
+                health: 8,
+                max_health: 8,
+                proficiency: -1,
+                damage_res: 2,
+                damage_bonus: -1,
+            ),
+            drop_table: (
+                items: [
+                    Vial,
+                    HerbViolet,
+                    HerbGreen,
+                    //ShieldRusty,
+                ],
+                chances: [
+                    40,
+                    50,
+                    30,
+                    //66,
+                ]
+            ),
+        ),
+    ]
+)

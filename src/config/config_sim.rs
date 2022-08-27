@@ -13,13 +13,10 @@ pub struct SimConfig {
     /// Time between sim ticks in milliseconds.
     pub duration_millis: u64,
     /// The probability that loot is dropped: between 0 and 1.
-    pub loot_probability: f64,
     pub max_depth: i32,
     pub chance_corridor: f32,
     pub chance_empty: f32,
     pub chance_fight: f32,
-    pub chance_fight_easy: f32,
-    pub chance_fight_hard: f32,
 }
 
 impl SimConfig {

@@ -4,13 +4,13 @@ use rand::Rng;
 
 use crate::config::data_sim_texts::DungeonTexts;
 use crate::game::sim::dungeon_components::TextType;
-use crate::game::{find_free_space, Item, SpawnItemEvent};
+use crate::game::{find_free_space, Item, ItemId, SpawnItemEvent};
 use crate::positioning::{Coords, GridData};
 
 /// Cause a message to be printed and maybe a sound to be played.
 pub struct SimMessageEvent(pub TextType);
 /// Handle a looting session.
-pub struct SimLootEvent;
+pub struct SimLootEvent(pub ItemId);
 
 pub fn handle_sim_message(mut events: EventReader<SimMessageEvent>, texts: Res<DungeonTexts>) {
     for SimMessageEvent(text_type) in events.iter() {
@@ -40,12 +40,13 @@ pub fn handle_sim_loot(
     items_query: Query<&Coords, With<Item>>,
     mut spawn: EventWriter<SpawnItemEvent>,
 ) {
-    for SimLootEvent in events.iter() {
+    for SimLootEvent(itemId) in events.iter() {
         trace!("Received sim loot event");
-        let (dimens, item) = items_data.get_random_item();
-        let free_coords = find_free_space(&grid, dimens, &items_query);
-        if let Some(coords) = free_coords {
-            spawn.send(SpawnItemEvent::new(item, coords));
+        if let Some((dimens, item)) = items_data.try_get_item(itemId.clone()) {
+            let free_coords = find_free_space(&grid, dimens, &items_query);
+            if let Some(coords) = free_coords {
+                spawn.send(SpawnItemEvent::new(item, coords));
+            }
         }
     }
 }

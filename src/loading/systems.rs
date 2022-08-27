@@ -18,6 +18,7 @@ use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
 use crate::{AppState, WindowMode};
+use crate::config::data_enemies::EnemiesData;
 
 pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(DebugConfig::load_from_file());
@@ -26,6 +27,7 @@ pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(RecipesData::load_from_file());
     commands.insert_resource(DungeonTexts::load_from_file());
     commands.insert_resource(SimConfig::load_from_file());
+    commands.insert_resource(EnemiesData::load_from_file());
     commands.insert_resource(HealthBarConfig::load_from_file());
     commands.insert_resource(LayoutData::load_from_file());
 }

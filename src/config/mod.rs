@@ -4,6 +4,7 @@ pub mod config_sim;
 pub mod data_items;
 pub mod data_layout;
 pub mod data_recipes;
+pub mod data_enemies;
 pub mod data_sim_texts;
 mod file_utils;
 pub mod health_bar;
