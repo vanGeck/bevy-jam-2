@@ -24,7 +24,7 @@ use crate::mouse::{Mouse, MouseInteractive};
 use crate::positioning::{Coords, Dimens, Pos};
 use crate::AppState;
 
-use super::{setup_health_bar, update_health_bar, Eyes, Iris};
+use super::{update_health_bar, Eyes, Iris};
 
 pub struct GamePlugin;
 
@@ -59,7 +59,6 @@ impl Plugin for GamePlugin {
                     .with_system(setup)
                     .with_system(init_dungeon)
                     .with_system(create_debug_items)
-                    .with_system(setup_health_bar)
                     //.with_system(test_slice)
                     .into(),
             )

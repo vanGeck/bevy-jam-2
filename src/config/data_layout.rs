@@ -32,6 +32,27 @@ pub struct ColumnLeft {
     pub feed: Container,
 }
 
+impl ColumnLeft {
+    /// Calculate the y position of the music widget.
+    pub fn music_y(&self) -> f32 {
+        self.music.margin_bottom.unwrap_or(0.)
+    }
+    /// Calculate the height of the music widget.
+    pub fn music_height(&self) -> f32 {
+        self.music.height.unwrap()
+    }
+    /// Calculate the y-position of the dungeon feed widget.
+    pub fn feed_y(&self) -> f32 {
+        let music_y = self.music_y();
+        let music_height = self.music_height();
+        music_y + music_height + self.feed.margin_bottom.unwrap_or(0.)
+    }
+    /// Calculate the height of the dungeon feed widget.
+    pub fn feed_height(&self, layout: &LayoutData) -> f32 {
+        layout.screen_dimens.y - (self.feed.margin_top.unwrap_or(0.) + self.feed_y())
+    }
+}
+
 #[derive(Deserialize, Serialize, Default, Debug)]
 pub struct ColumnMiddle {
     pub x: f32,
@@ -47,6 +68,37 @@ pub struct ColumnRight {
     pub foo: Container,
     pub crafting: Container,
     pub hero: Container,
+}
+
+impl ColumnRight {
+    /// Calculate the y position of the foo widget.
+    pub fn foo_y(&self) -> f32 {
+        self.foo.margin_bottom.unwrap_or(0.)
+    }
+    /// Calculate the height of the foo widget.
+    pub fn foo_height(&self) -> f32 {
+        self.foo.height.unwrap()
+    }
+    /// Calculate the y-position of the crafting window.
+    pub fn crafting_y(&self) -> f32 {
+        let foo_y = self.foo_y();
+        let foo_height = self.foo_height();
+        foo_y + foo_height + self.crafting.margin_bottom.unwrap_or(0.)
+    }
+    /// Calculate the height of the crafting window.
+    pub fn crafting_height(&self) -> f32 {
+        self.crafting.height.unwrap()
+    }
+    /// Calculate the y-position of the hero widget.
+    pub fn hero_y(&self) -> f32 {
+        let crafting_y = self.crafting_y();
+        let crafting_height = self.crafting_height();
+        crafting_y + crafting_height + self.hero.margin_bottom.unwrap_or(0.)
+    }
+    /// Calculate the height of the hero widget.
+    pub fn hero_height(&self, layout: &LayoutData) -> f32 {
+        layout.screen_dimens.y - (self.hero.margin_top.unwrap_or(0.) + self.hero_y())
+    }
 }
 
 #[derive(Deserialize, Serialize, Default, Debug)]

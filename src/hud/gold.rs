@@ -3,7 +3,7 @@ use std::time::Duration;
 use bevy::prelude::*;
 use bevy::ui::Style;
 
-use crate::game::{CleanupOnGameplayEnd, Player};
+use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId, Player};
 
 #[derive(Component, Default)]
 pub struct Gold {
@@ -29,7 +29,7 @@ pub struct GoldText;
 #[derive(Component)]
 pub struct ColorText;
 
-pub fn setup_gold(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn setup_gold(mut commands: Commands, assets: Res<AssetStorage>) {
     // Text with multiple sections
     commands
         .spawn_bundle(
@@ -38,7 +38,7 @@ pub fn setup_gold(mut commands: Commands, asset_server: Res<AssetServer>) {
                 TextSection::new(
                     "Gold: ",
                     TextStyle {
-                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                        font: assets.font(&FontId::FiraSansBold),
                         font_size: 24.0,
                         color: Color::WHITE,
                     },
@@ -46,7 +46,7 @@ pub fn setup_gold(mut commands: Commands, asset_server: Res<AssetServer>) {
                 TextSection::new(
                     "0",
                     TextStyle {
-                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                        font: assets.font(&FontId::FiraSansBold),
                         font_size: 24.0,
                         color: Color::GOLD,
                     },

@@ -2,10 +2,13 @@ use bevy::prelude::*;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
 use iyes_loopless::state::NextState;
 
-use crate::game::{
-    create_camera, create_layout_background, create_layout_feed, create_layout_foo,
-    create_layout_grids, create_layout_hero, create_layout_music, create_layout_toasts,
-};
+use crate::game::create_backpack::create_layout_background;
+use crate::game::create_camera;
+use crate::game::create_widget_feed::create_layout_feed;
+use crate::game::create_widget_grids::{create_layout_foo, create_layout_grids};
+use crate::game::create_widget_hero::create_layout_hero;
+use crate::game::create_widget_music::create_layout_music;
+use crate::game::create_widget_toasts::create_layout_toasts;
 use crate::hud::gold::setup_gold;
 use crate::mouse::MouseInteractive;
 use crate::states::delete_all_entities;
