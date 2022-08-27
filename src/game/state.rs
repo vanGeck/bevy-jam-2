@@ -34,7 +34,6 @@ impl Plugin for GamePlugin {
             .add_event::<DragEvent>()
             .add_event::<SimMessageEvent>()
             .add_event::<SimLootEvent>()
-            .add_event::<MouseOverEvent>()
             .add_plugin(bevy_ninepatch::NinePatchPlugin::<()>::default())
             .init_resource::<Player>()
             .insert_resource(TimedEffectTicker {
@@ -83,7 +82,6 @@ impl Plugin for GamePlugin {
                     .with_system(handle_sim_loot)
                     .with_system(update_health_bar)
                     .with_system(eye_tracking_system)
-                    .with_system(check_mouse_over_item_system)
                     .with_system(update_mouse_over_item_info_system)
                     .with_system(update_mouse_over_item_info_style_position_system)
                     .into(),
@@ -127,8 +125,8 @@ pub fn eye_tracking_system(
             let white_pos = white.translation.truncate();
             let new_iris_trans = white.translation
                 + ((mouse.position - white_pos) / 100.0)
-                    .clamp_length(0.0, 0.2)
-                    .extend(1.0);
+                .clamp_length(0.0, 0.2)
+                .extend(1.0);
             iris.translation = new_iris_trans;
         }
     }
