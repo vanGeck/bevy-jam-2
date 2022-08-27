@@ -63,16 +63,16 @@
             ),
             drop_table: (
                 items: [
+                    SwordRusty,
                     Vial,
                     HerbViolet,
                     HerbGreen,
-                    //SwordRusty,
                 ],
                 chances: [
+                    66,
                     40,
                     50,
                     30,
-                    //66,
                 ]
             ),
         ),
@@ -89,12 +89,14 @@
             ),
             drop_table: (
                 items: [
+                    SwordRusty,
                     Vial,
                     HerbViolet,
                     HerbGreen,
                     //ShieldRusty,
                 ],
                 chances: [
+                    50,
                     40,
                     50,
                     30,

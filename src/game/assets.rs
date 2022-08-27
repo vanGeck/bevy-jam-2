@@ -159,6 +159,17 @@ pub enum TextureId {
     EssenceMight,
     EssenceVitality,
     EssenceAlacrity,
+    FlaskHealing,
+    FlaskStrength,
+    FlaskSkill,
+    FlaskToughness,
+    SwordRusty,
+    Sword,
+    SwordMasterwork,
+    SwordWounding,
+    SwordMasterworkWounding,
+    SwordSpeed,
+    SwordMasterworkSpeed,
 }
 
 impl Default for TextureId {

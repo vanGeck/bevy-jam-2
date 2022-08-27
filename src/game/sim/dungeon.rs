@@ -1,10 +1,9 @@
 use crate::config::config_sim::SimConfig;
-use crate::game::sim::combat::Combatant;
 use crate::game::sim::dungeon_components::{DungeonLevel, Room};
 use bevy::prelude::*;
 use rand::Rng;
 use crate::config::data_enemies::EnemiesData;
-use crate::game::combat::{DropTable, Enemy, EnemyId};
+use crate::game::combat::{DropTable, Enemy};
 use crate::game::ItemId::*;
 
 pub fn generate_level(len: i32, params: &SimConfig, mut _cmd: &mut Commands, enemies: &Res<EnemiesData>) -> DungeonLevel {
@@ -41,8 +40,8 @@ pub fn generate_level(len: i32, params: &SimConfig, mut _cmd: &mut Commands, ene
         rooms,
         enemies: fights,
         loot: DropTable{
-            items: vec![HerbRed, HerbGreen, HerbViolet, Vial],
-            chances: vec![7,7,7,10],
+            items: vec![HerbRed, HerbGreen, HerbViolet, Vial, SwordRusty],
+            chances: vec![10,10,10,10,15],
         }
     }
 }

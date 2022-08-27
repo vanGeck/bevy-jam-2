@@ -6,7 +6,7 @@ use rand::Rng;
 use crate::config::config_sim::SimConfig;
 use crate::config::data_enemies::EnemiesData;
 use crate::game::combat::{DropTable, EnemyId};
-use crate::game::{Item, ItemId};
+use crate::game::{ItemId};
 use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
 use crate::game::sim::dungeon::generate_level;
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
@@ -40,7 +40,7 @@ pub fn tick_dungeon(
     mut msg_events: EventWriter<SimMessageEvent>,
     mut loot_events: EventWriter<SimLootEvent>,
     time: Res<Time>,
-    config: ResMut<SimConfig>,
+    _config: ResMut<SimConfig>,
     mut state: ResMut<DungeonState>,
     mut hero: ResMut<Hero>,
     mut enemy: ResMut<Enemy>,
@@ -50,7 +50,7 @@ pub fn tick_dungeon(
     }
     if state.msg_cooldown.tick(time.delta()).just_finished() {
         // hero.combat_stats.health -= 1;
-        let mut cbt_state = state.combat_state.clone();
+        let cbt_state = state.combat_state.clone();
         let current_room_idx = state.current_room_idx as usize;
         if let Some(level) = &mut state.current_level {
             let room = &mut level.rooms[current_room_idx as usize];

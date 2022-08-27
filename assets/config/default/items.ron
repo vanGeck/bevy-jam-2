@@ -34,7 +34,7 @@
         (((1, 2)), (
             id: EssenceAlacrity,
             name: "Essence of Vitality",
-            description: "Grants 1 point of combat skill for 30 seconds.",
+            description: "Grants 1 point of combat proficiency for 30 seconds.",
             texture_id: EssenceAlacrity,
         )),
         (((1, 2)), (
@@ -42,6 +42,54 @@
             name: "Essence of Vitality",
             description: "Grants 1 point of bonus damage for 30 seconds.",
             texture_id: EssenceMight,
+        )),
+        (((1, 2)), (
+            id: FlaskStrength,
+            name: "Flask of Strength",
+            description: "Grants 3 points of bonus damage for 30 seconds.",
+            texture_id: FlaskStrength,
+        )),
+        (((1, 2)), (
+            id: FlaskSkill,
+            name: "Flask of Skill",
+            description: "Grants 3 point of combat proficiency for 30 seconds.",
+            texture_id: FlaskSkill,
+        )),
+        (((1, 2)), (
+            id: FlaskToughness,
+            name: "Flask of Toughness",
+            description: "Grants 3 points of damage resistance for 30 seconds.",
+            texture_id: FlaskToughness,
+        )),
+        (((1, 2)), (
+            id: FlaskHealing,
+            name: "Flask of Healing",
+            description: "Restores 20HP on use.",
+            texture_id: FlaskHealing,
+        )),
+        (((1, 3)), (
+            id: SwordRusty,
+            name: "Rusty Sword",
+            description: "Tends to be more dangerous to you than to the enemy. Tetanus is a thing, you know.",
+            texture_id: SwordRusty,
+            stat_bonuses: (
+                max_hp: 0,
+                damage: 1,
+                combat_prof: 0,
+                damage_res: 0
+            )
+        )),
+        (((1, 3)), (
+            id: Sword,
+            name: "Sword",
+            description: "Standard equipment for professionals in the applied violence industry.",
+            texture_id: Sword,
+            stat_bonuses: (
+                max_hp: 0,
+                damage: 2,
+                combat_prof: 1,
+                damage_res: 0
+            )
         )),
     ]
 )

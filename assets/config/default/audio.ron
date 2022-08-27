@@ -1,4 +1,4 @@
 (
-    music_volume: Some(0.5),
+    music_volume: Some(0.0),
     sfx_volume: Some(0.8),
 )

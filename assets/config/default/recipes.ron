@@ -1,45 +1,6 @@
 (
     recipes: [
         (
-            result: HealthPotion,
-            ingredients: [
-                (
-                    item_id: Vial,
-                    quantity: 1
-                ),
-                (
-                    item_id: TurtleHerb,
-                    quantity: 1
-                )
-            ],
-        ),
-        (
-            result: FilledLantern,
-            ingredients: [
-                (
-                    item_id: EmptyLantern,
-                    quantity: 1
-                ),
-                (
-                    item_id: CandleStick,
-                    quantity: 1
-                )
-            ],
-        ),
-        (
-            result: LitLantern,
-            ingredients: [
-                (
-                    item_id: FilledLantern,
-                    quantity: 1
-                ),
-                (
-                    item_id: FireEssence,
-                    quantity: 1
-                )
-            ],
-        ),
-        (
             result: EssenceVitality,
             ingredients: [
                 (
@@ -76,6 +37,15 @@
                     item_id: HerbViolet,
                     quantity: 1
                 )
+            ],
+        ),
+        (
+            result: Sword,
+            ingredients: [
+                (
+                    item_id: SwordRusty,
+                    quantity: 2
+                ),
             ],
         ),
     ],
