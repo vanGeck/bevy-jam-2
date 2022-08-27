@@ -4,15 +4,8 @@ use bevy::prelude::*;
 use bevy_ninepatch::{NinePatchBuilder, NinePatchBundle};
 use iyes_loopless::prelude::*;
 
-use crate::AppState;
 use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
-use crate::game::{
-    AlbumId, apply_scrim_to_being_dragged, AssetStorage, check_drag_begin,
-    check_drag_end, check_ghost_placement_validity, CleanupOnGameplayEnd, combine_items_system, CombineButton,
-    DragEvent, Item, ItemId, Player, process_drag_event, set_ghost_position, SoundId, spawn_item,
-    SpawnItemEvent, TextureId,
-};
 use crate::game::combat::{Combatant, Enemy, Hero};
 use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
 use crate::game::event_handling::{
@@ -20,11 +13,18 @@ use crate::game::event_handling::{
 };
 use crate::game::item_info_system::*;
 use crate::game::timed_effect::{test_apply_modifier, tick_temporary_modifiers, TimedEffectTicker};
+use crate::game::{
+    apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
+    combine_items_system, process_drag_event, set_ghost_position, spawn_item, AlbumId,
+    AssetStorage, CleanupOnGameplayEnd, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent,
+    TextureId,
+};
 use crate::hud::gold::gold_update_system;
 use crate::mouse::{Mouse, MouseInteractive};
 use crate::positioning::{Coords, Dimens, Pos};
+use crate::AppState;
 
-use super::{Eyes, Iris, setup_health_bar, update_health_bar};
+use super::{setup_health_bar, update_health_bar, Eyes, Iris};
 
 pub struct GamePlugin;
 
@@ -128,8 +128,8 @@ pub fn eye_tracking_system(
             let white_pos = white.translation.truncate();
             let new_iris_trans = white.translation
                 + ((mouse.position - white_pos) / 100.0)
-                .clamp_length(0.0, 0.2)
-                .extend(1.0);
+                    .clamp_length(0.0, 0.2)
+                    .extend(1.0);
             iris.translation = new_iris_trans;
         }
     }

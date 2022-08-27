@@ -132,14 +132,18 @@ pub fn track_mouse_hover(
         },
     );
     if nr_items > 1 {
-        trace!("{:?} items hovered, culling all but highest at {:?}", nr_items, highest_z);
+        trace!(
+            "{:?} items hovered, culling all but highest at {:?}",
+            nr_items,
+            highest_z
+        );
         query
             .iter_mut()
             .filter(|(interactive, transform, _)| {
                 interactive.hovered && (transform.translation().z - highest_z).abs() > f32::EPSILON
             })
             .for_each(|(mut interactive, transform, _)| {
-                trace!("Culling {:?}",  transform.translation().z);
+                trace!("Culling {:?}", transform.translation().z);
                 interactive.hovered = false;
                 interactive.clicked = false;
             });

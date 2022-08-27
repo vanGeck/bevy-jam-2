@@ -2,9 +2,15 @@ use bevy::prelude::*;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet};
 use iyes_loopless::state::NextState;
 
+use crate::game::{
+    create_camera, create_layout_background, create_layout_feed, create_layout_foo,
+    create_layout_grids, create_layout_hero, create_layout_music, create_layout_toasts,
+};
+use crate::hud::gold::setup_gold;
 use crate::mouse::MouseInteractive;
-use crate::{AppState, DebugConfig};
+use crate::states::delete_all_entities;
 use crate::transition_state::MenuTransition;
+use crate::{AppState, DebugConfig};
 
 pub struct MainMenuPlugin;
 
@@ -14,7 +20,17 @@ impl Plugin for MainMenuPlugin {
             AppState::MainMenu,
             ConditionSet::new()
                 .run_in_state(AppState::MainMenu)
+                .with_system(delete_all_entities)
                 .with_system(check_menu_bypass)
+                .with_system(create_camera)
+                .with_system(create_layout_background)
+                .with_system(create_layout_music)
+                .with_system(create_layout_feed)
+                .with_system(create_layout_grids)
+                .with_system(create_layout_toasts)
+                .with_system(create_layout_foo)
+                .with_system(create_layout_hero)
+                .with_system(setup_gold)
                 .into(),
         )
         .add_system_set(

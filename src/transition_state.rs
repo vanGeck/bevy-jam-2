@@ -1,9 +1,9 @@
 use bevy::prelude::*;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, NextState};
 
-use crate::{AppState, Mouse};
 use crate::game::GameCamera;
 use crate::main_menu::MenuBackpack;
+use crate::{AppState, Mouse};
 
 pub struct TransitionPlugin;
 
@@ -29,7 +29,6 @@ impl Plugin for TransitionPlugin {
         );
     }
 }
-
 
 pub enum MenuTransition {
     InactiveMenu,

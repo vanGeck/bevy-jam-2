@@ -22,6 +22,20 @@ pub enum AppState {
     GameEnded,
 }
 
+pub fn delete_all_entities(mut commands: Commands, query: Query<Entity>) {
+    info!("Deleting all entities...");
+    for entity in query.iter() {
+        commands.entity(entity).despawn_recursive();
+    }
+}
+
+/// Despawn all entities with a given component type
+fn despawn_with<T: Component>(mut commands: Commands, q: Query<Entity, With<T>>) {
+    for e in q.iter() {
+        commands.entity(e).despawn_recursive();
+    }
+}
+
 pub fn log_state_changes(state: Res<CurrentState<AppState>>) {
     if state.is_changed() {
         info!("Switching to game state {:?}!", state.0);
