@@ -1,4 +1,6 @@
+use bevy::ecs::schedule::IntoRunCriteria;
 use bevy::prelude::*;
+use bevy_ninepatch::{NinePatchBuilder, NinePatchBundle, NinePatchData}; // For sprite slicing into 9 parts so it can stretch.
 
 use crate::game::{EquipmentSlot, Item};
 use crate::mouse::MouseInteractive;
@@ -23,11 +25,160 @@ pub fn update_mouse_over_item_info_system(
     item_info_query: Query<Entity, With<MouseOverItemInfo>>,
     asset_server: Res<AssetServer>,
     mouse: Res<Mouse>,
+    mut nine_batch_builder: ResMut<Assets<NinePatchBuilder<()>>>,
 ) {
     // Add new item info
     for (item_entity, mouse_interaction, item) in new_mouse_over_items_query.iter() {
         if mouse_interaction.hovered {
             commands.entity(item_entity).insert(MouseOver {});
+            let contents_entity = commands
+                .spawn_bundle(NodeBundle {
+                    style: Style {
+                        position_type: PositionType::Relative,
+                        position: UiRect {
+                            top: Val::Px(0.0),
+                            left: Val::Px(0.0),
+                            ..default()
+                        },
+                        ..default()
+                    },
+                    ..default()
+                })
+                .with_children(|parent| {
+                    // Name
+                    parent.spawn_bundle(
+                        TextBundle::from_section(
+                            item.name.clone(),
+                            TextStyle {
+                                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                                font_size: 20.0,
+                                color: Color::WHITE,
+                            },
+                        )
+                            .with_style(Style {
+                                position_type: PositionType::Relative,
+                                position: UiRect {
+                                    top: Val::Px(0.0),
+                                    left: Val::Px(0.0),
+                                    ..default()
+                                },
+                                margin: UiRect {
+                                    top: Val::Px(4.0),
+                                    left: Val::Px(8.0),
+                                    ..default()
+                                },
+                                ..default()
+                            }),
+                    );
+                    // Description
+                    parent.spawn_bundle(
+                        TextBundle::from_section(
+                            item.description.clone(),
+                            TextStyle {
+                                font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                                font_size: 16.0,
+                                color: Color::WHITE,
+                            },
+                        )
+                            .with_style(Style {
+                                position_type: PositionType::Relative,
+                                position: UiRect {
+                                    top: Val::Px(0.0),
+                                    left: Val::Px(0.0),
+                                    ..default()
+                                },
+                                margin: UiRect {
+                                    top: Val::Px(4.0),
+                                    left: Val::Px(8.0),
+                                    ..default()
+                                },
+                                ..default()
+                            }),
+                    );
+                    // Wearable
+                    if let Some((slot, _)) = item.wearable.clone() {
+                        let slot_name: String;
+                        match slot {
+                            EquipmentSlot::Armour => {
+                                slot_name = "Armour".to_string();
+                            }
+                            EquipmentSlot::Helmet => {
+                                slot_name = "Helmet".to_string();
+                            }
+                            EquipmentSlot::Necklace => {
+                                slot_name = "Necklace".to_string();
+                            }
+                            EquipmentSlot::Shield => {
+                                slot_name = "Shield".to_string();
+                            }
+                            EquipmentSlot::Weapon => {
+                                slot_name = "Weapon".to_string();
+                            }
+                        }
+                        parent.spawn_bundle(
+                            TextBundle::from_section(
+                                slot_name,
+                                TextStyle {
+                                    font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                                    font_size: 16.0,
+                                    color: Color::WHITE,
+                                },
+                            )
+                                .with_style(Style {
+                                    position_type: PositionType::Relative,
+                                    position: UiRect {
+                                        top: Val::Px(4.0),
+                                        left: Val::Px(8.0),
+                                        ..default()
+                                    },
+                                    ..default()
+                                }),
+                        );
+                    }
+                    // Stat Bonuses
+                    if let Some(stat_bonus) = item.stat_bonuses {
+                        let mut stats: String = format!("| Stats: ");
+                        if stat_bonus.combat_prof > 0 {
+                            stats.push_str(&*format!(
+                                "Combat Proficiency: {} | ",
+                                stat_bonus.combat_prof
+                            ));
+                        }
+                        if stat_bonus.damage > 0 {
+                            stats.push_str(&*format!("Damage: {} | ", stat_bonus.damage));
+                        }
+                        if stat_bonus.damage_res > 0 {
+                            stats.push_str(&*format!(
+                                "Damage Resistance: {} | ",
+                                stat_bonus.damage_res
+                            ));
+                        }
+                        if stat_bonus.max_hp > 0 {
+                            stats.push_str(&*format!("Max HP: {} | ", stat_bonus.combat_prof));
+                        }
+
+                        parent.spawn_bundle(
+                            TextBundle::from_section(
+                                stats,
+                                TextStyle {
+                                    font: asset_server.load("fonts/FiraSans-Bold.ttf"),
+                                    font_size: 16.0,
+                                    color: Color::WHITE,
+                                },
+                            )
+                                .with_style(Style {
+                                    position_type: PositionType::Relative,
+                                    position: UiRect {
+                                        top: Val::Px(4.0),
+                                        left: Val::Px(8.0),
+                                        ..default()
+                                    },
+                                    ..default()
+                                }),
+                        );
+                    }
+                })
+                .id();
             commands
                 .spawn_bundle(NodeBundle {
                     style: Style {
@@ -44,15 +195,20 @@ pub fn update_mouse_over_item_info_system(
                 .insert(Name::new("MouseOverItemInfo"))
                 .insert(MouseOverItemInfo {})
                 .with_children(|parent| {
-                    parent.spawn_bundle(ImageBundle {
+                    let image_handle: Handle<Image> = asset_server.load("textures/Stone_Tablet_Panel_Shrinked_Uniform_Borders.png");
+                    let nine_patch_builder_handle = nine_batch_builder.add(
+                        NinePatchBuilder::by_margins(16, 16, 16, 16)
+                    );
+                    parent.spawn_bundle(NinePatchBundle {
                         style: Style {
                             size: Size::new(Val::Auto, Val::Auto),
+                            margin: UiRect::all(Val::Auto),
                             padding: UiRect {
                                 bottom: Val::Px(8.0),
                                 right: Val::Px(8.0),
                                 ..default()
                             },
-                            position_type: PositionType::Absolute,
+                            position_type: PositionType::Relative,
                             position: UiRect {
                                 top: Val::Px(0.0),
                                 left: Val::Px(0.0),
@@ -63,141 +219,12 @@ pub fn update_mouse_over_item_info_system(
                             flex_direction: FlexDirection::ColumnReverse,
                             ..default()
                         },
-                        image: asset_server.load("textures/Stone_Tablet_Panel_Shrinked_Uniform_Borders.png").into(),
+                        nine_patch_data: NinePatchData::with_single_content(
+                            image_handle,
+                            nine_patch_builder_handle,
+                            contents_entity,
+                        ),
                         ..default()
-                    }).with_children(|parent| {
-                        // Name
-                        parent.spawn_bundle(
-                            TextBundle::from_section(
-                                item.name.clone(),
-                                TextStyle {
-                                    font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                    font_size: 20.0,
-                                    color: Color::WHITE,
-                                },
-                            )
-                                .with_style(Style {
-                                    position_type: PositionType::Relative,
-                                    position: UiRect {
-                                        top: Val::Px(0.0),
-                                        left: Val::Px(0.0),
-                                        ..default()
-                                    },
-                                    margin: UiRect {
-                                        top: Val::Px(4.0),
-                                        left: Val::Px(8.0),
-                                        ..default()
-                                    },
-                                    ..default()
-                                }),
-                        );
-                        // Description
-                        parent.spawn_bundle(
-                            TextBundle::from_section(
-                                item.description.clone(),
-                                TextStyle {
-                                    font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                    font_size: 16.0,
-                                    color: Color::WHITE,
-                                },
-                            )
-                                .with_style(Style {
-                                    position_type: PositionType::Relative,
-                                    position: UiRect {
-                                        top: Val::Px(0.0),
-                                        left: Val::Px(0.0),
-                                        ..default()
-                                    },
-                                    margin: UiRect {
-                                        top: Val::Px(4.0),
-                                        left: Val::Px(8.0),
-                                        ..default()
-                                    },
-                                    ..default()
-                                }),
-                        );
-                        // Wearable
-                        if let Some((slot, _)) = item.wearable.clone() {
-                            let slot_name: String;
-                            match slot {
-                                EquipmentSlot::Armour => {
-                                    slot_name = "Armour".to_string();
-                                }
-                                EquipmentSlot::Helmet => {
-                                    slot_name = "Helmet".to_string();
-                                }
-                                EquipmentSlot::Necklace => {
-                                    slot_name = "Necklace".to_string();
-                                }
-                                EquipmentSlot::Shield => {
-                                    slot_name = "Shield".to_string();
-                                }
-                                EquipmentSlot::Weapon => {
-                                    slot_name = "Weapon".to_string();
-                                }
-                            }
-                            parent.spawn_bundle(
-                                TextBundle::from_section(
-                                    slot_name,
-                                    TextStyle {
-                                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                        font_size: 16.0,
-                                        color: Color::WHITE,
-                                    },
-                                )
-                                    .with_style(Style {
-                                        position_type: PositionType::Relative,
-                                        position: UiRect {
-                                            top: Val::Px(4.0),
-                                            left: Val::Px(8.0),
-                                            ..default()
-                                        },
-                                        ..default()
-                                    }),
-                            );
-                        }
-                        // Stat Bonuses
-                        if let Some(stat_bonus) = item.stat_bonuses {
-                            let mut stats: String = format!("| Stats: ");
-                            if stat_bonus.combat_prof > 0 {
-                                stats.push_str(&*format!(
-                                    "Combat Proficiency: {} | ",
-                                    stat_bonus.combat_prof
-                                ));
-                            }
-                            if stat_bonus.damage > 0 {
-                                stats.push_str(&*format!("Damage: {} | ", stat_bonus.damage));
-                            }
-                            if stat_bonus.damage_res > 0 {
-                                stats.push_str(&*format!(
-                                    "Damage Resistance: {} | ",
-                                    stat_bonus.damage_res
-                                ));
-                            }
-                            if stat_bonus.max_hp > 0 {
-                                stats.push_str(&*format!("Max HP: {} | ", stat_bonus.combat_prof));
-                            }
-
-                            parent.spawn_bundle(
-                                TextBundle::from_section(
-                                    stats,
-                                    TextStyle {
-                                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                        font_size: 16.0,
-                                        color: Color::WHITE,
-                                    },
-                                )
-                                    .with_style(Style {
-                                        position_type: PositionType::Relative,
-                                        position: UiRect {
-                                            top: Val::Px(4.0),
-                                            left: Val::Px(8.0),
-                                            ..default()
-                                        },
-                                        ..default()
-                                    }),
-                            );
-                        }
                     });
                 });
         }
