@@ -171,7 +171,15 @@ impl Default for TextureId {
 /// of sound files that the game will randomly pick from.
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub enum SoundId {
-    Placeholder,
+    BigMonsterGrowl,
+    DoorCreak,
+    GoblinAhah,
+    LittleMonsterGrowl,
+    SlashHit,
+    SwordClang,
+    WaterDripping,
+    /// Sound effect that plays when combining things:
+    PositiveAffirmation,
 }
 
 /// Identifies a music track or album.
