@@ -28,6 +28,8 @@ pub struct LayoutData {
 pub struct ColumnLeft {
     pub margin_left: f32,
     pub margin_right: f32,
+    pub feed_padding: f32,
+    pub feed_item_height: f32,
     pub music: Container,
     pub feed: Container,
 }

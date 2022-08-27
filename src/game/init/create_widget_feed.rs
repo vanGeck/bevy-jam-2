@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::data_layout::LayoutData;
+use crate::game::feed::{EventFeed, EventFeedContainer};
 use crate::game::CleanupOnGameplayEnd;
 use crate::positioning::Depth;
 
@@ -20,5 +21,7 @@ pub fn create_layout_feed(mut commands: Commands, layout: Res<LayoutData>) {
             ..default()
         })
         .insert(Name::new("EventFeed"))
+        .insert(EventFeedContainer)
         .insert(CleanupOnGameplayEnd);
+    commands.insert_resource(EventFeed { next_id: 0 })
 }

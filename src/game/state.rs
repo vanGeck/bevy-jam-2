@@ -8,9 +8,8 @@ use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
 use crate::game::combat::{Combatant, Enemy, Hero};
 use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
-use crate::game::event_handling::{
-    handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
-};
+use crate::game::event_handling::{handle_sim_loot, SimLootEvent};
+use crate::game::feed::{handle_sim_message, position_feed_item, SimMessageEvent};
 use crate::game::item_info_system::*;
 use crate::game::timed_effect::{test_apply_modifier, tick_temporary_modifiers, TimedEffectTicker};
 use crate::game::{
@@ -82,6 +81,7 @@ impl Plugin for GamePlugin {
                     .with_system(eye_tracking_system)
                     .with_system(update_mouse_over_item_info_system)
                     .with_system(update_mouse_over_item_info_style_position_system)
+                    .with_system(position_feed_item)
                     .into(),
             )
             .add_exit_system_set(
@@ -123,8 +123,8 @@ pub fn eye_tracking_system(
             let white_pos = white.translation.truncate();
             let new_iris_trans = white.translation
                 + ((mouse.position - white_pos) / 100.0)
-                .clamp_length(0.0, 0.2)
-                .extend(1.0);
+                    .clamp_length(0.0, 0.2)
+                    .extend(1.0);
             iris.translation = new_iris_trans;
         }
     }

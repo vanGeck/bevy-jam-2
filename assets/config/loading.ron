@@ -48,6 +48,7 @@
         Ominous: "ominous/",
     },
     fonts: {
+        FiraMonoMedium: "FiraMono-Medium.ttf",
         FiraSansBold: "FiraSans-Bold.ttf",
         Square: "square.ttf",
     }

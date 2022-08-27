@@ -54,7 +54,8 @@ pub fn play_sfx(
                         });
                         resource.skipping = false;
                         for mut text in &mut query {
-                            text.sections[0].value = format!("Now Playing: {}", file_name);
+                            text.sections[0].value =
+                                format!("Now Playing:\n{}", file_name.trim_end_matches(".ogg"));
                         }
                     } else {
                         info!(
@@ -84,7 +85,8 @@ pub fn play_sfx(
                     });
                     resource.skipping = false;
                     for mut text in &mut query {
-                        text.sections[0].value = format!("Now Playing: {}", file_name);
+                        text.sections[0].value =
+                            format!("Now Playing:\n{}", file_name.trim_end_matches(".ogg"));
                     }
                 } else {
                     info!(

@@ -6,6 +6,8 @@
     c_left: (
         margin_left: 2.,
         margin_right: 2.,
+        feed_padding: 0.25,
+        feed_item_height: 1.,
         music: (
             margin_bottom: 2.,
             height: 4.

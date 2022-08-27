@@ -61,7 +61,7 @@ pub fn create_layout_music(
                 .insert(RecordPlayer)
                 .insert(MouseInteractive::new(dimens_box, true));
             let text_style = TextStyle {
-                font: assets.font(&FontId::Square),
+                font: assets.font(&FontId::FiraSansBold),
                 font_size: 60.0,
                 color: Color::WHITE,
             };

@@ -13,6 +13,9 @@ pub fn create_layout_background(
 ) {
     let size = layout.factor * 1.2 * layout.screen_dimens.x.max(layout.screen_dimens.y);
     let pos_x = layout.factor * 0.5 * layout.screen_dimens.x;
+    // Create the background backpack that will be visible during the game.
+    // During the game, not much of this image is visible. But during the transition,
+    // this really sells the illusion that you're entering the backpack.
     commands
         .spawn_bundle(SpriteSheetBundle {
             sprite: TextureAtlasSprite {
@@ -25,6 +28,7 @@ pub fn create_layout_background(
             ..default()
         })
         .insert(CleanupOnGameplayEnd);
+    // Create the clickable menu backpack.
     commands
         .spawn_bundle(SpriteSheetBundle {
             sprite: TextureAtlasSprite {

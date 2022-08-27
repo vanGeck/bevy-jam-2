@@ -1,13 +1,13 @@
-use std::fmt::Formatter;
 use bevy::prelude::*;
 use rand::Rng;
+use std::fmt::Formatter;
 
 use crate::game::sim::dungeon_components::TextType;
-use crate::game::sim::event_handling::SimMessageEvent;
 
-use bevy_inspector_egui::Inspectable;
+use crate::game::sim::feed::SimMessageEvent;
 use crate::game::ItemId;
-use serde::{Serialize, Deserialize};
+use bevy_inspector_egui::Inspectable;
+use serde::{Deserialize, Serialize};
 
 #[derive(Component, Default, Copy, Clone, Inspectable, Serialize, Deserialize, Debug)]
 pub struct Combatant {
@@ -20,7 +20,11 @@ pub struct Combatant {
 
 impl std::fmt::Display for Combatant {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}/{}/{}/{}/{}", self.health, self.max_health, self.proficiency, self.damage_res, self.damage_bonus)
+        write!(
+            f,
+            "{}/{}/{}/{}/{}",
+            self.health, self.max_health, self.proficiency, self.damage_res, self.damage_bonus
+        )
     }
 }
 
