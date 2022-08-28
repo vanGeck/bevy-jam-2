@@ -30,15 +30,17 @@ pub fn handle_sim_loot(
                 layout.screen_dimens.y * layout.factor + 1.,
             );
             let free_coords = find_free_space(&grid, dimens, &items_query, &same_tick_items);
-            if same_tick_items.contains(&free_coords.unwrap()) {
-                let new_free_coords =
-                    find_free_space(&grid, dimens, &items_query, &same_tick_items);
-                if let Some(coords) = new_free_coords {
+            if let Some(coords) = free_coords {
+                if same_tick_items.contains(&coords) {
+                    let new_free_coords =
+                        find_free_space(&grid, dimens, &items_query, &same_tick_items);
+                    if let Some(coords) = new_free_coords {
+                        spawn.send(SpawnItemEvent::new(item, coords, source));
+                    }
+                } else {
+                    same_tick_items.push(coords);
                     spawn.send(SpawnItemEvent::new(item, coords, source));
                 }
-            } else if let Some(coords) = free_coords {
-                same_tick_items.push(coords);
-                spawn.send(SpawnItemEvent::new(item, coords, source));
             }
         }
     }

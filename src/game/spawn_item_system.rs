@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-use crate::config::data_layout::LayoutData;
 use crate::game::items::Item;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, FallingItem, Silhouette};
 use crate::mouse::MouseInteractive;
