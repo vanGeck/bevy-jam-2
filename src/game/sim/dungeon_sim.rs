@@ -56,6 +56,7 @@ pub fn tick_dungeon(
         let current_room_idx = state.current_room_idx as usize;
         if let Some(level) = &mut state.current_level {
             let room = &mut level.rooms[current_room_idx as usize];
+            let loot = &mut level.loot[current_room_idx as usize];
 
             if room.init {
                 room.init = false;
@@ -132,8 +133,10 @@ pub fn tick_dungeon(
                 room.post_search = false;
 
                 let loot = if enemy.enemy_id == EnemyId::None {
-                    pick_loot_from_drop_table(&room.drops)
+                    info!("Loot pool: {}", &loot.items.len());
+                    pick_loot_from_drop_table(&loot)
                 } else {
+                    info!("Loot pool combat: {}", &enemy.drop_table.items.len());
                     pick_loot_from_drop_table(&enemy.drop_table)
                 };
                 if loot.len() > 0 {

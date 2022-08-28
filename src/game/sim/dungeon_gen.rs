@@ -58,10 +58,11 @@ pub fn generate_level(
                 rooms.push(generate_empty());
                 enemies.push(Enemy::default());
                 if let Some(custom) = &segment.custom_loot {
-                    loot.push(custom.clone())
+                    let clone = custom.clone();
+                    loot.push(clone);
                 } else {
                     info!("Pushing default loot to an empty room.");
-                    loot.push(blueprint.default_loot.clone())
+                    loot.push(blueprint.default_loot.clone());
                 }
             }
             RoomType::Fight => {

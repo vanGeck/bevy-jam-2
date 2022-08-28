@@ -4,45 +4,26 @@
         ( // FloorBlueprint
             depth: 0,
             default_loot: ( // DropTable
-                items: [
-                    HerbGreen,
-                    HerbRed,
-                    HerbViolet,
-                ],
-                chances: [
-                    10,
-                    10,
-                    10
-                ]
+                items: [ HerbGreen, HerbRed, HerbViolet, ],
+                chances: [ 10, 10, 10 ]
             ),
             segments: [ // Room contents defined here
-                (
-                    types: {
-                        Start : 100,
-                    }
+                ( 
+                    types: { Start : 100, }
                 ),
                 (
-                    types: {
-                        Empty: 100,
-                    },
-                    custom_loot: (
-                        items: [
-                            HerbRed,
-                            Vial,
-                        ],
-                        chances: [
-                            100,
-                            100,
-                        ]
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ HerbRed, Vial ],
+                        chances: [ 100, 100,]
                     )
                 ),
                 (
-                    types: {
-                        Fight: 100,
-                    },
-                    enemies: {
-                        Rat: 100,
-                    }
+                    types: { Fight: 100, },
+                    enemies: { Rat: 100, }
+                ),
+                (
+                    types: {End: 100, },
                 )
             ]
         )
