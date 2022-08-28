@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use bevy::prelude::*;
 
 use crate::audio::sound_event::SoundEvent;
@@ -5,7 +6,7 @@ use crate::config::data_items::ItemsData;
 use crate::config::data_recipes::RecipesData;
 use crate::game::items::Item;
 use crate::game::recipes::Recipe;
-use crate::game::{find_free_space, SoundId, SpawnItemEvent};
+use crate::game::{find_free_space, ItemId, SoundId, SpawnItemEvent};
 use crate::mouse::MouseInteractive;
 use crate::positioning::{Coords, GridData};
 
@@ -40,7 +41,7 @@ pub fn combine_items_system(
                 items.push(item.clone());
             }
 
-            let possible_recipe = try_get_recipe(&recipes_data, &items[0], &items[1]);
+            let possible_recipe = try_get_recipe(&recipes_data, &items);
             trace!("found possible recipe: {:?}", possible_recipe);
 
             if let Some(recipe) = possible_recipe {
@@ -70,32 +71,25 @@ pub fn combine_items_system(
     }
 }
 
-pub fn try_get_recipe(data: &RecipesData, first_item: &Item, second_item: &Item) -> Option<Recipe> {
-    let mut recipe_has_first_item: bool = false;
-    let mut recipe_has_second_item: bool = false;
-
+pub fn try_get_recipe(data: &RecipesData, items: &Vec<Item>) -> Option<Recipe> {
     let mut possible_recipe: Option<Recipe> = None;
-
-    if first_item.id == second_item.id {
-        return None;
+    
+    let mut flat_recipe = Vec::<ItemId>::new();
+    let items_ids:Vec<ItemId> = items.into_iter().map(|f| f.id.clone()).collect();
+    
+    for recipe in &data.recipes {
+        flat_recipe.clear();
+        for ingr in &recipe.ingredients {
+            for _ in 0..(ingr.quantity){
+                flat_recipe.push(ingr.item_id.clone());
+            }
+        }
+        let difference: Vec<_> = items_ids.clone().into_iter().filter(|item| !flat_recipe.contains(item)).collect();
+        if difference.len() == 0{
+            possible_recipe = Option::from(recipe.clone());
+            break;
+        }
     }
-
-    data.recipes.iter().for_each(|recipe| {
-        recipe.ingredients.iter().for_each(|ingredient| {
-            if ingredient.item_id == first_item.id {
-                recipe_has_first_item = true;
-            }
-            if ingredient.item_id == second_item.id {
-                recipe_has_second_item = true;
-            }
-
-            if recipe_has_first_item && recipe_has_second_item {
-                possible_recipe = Some(recipe.clone());
-            }
-        });
-        recipe_has_first_item = false;
-        recipe_has_second_item = false;
-    });
 
     possible_recipe
 }
