@@ -43,7 +43,8 @@
         SlashHit:"slash_hit",
         SwordClang:"sword_clang",
         WaterDripping:"water_dripping",
-        Alchemy:"Alchemy",
+        Alchemy:"alchemy",
+        CantCombine: "combine",
     },
     music: {
         Jazz: "jazz/",

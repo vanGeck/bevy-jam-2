@@ -193,6 +193,7 @@ pub enum SoundId {
     Alchemy,
     /// Sound effect that plays when combining things:
     PositiveAffirmation,
+    CantCombine,
 }
 
 /// Identifies a music track or album.
