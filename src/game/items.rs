@@ -103,10 +103,10 @@ pub enum ItemId {
     SwordRusty,
     Sword,
     SwordMasterwork,
-    SwordWounding,
-    SwordMasterworkWounding,
-    SwordSpeed,
-    SwordMasterworkSpeed,
+    SwordOfWounding,
+    MasterworkSwordOfWounding,
+    SwordOfSpeed,
+    MasterworkSwordOfSpeed,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq, Hash)]

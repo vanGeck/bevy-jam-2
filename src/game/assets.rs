@@ -166,10 +166,10 @@ pub enum TextureId {
     SwordRusty,
     Sword,
     SwordMasterwork,
-    SwordWounding,
-    SwordMasterworkWounding,
-    SwordSpeed,
-    SwordMasterworkSpeed,
+    SwordOfWounding,
+    MasterworkSwordOfWounding,
+    SwordOfSpeed,
+    MasterworkSwordOfSpeed,
     CombineButton,
 }
 

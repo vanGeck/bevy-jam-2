@@ -69,7 +69,6 @@
                 applied: false,
                 expired: false,
             ),
-
         )),
         (((1, 2)), (
             id: FlaskStrength,
@@ -130,7 +129,7 @@
                 damage_bonus: 0,
                 proficiency: 0,
                 damage_res: 0,
-            )
+            ),
         )),
         (((1, 3)), (
             id: SwordRusty,
@@ -142,8 +141,8 @@
                 max_health: 0,
                 damage_bonus: 1,
                 proficiency: 0,
-                damage_res: 0
-            )
+                damage_res: 0,
+            ),
         )),
         (((1, 3)), (
             id: Sword,
@@ -153,10 +152,75 @@
             stat_bonuses: (
                 health: 0,
                 max_health: 0,
-                damage_bonus: 2,
-                proficiency: 1,
-                damage_res: 0
-            )
+                damage_bonus: 0,
+                proficiency: 2,
+                damage_res: 0,
+            ),
+        )),
+        (((3, 3)), (
+            id: MasterworkSwordOfWounding,
+            name: "Masterwork Sword of Wounding",
+            description: "Masterwork sword of woundind!",
+            texture_id: MasterworkSwordOfWounding,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 3,
+                proficiency: 3,
+                damage_res: 0,
+            ),
+        )),
+        (((2, 3)), (
+            id: SwordMasterwork,
+            name: "Masterwork Sword",
+            description: "Masterwork Sword!",
+            texture_id: SwordMasterwork,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 1,
+                proficiency: 3,
+                damage_res: 0,
+            ),
+        )),
+        (((2, 3)), (
+            id: MasterworkSwordOfSpeed,
+            name: "Masterword Sword of Speed",
+            description: "Masterwork sword of speed!",
+            texture_id: MasterworkSwordOfSpeed,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 1,
+                proficiency: 5,
+                damage_res: 0,
+            ),
+        )),
+        (((2, 3)), (
+            id: SwordOfSpeed,
+            name: "Sword of Speed",
+            description: "Masterwork sword of woundind!@@",
+            texture_id: SwordOfSpeed,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 0,
+                proficiency: 3,
+                damage_res: 0,
+            ),
+        )),
+        (((2, 3)), (
+            id: SwordOfWounding,
+            name: "Sword of Wounding",
+            description: "A Sword of Woundind!!!!.",
+            texture_id: SwordOfWounding,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 1,
+                proficiency: 2,
+                damage_res: 0,
+            ),
         )),
     ]
 )
