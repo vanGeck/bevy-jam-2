@@ -28,6 +28,7 @@
         SwordOfWounding: "SwordWounding.png",
         MasterworkSwordOfWounding: "SwordMasterworkWounding.png",
         CombineButton: "Combine_Button.png",
+        Scroll: "Scroll.png",
     },
     atlases: {
         NotFound: "not_found.ron",

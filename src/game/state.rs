@@ -23,6 +23,7 @@ use crate::game::{
 use crate::mouse::Mouse;
 use crate::positioning::{Coords, Dimens, Pos};
 use crate::AppState;
+use crate::config::data_items::ItemsData;
 
 use super::combat::{Combatant, Enemy, Hero};
 use super::{consume_item, update_health_bar, update_hero_stats_display, Eyes, Iris};
@@ -135,92 +136,55 @@ pub fn eye_tracking_system(
     }
 }
 
-pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
+pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<ItemsData>) {
+    let mut item = items_db.try_get_item(ItemId::ScrollBasic5).unwrap();
     spawn.send(SpawnItemEvent::without_anim(
-        Item {
-            id: ItemId::ScrollBasic5,
-            texture_id: TextureId::NotFound,
-            name: "Scroll of basics".to_string(),
-            description: "Quick tip: Don't die.".to_string(),
-            wearable: None,
-            ..default()
-        },
-        Coords::new(Pos::new(3, 3), Dimens::new(1, 1)),
+        item.1,
+        Coords::new(Pos::new(3, 3), item.0),
     ));
 
+    let mut item = items_db.try_get_item(ItemId::ScrollBasic7).unwrap();
     spawn.send(SpawnItemEvent::without_anim(
-        Item {
-            id: ItemId::Vial,
-            texture_id: TextureId::Vial,
-            name: "Vial".to_string(),
-            description: "Any liquid may be stored inside.".to_string(),
-            wearable: None,
-            ..default()
-        },
-        Coords::new(Pos::new(0, 0), Dimens::new(1, 2)),
-    ));
-    spawn.send(SpawnItemEvent::without_anim(
-        Item {
-            id: ItemId::Vial,
-            texture_id: TextureId::Vial,
-            name: "Vial".to_string(),
-            description: "Any liquid may be stored inside.".to_string(),
-            wearable: None,
-            ..default()
-        },
-        Coords::new(Pos::new(1, 0), Dimens::new(1, 2)),
-    ));
-    spawn.send(SpawnItemEvent::without_anim(
-        Item {
-            id: ItemId::HerbRed,
-            texture_id: TextureId::HerbRed,
-            name: "Red Herb".to_string(),
-            description: "Basic alchemical ingredient. Associated with vitality.".to_string(),
-            wearable: None,
-            ..default()
-        },
-        Coords::new(Pos::new(2, 0), Dimens::new(1, 1)),
-    ));
-    spawn.send(SpawnItemEvent::without_anim(
-        Item {
-            id: ItemId::HerbGreen,
-            texture_id: TextureId::HerbGreen,
-            name: "Green Herb".to_string(),
-            description: "Basic alchemical ingredient. Associated with dexterity.".to_string(),
-            wearable: None,
-            ..default()
-        },
-        Coords::new(Pos::new(3, 1), Dimens::new(1, 1)),
-    ));
-    spawn.send(SpawnItemEvent::without_anim(
-        Item {
-            id: ItemId::SwordRusty,
-            texture_id: TextureId::SwordRusty,
-            name: "Sword Rusty".to_string(),
-            description:
-            "Tends to be more dangerous to you than to the enemy. Tetanus is a thing, you know."
-                .to_string(),
-            wearable: None,
-            ..default()
-        },
-        Coords::new(Pos::new(4, 0), Dimens::new(1, 3)),
+        item.1,
+        Coords::new(Pos::new(3, 4), item.0),
     ));
 
+    item = items_db.try_get_item(ItemId::Vial).unwrap();
     spawn.send(SpawnItemEvent::without_anim(
-        Item {
-            id: ItemId::SwordRusty,
-            texture_id: TextureId::SwordRusty,
-            name: "Sword Rusty".to_string(),
-            description:
-            "Tends to be more dangerous to you than to the enemy. Tetanus is a thing, you know."
-                .to_string(),
-            wearable: None,
-            ..default()
-        },
-        Coords::new(Pos::new(5, 0), Dimens::new(1, 3)),
+        item.1,
+        Coords::new(Pos::new(0, 0), item.0),
+    ));
+
+    item = items_db.try_get_item(ItemId::Vial).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(1, 0), item.0),
+    ));
+
+    item = items_db.try_get_item(ItemId::HerbRed).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(2, 0), item.0),
+    ));
+
+    item = items_db.try_get_item(ItemId::HerbGreen).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(3, 1), item.0),
+    ));
+
+    item = items_db.try_get_item(ItemId::SwordRusty).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(4, 0), item.0),
+    ));
+
+    item = items_db.try_get_item(ItemId::SwordRusty).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(5, 0), item.0),
     ));
 }
-
 fn test_slice(
     mut commands: Commands,
     assets: Res<AssetStorage>,

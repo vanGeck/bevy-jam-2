@@ -153,6 +153,7 @@ pub enum TextureId {
     TileEight,
     TileThirtyTwo,
     // New items
+    Scroll,
     HerbRed,
     HerbGreen,
     HerbViolet,
