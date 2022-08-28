@@ -30,10 +30,10 @@ pub fn update_hero_stats_display(
     )>,
 ) {
     if let Ok(mut text) = query.p0().get_single_mut() {
-        text.sections[0].value = format!("Proficiency: {}", hero.combat_stats.proficiency);
+        text.sections[0].value = format!("Combat Proficiency: {}", hero.combat_stats.proficiency);
     }
     if let Ok(mut text) = query.p1().get_single_mut() {
-        text.sections[0].value = format!("Damage Res: {}", hero.combat_stats.damage_res);
+        text.sections[0].value = format!("Damage Resistance: {}", hero.combat_stats.damage_res);
     }
     if let Ok(mut text) = query.p2().get_single_mut() {
         text.sections[0].value = format!("Damage Bonus: {}", hero.combat_stats.damage_bonus);
