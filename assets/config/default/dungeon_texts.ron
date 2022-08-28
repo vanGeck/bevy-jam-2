@@ -10,7 +10,7 @@
             "Sir Hoardalot enters a dark, silent corridor dug out in a rocky wall.",
             "This damp passage smells weird. Falling water droplets splash somewhere far ahead.",
             "Pieces of ancient sprung traps litter this corridor, along with some with equally ancient pieces of unfortunate souls.",
-            "This passage is so dusty, you can barely see anything in the torchlight. Sir Hoardalot sneezes, and the echo parrots you.",
+            "This passage is so dusty, Sir Hoardalot can barely see anything in the torchlight. Sir Hoardalot sneezes, and the echo parrots around the room.",
             "Thick cobwebs hang from the ceiling of the tunnel, flowing down onto the floor. Sir Hoardalot's footsteps are muffled by the soft, sticky fabric.",
         ],
         EnteredRoom: [
@@ -30,7 +30,7 @@
             "Sir Hoardalot sifts through the items littering the floor.",
         ],
         SearchingBody: [
-            "Sir Hoardalot searches the remains of your enemy.",
+            "Sir Hoardalot searches the remains of the enemy.",
         ],
         FoundLoot: [
             "Sir Hoardalot found something!",
