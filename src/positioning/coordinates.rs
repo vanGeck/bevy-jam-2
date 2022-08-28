@@ -8,7 +8,7 @@ use crate::positioning::Dimens;
 
 /// Can be used as a component for entities that are on the grid.
 /// Contains a discrete position and dimensions.
-#[derive(Component, Deserialize, Serialize, Default, Copy, Clone, Debug)]
+#[derive(Component, Deserialize, Serialize, Default, Copy, Clone, Debug, PartialEq)]
 pub struct Coords {
     /// The entity's discrete position. Not to be confused with its Transform, which is where the
     /// entity's sprite is actually at. Transform can be between squares, the discrete position

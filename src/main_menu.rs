@@ -5,7 +5,7 @@ use iyes_loopless::state::NextState;
 use crate::game::create_backpack::create_layout_background;
 use crate::game::create_camera;
 use crate::game::create_widget_feed::create_layout_feed;
-use crate::game::create_widget_grids::{create_layout_foo, create_layout_grids};
+use crate::game::create_widget_grids::{create_layout_combine_button, create_layout_grids};
 use crate::game::create_widget_hero::create_layout_hero;
 use crate::game::create_widget_music::create_layout_music;
 use crate::game::create_widget_toasts::create_layout_toasts;
@@ -30,7 +30,7 @@ impl Plugin for MainMenuPlugin {
                 .with_system(create_layout_feed)
                 .with_system(create_layout_grids)
                 .with_system(create_layout_toasts)
-                .with_system(create_layout_foo)
+                .with_system(create_layout_combine_button)
                 .with_system(create_layout_hero)
                 .with_system(setup_gold)
                 .into(),

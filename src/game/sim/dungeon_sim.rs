@@ -6,11 +6,11 @@ use rand::Rng;
 use crate::config::config_sim::SimConfig;
 use crate::config::data_enemies::EnemiesData;
 use crate::game::combat::{DropTable, EnemyId};
-use crate::game::{ItemId};
 use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
 use crate::game::sim::dungeon::generate_level;
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
 use crate::game::sim::event_handling::{SimLootEvent, SimMessageEvent};
+use crate::game::ItemId;
 
 /// Handle a state event. Mainly handle hero's death?
 pub struct SimStateEvent(String);
@@ -79,7 +79,7 @@ pub fn tick_dungeon(
             }
             if room.combat {
                 if cbt_state == CombatState::Init {
-                    // Monster enounter texts now come from a different source 
+                    // Monster enounter texts now come from a different source
                     // (each monster has a different one)
                     //.send(SimMessageEvent(TextType::EnemyEncounter));
                     println!("{}", enemy.enter_combat_text);
@@ -107,13 +107,13 @@ pub fn tick_dungeon(
                     room.combat = false;
                 }
             }
-            
+
             if room.description {
                 room.description = false;
                 msg_events.send(SimMessageEvent(TextType::EnteredRoom));
                 return;
             }
-            
+
             if room.search {
                 if enemy.enemy_id == EnemyId::None {
                     msg_events.send(SimMessageEvent(TextType::SearchingRoom));
@@ -128,10 +128,10 @@ pub fn tick_dungeon(
                 // TODO:
                 // Use halt/resume methods to allow for looting in peace.
                 room.post_search = false;
-                
+
                 if enemy.enemy_id == EnemyId::None {
                     let loot = pick_loot_from_drop_table(&level.loot);
-                    if loot.len() > 0{
+                    if loot.len() > 0 {
                         msg_events.send(SimMessageEvent(TextType::FoundLoot));
                         for i in loot {
                             loot_events.send(SimLootEvent(i));
@@ -141,7 +141,7 @@ pub fn tick_dungeon(
                     }
                 } else {
                     let loot = pick_loot_from_drop_table(&enemy.drop_table);
-                    if loot.len() > 0{
+                    if loot.len() > 0 {
                         msg_events.send(SimMessageEvent(TextType::FoundLoot));
                         for i in loot {
                             loot_events.send(SimLootEvent(i));
@@ -181,8 +181,8 @@ pub fn resume_dungeon_sim(mut state: ResMut<DungeonState>) {
     state.running = true;
 }
 
-fn pick_loot_from_drop_table(table: &DropTable) -> Vec<ItemId>{
-    const MAX_ITEMS:i32 = 3;
+fn pick_loot_from_drop_table(table: &DropTable) -> Vec<ItemId> {
+    const MAX_ITEMS: i32 = 3;
     let mut result = Vec::<ItemId>::new();
     let mut rng = rand::thread_rng();
     for i in 0..table.items.len() {

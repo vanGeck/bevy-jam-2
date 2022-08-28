@@ -170,6 +170,7 @@ pub enum TextureId {
     SwordMasterworkWounding,
     SwordSpeed,
     SwordMasterworkSpeed,
+    CombineButton,
 }
 
 impl Default for TextureId {
