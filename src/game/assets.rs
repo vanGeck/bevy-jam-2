@@ -210,5 +210,4 @@ pub enum FontId {
     /// Thicker than Regular.
     FiraSansMedium,
     FiraSansBold,
-    AboretoRegular,
 }

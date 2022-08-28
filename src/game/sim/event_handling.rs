@@ -3,6 +3,7 @@ use rand::Rng;
 
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_items::ItemsData;
+use crate::config::data_layout::LayoutData;
 use crate::config::data_sim_texts::DungeonTexts;
 use crate::game::dungeon_components::TextType;
 use crate::game::feed::AddFeedItemEvent;
@@ -15,6 +16,7 @@ pub struct SimLootEvent(pub ItemId);
 pub fn handle_sim_loot(
     mut events: EventReader<SimLootEvent>,
     grid: Res<GridData>,
+    layout: Res<LayoutData>,
     items_data: Res<ItemsData>,
     items_query: Query<&Coords, With<Item>>,
     mut spawn: EventWriter<SpawnItemEvent>,
@@ -23,16 +25,20 @@ pub fn handle_sim_loot(
     for SimLootEvent(item_id) in events.iter() {
         trace!("Received sim loot event");
         if let Some((dimens, item)) = items_data.try_get_item(item_id.clone()) {
+            let source = Vec2::new(
+                layout.screen_dimens.x * layout.factor * 0.5,
+                layout.screen_dimens.y * layout.factor + 1.,
+            );
             let free_coords = find_free_space(&grid, dimens, &items_query, &same_tick_items);
             if same_tick_items.contains(&free_coords.unwrap()) {
                 let new_free_coords =
                     find_free_space(&grid, dimens, &items_query, &same_tick_items);
                 if let Some(coords) = new_free_coords {
-                    spawn.send(SpawnItemEvent::new(item, coords));
+                    spawn.send(SpawnItemEvent::new(item, coords, source));
                 }
             } else if let Some(coords) = free_coords {
                 same_tick_items.push(coords);
-                spawn.send(SpawnItemEvent::new(item, coords));
+                spawn.send(SpawnItemEvent::new(item, coords, source));
             }
         }
     }

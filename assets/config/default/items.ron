@@ -40,7 +40,7 @@
         )),
         (((1, 2)), (
             id: EssenceAlacrity,
-            name: "Essence of Vitality",
+            name: "Essence of Alacrity",
             description: "Grants 1 point of combat proficiency for 30 seconds.",
             texture_id: EssenceAlacrity,
             temporary_effect: (
@@ -56,7 +56,7 @@
         )),
         (((1, 2)), (
             id: EssenceMight,
-            name: "Essence of Vitality",
+            name: "Essence of Might",
             description: "Grants 1 point of bonus damage for 30 seconds.",
             texture_id: EssenceMight,
             temporary_effect: (

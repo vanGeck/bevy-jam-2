@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
+use crate::config::data_layout::LayoutData;
 use crate::game::items::Item;
-use crate::game::{AssetStorage, CleanupOnGameplayEnd};
+use crate::game::{AssetStorage, CleanupOnGameplayEnd, FallingItem, Silhouette};
 use crate::mouse::MouseInteractive;
 use crate::positioning::{Coords, GridData};
 use crate::positioning::{Depth, Dimens, Pos};
@@ -11,11 +12,28 @@ use crate::positioning::{Depth, Dimens, Pos};
 pub struct SpawnItemEvent {
     item: Item,
     coords: Coords,
+    /// If it spawns as an animated FallingItem, where does it appear?
+    ///
+    /// Set to to None for any items that are present at the start of the game. They will spawn
+    /// in the inventory without any animations.
+    source: Option<Vec2>,
 }
 
 impl SpawnItemEvent {
-    pub fn new(item: Item, coords: Coords) -> Self {
-        SpawnItemEvent { item, coords }
+    pub fn new(item: Item, coords: Coords, source: Vec2) -> Self {
+        SpawnItemEvent {
+            item,
+            coords,
+            source: Some(source),
+        }
+    }
+    /// Use this for items that already exist in the backpack at the start of the game.
+    pub fn without_anim(item: Item, coords: Coords) -> Self {
+        SpawnItemEvent {
+            item,
+            coords,
+            source: None,
+        }
     }
 }
 
@@ -25,11 +43,37 @@ pub fn spawn_item(
     assets: Res<AssetStorage>,
     grid: Res<GridData>,
 ) {
-    for SpawnItemEvent { item, coords } in events.iter() {
+    for SpawnItemEvent {
+        item,
+        coords,
+        source,
+    } in events.iter()
+    {
         trace!("Received SpawnItemEvent( {:?}, {:?} )", item, coords);
-
-        commands
-            .spawn_bundle(SpriteBundle {
+        if let Some(source) = source {
+            // Spawn the animating item.
+            commands
+                .spawn_bundle(SpriteBundle {
+                    sprite: Sprite {
+                        custom_size: Some(coords.dimens.as_vec2()),
+                        ..default()
+                    },
+                    texture: assets.texture(&item.texture_id),
+                    transform: Transform::from_xyz(source.x, source.y, Depth::FloatingItem.z()),
+                    ..Default::default()
+                })
+                .insert(Name::new("FallingItem"))
+                .insert(FallingItem::new(
+                    *coords,
+                    *source,
+                    coords.pos.as_vec2() + grid.offset,
+                ))
+                .insert(CleanupOnGameplayEnd);
+        }
+        // Spawn the silhouette.
+        let mut builder = commands.spawn();
+        builder
+            .insert_bundle(SpriteBundle {
                 sprite: Sprite {
                     custom_size: Some(coords.dimens.as_vec2()),
                     ..default()
@@ -47,6 +91,38 @@ pub fn spawn_item(
             .insert(*coords)
             .insert(MouseInteractive::new(coords.dimens.as_vec2(), true))
             .insert(CleanupOnGameplayEnd);
+        if source.is_some() {
+            builder.insert(Silhouette);
+        }
+    }
+}
+
+pub fn animate_falling_item(
+    mut commands: Commands,
+    time: Res<Time>,
+    mut query_falling: Query<(Entity, &mut FallingItem, &mut Transform)>,
+    query_cleanup: Query<(Entity, &Coords), With<Silhouette>>,
+) {
+    for (entity, mut item, mut transform) in query_falling.iter_mut() {
+        item.timer.tick(time.delta());
+        if item.timer.finished() {
+            commands.entity(entity).despawn_recursive();
+            if let Some((silhouette_entity, _)) = query_cleanup
+                .iter()
+                .find(|(_, coords)| **coords == item.coords)
+            {
+                commands.entity(silhouette_entity).remove::<Silhouette>();
+            }
+        } else {
+            let progress = item.timer.percent().powi(2);
+            let delta_total = item.target - item.source;
+            let delta_current = delta_total * progress;
+            let current_pos = delta_current + item.source;
+            transform.translation.x = current_pos.x + item.coords.dimens.x as f32 * 0.5;
+            transform.translation.y = current_pos.y + item.coords.dimens.y as f32 * 0.5;
+            transform.scale.x = 1. + (1. - progress);
+            transform.scale.y = 1. + (1. - progress);
+        }
     }
 }
 

@@ -3,15 +3,42 @@ use serde::{Deserialize, Serialize};
 
 use crate::game::TextureId;
 use crate::mouse::MouseInteractive;
-use crate::positioning::Pos;
+use crate::positioning::{Coords, Pos};
 
 use super::combat::Hero;
 use super::item_info_system::MouseOverItemInfo;
 use super::timed_effect::{apply_timed_modifier, TemporaryModifier};
 
-// Marker Component
+/// Marker component. This item is currently in the crafting window.
 #[derive(Component)]
 pub struct CraftItem;
+
+#[derive(Component)]
+pub struct FallingItem {
+    /// These are the Coords of the silhouette item that it's animating towards.
+    pub coords: Coords,
+    /// The translation that it comes from.
+    pub source: Vec2,
+    /// The translation that it is moving towards.
+    pub target: Vec2,
+    /// The timer describing the move.
+    pub timer: Timer,
+}
+
+impl FallingItem {
+    pub fn new(coords: Coords, source: Vec2, target: Vec2) -> Self {
+        Self {
+            coords,
+            source,
+            target,
+            timer: Timer::from_seconds(1.5, false),
+        }
+    }
+}
+
+/// Marker component. This item is unavailable, and must be rendered as a dark silhouette.
+#[derive(Component)]
+pub struct Silhouette;
 
 #[derive(Component, Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
@@ -126,5 +153,16 @@ pub fn consume_item(
                 }
             }
         }
+    }
+}
+
+/// Apply a dark scrim to the item that is being dragged.
+pub fn apply_silhouette(mut query: Query<(&mut Sprite, Option<&Silhouette>), With<Item>>) {
+    for (mut sprite, silhouette) in query.iter_mut() {
+        sprite.color = if silhouette.is_some() {
+            Color::rgba(0.1, 0.1, 0.1, 1.)
+        } else {
+            Color::rgb(1., 1., 1.)
+        };
     }
 }

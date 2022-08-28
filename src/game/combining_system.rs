@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use std::collections::HashMap;
 
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_items::ItemsData;
@@ -53,7 +52,11 @@ pub fn combine_items_system(
                         // ^ this is failing
                         debug!("found free space to place the item");
                         // Spawn the result of the recipe
-                        spawn_event_writer.send(SpawnItemEvent::new(item, free_coords));
+                        spawn_event_writer.send(SpawnItemEvent::new(
+                            item,
+                            free_coords,
+                            grid.center_crafting(),
+                        ));
                         // Delete the craft items entities
                         for (entity, _) in crafting_items_query.iter() {
                             commands.entity(entity).despawn_recursive();

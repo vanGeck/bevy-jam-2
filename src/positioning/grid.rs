@@ -19,4 +19,8 @@ impl GridData {
     pub fn calc_y(&self, coords: &Coords) -> f32 {
         self.offset.y + coords.pos.y as f32 + coords.dimens.y as f32 * 0.5
     }
+    /// Finds the center of the crafting grid.
+    pub fn center_crafting(&self) -> Vec2 {
+        Vec2::new(self.calc_x(&self.crafting), self.calc_y(&self.crafting))
+    }
 }

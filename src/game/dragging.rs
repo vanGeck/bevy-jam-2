@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::game::items::{CraftItem, Item};
-use crate::game::{AssetStorage, CleanupOnGameplayEnd};
+use crate::game::{AssetStorage, CleanupOnGameplayEnd, Silhouette};
 use crate::mouse::{Mouse, MouseInteractive};
 use crate::positioning::Depth;
 use crate::positioning::Pos;
@@ -12,10 +12,6 @@ use crate::positioning::{Coords, GridData};
 /// The Pos is the target position that the item is moved towards.
 #[derive(Debug)]
 pub struct DragEvent(Pos);
-
-// TODO: Use this??
-#[derive(Component)]
-pub struct Draggable;
 
 /// This marker component is added to items that are currently being dragged.
 #[derive(Component)]
@@ -44,7 +40,7 @@ pub fn check_drag_begin(
     assets: Res<AssetStorage>,
     grid: Res<GridData>,
     mut mouse: ResMut<Mouse>,
-    query: Query<(&Coords, Entity, &Item, &MouseInteractive)>,
+    query: Query<(&Coords, Entity, &Item, &MouseInteractive), Without<Silhouette>>,
 ) {
     if mouse.is_dragging {
         return;
@@ -53,6 +49,7 @@ pub fn check_drag_begin(
         if interactive.clicked {
             let hovered_over_cell = Pos::from(mouse.position - grid.offset);
             commands.entity(entity).insert(BeingDragged);
+            commands.entity(entity).insert(Silhouette);
             commands
                 .spawn_bundle(SpriteBundle {
                     sprite: Sprite {
@@ -89,19 +86,6 @@ pub fn set_ghost_position(
         coords.pos = Pos::from(mouse.position - grid.offset) + ghost.cursor_delta;
         transform.translation.x = grid.calc_x(&coords);
         transform.translation.y = grid.calc_y(&coords);
-    }
-}
-
-/// Apply a dark scrim to the item that is being dragged.
-pub fn apply_scrim_to_being_dragged(
-    mut query: Query<(&mut Sprite, Option<&BeingDragged>), With<Item>>,
-) {
-    for (mut sprite, being_dragged) in query.iter_mut() {
-        sprite.color = if being_dragged.is_some() {
-            Color::rgba(0.5, 0.5, 0.5, 0.5)
-        } else {
-            Color::rgb(1., 1., 1.)
-        };
     }
 }
 
@@ -155,6 +139,7 @@ pub fn process_drag_event(
             let (ghost_entity, ghost) = query_ghost.single();
             commands.entity(ghost_entity).despawn_recursive();
             commands.entity(entity).remove::<BeingDragged>();
+            commands.entity(entity).remove::<Silhouette>();
             if ghost.placement_valid {
                 coords.pos = *end;
                 transform.translation.x = grid.calc_x(&coords);

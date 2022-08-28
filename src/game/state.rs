@@ -14,9 +14,10 @@ use crate::game::feed::{handle_add_to_feed, position_feed_item, AddFeedItemEvent
 use crate::game::item_info_system::*;
 use crate::game::timed_effect::{test_apply_modifier, tick_temporary_modifiers, TimedEffectTicker};
 use crate::game::{
-    apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
-    combine_items_system, process_drag_event, set_ghost_position, spawn_item, AlbumId,
-    AssetStorage, CleanupOnGameplayEnd, DragEvent, Item, ItemId, Player, SpawnItemEvent, TextureId,
+    animate_falling_item, apply_silhouette, check_drag_begin, check_drag_end,
+    check_ghost_placement_validity, combine_items_system, process_drag_event, set_ghost_position,
+    spawn_item, AlbumId, AssetStorage, CleanupOnGameplayEnd, DragEvent, Item, ItemId, Player,
+    SpawnItemEvent, TextureId,
 };
 use crate::hud::gold::gold_update_system;
 use crate::mouse::Mouse;
@@ -66,7 +67,7 @@ impl Plugin for GamePlugin {
                     .with_system(spawn_item)
                     .with_system(check_drag_begin)
                     .with_system(set_ghost_position)
-                    .with_system(apply_scrim_to_being_dragged)
+                    .with_system(apply_silhouette)
                     .with_system(check_ghost_placement_validity)
                     .with_system(check_drag_end)
                     .with_system(process_drag_event)
@@ -86,6 +87,7 @@ impl Plugin for GamePlugin {
                     .with_system(update_mouse_over_item_info_style_position_system)
                     .with_system(position_feed_item)
                     .with_system(consume_item)
+                    .with_system(animate_falling_item)
                     .into(),
             )
             .add_exit_system_set(
@@ -134,7 +136,7 @@ pub fn eye_tracking_system(
 }
 
 pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
-    spawn.send(SpawnItemEvent::new(
+    spawn.send(SpawnItemEvent::without_anim(
         Item {
             id: ItemId::Vial,
             texture_id: TextureId::Vial,
@@ -145,7 +147,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         },
         Coords::new(Pos::new(0, 0), Dimens::new(1, 2)),
     ));
-    spawn.send(SpawnItemEvent::new(
+    spawn.send(SpawnItemEvent::without_anim(
         Item {
             id: ItemId::Vial,
             texture_id: TextureId::Vial,
@@ -156,7 +158,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         },
         Coords::new(Pos::new(1, 0), Dimens::new(1, 2)),
     ));
-    spawn.send(SpawnItemEvent::new(
+    spawn.send(SpawnItemEvent::without_anim(
         Item {
             id: ItemId::HerbRed,
             texture_id: TextureId::HerbRed,
@@ -167,7 +169,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         },
         Coords::new(Pos::new(2, 0), Dimens::new(1, 1)),
     ));
-    spawn.send(SpawnItemEvent::new(
+    spawn.send(SpawnItemEvent::without_anim(
         Item {
             id: ItemId::HerbGreen,
             texture_id: TextureId::HerbGreen,
@@ -178,7 +180,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         },
         Coords::new(Pos::new(3, 1), Dimens::new(1, 1)),
     ));
-    spawn.send(SpawnItemEvent::new(
+    spawn.send(SpawnItemEvent::without_anim(
         Item {
             id: ItemId::SwordRusty,
             texture_id: TextureId::SwordRusty,
@@ -192,7 +194,7 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         Coords::new(Pos::new(4, 0), Dimens::new(1, 3)),
     ));
 
-    spawn.send(SpawnItemEvent::new(
+    spawn.send(SpawnItemEvent::without_anim(
         Item {
             id: ItemId::SwordRusty,
             texture_id: TextureId::SwordRusty,
