@@ -4,7 +4,7 @@ use std::fmt::Formatter;
 
 use crate::game::sim::dungeon_components::TextType;
 
-use crate::game::sim::feed::SimMessageEvent;
+use crate::game::event_handling::SimMessageEvent;
 use crate::game::ItemId;
 use bevy_inspector_egui::Inspectable;
 use serde::{Deserialize, Serialize};
@@ -58,7 +58,7 @@ pub struct Enemy {
     pub enemy_id: EnemyId,
     pub combat_stats: Combatant,
     pub name: String,
-    pub enter_combat_text: String,
+    pub enter_combat_text: TextType,
     pub drop_table: DropTable,
 }
 
@@ -80,7 +80,7 @@ impl Default for Enemy {
             enemy_id: EnemyId::None,
             combat_stats: Default::default(),
             name: "Empty enemy".to_string(),
-            enter_combat_text: "Empty enemy".to_string(),
+            enter_combat_text: TextType::EnterRat,
             drop_table: DropTable::default(),
         }
     }

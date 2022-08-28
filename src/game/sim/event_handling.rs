@@ -1,7 +1,12 @@
-use crate::config::data_items::ItemsData;
 use bevy::prelude::*;
+use rand::Rng;
 
-use crate::game::{find_free_space, Item, ItemId, SpawnItemEvent};
+use crate::audio::sound_event::SoundEvent;
+use crate::config::data_items::ItemsData;
+use crate::config::data_sim_texts::DungeonTexts;
+use crate::game::dungeon_components::TextType;
+use crate::game::feed::AddFeedItemEvent;
+use crate::game::{find_free_space, Item, ItemId, SoundId, SpawnItemEvent};
 use crate::positioning::{Coords, GridData};
 
 /// Handle a looting session.
@@ -29,5 +34,50 @@ pub fn handle_sim_loot(
                 spawn.send(SpawnItemEvent::new(item, coords));
             }
         }
+    }
+}
+
+/// Cause a message to be printed and maybe a sound to be played.
+pub struct SimMessageEvent(pub TextType);
+
+pub fn handle_sim_message(
+    mut reader: EventReader<SimMessageEvent>,
+    mut write_texts: EventWriter<AddFeedItemEvent>,
+    mut write_audio: EventWriter<SoundEvent>,
+    texts: Res<DungeonTexts>,
+) {
+    for SimMessageEvent(text_type) in reader.iter() {
+        trace!("Received sim message event for TextType::{:?}", text_type);
+        let random = pick_random_from_series(texts.map.get(&text_type).unwrap_or(&Vec::new()));
+        if let Some(message) = random {
+            write_texts.send(AddFeedItemEvent(message));
+        } else {
+            error!("Missing or empty dungeon text: TextType::{:?}", text_type);
+        }
+        let sfx = match text_type {
+            TextType::EnterGoblinBrat => Some(SoundId::LittleMonsterGrowl),
+            TextType::EnterGoblinSwordsman => Some(SoundId::BigMonsterGrowl),
+            TextType::EnterGoblinShieldBearer => Some(SoundId::BigMonsterGrowl),
+            TextType::CombatHeroHit => Some(SoundId::SlashHit),
+            TextType::CombatEnemyHit => Some(SoundId::SlashHit),
+            TextType::CombatHeroDied => Some(SoundId::SlashHit),
+            TextType::CombatEnemyDied => Some(SoundId::SlashHit),
+            TextType::CombatNoResolution => Some(SoundId::SwordClang),
+            TextType::Door => Some(SoundId::DoorCreak),
+            _ => None,
+        };
+        if let Some(sfx) = sfx {
+            write_audio.send(SoundEvent::Sfx(sfx));
+        }
+    }
+}
+
+fn pick_random_from_series(strings: &Vec<String>) -> Option<String> {
+    if strings.is_empty() {
+        None
+    } else {
+        let mut rng = rand::thread_rng();
+        let idx = rng.gen_range(0..strings.len()) as usize;
+        strings.get(idx).cloned()
     }
 }

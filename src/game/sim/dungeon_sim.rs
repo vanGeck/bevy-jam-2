@@ -6,11 +6,11 @@ use rand::Rng;
 use crate::config::config_sim::SimConfig;
 use crate::config::data_enemies::EnemiesData;
 use crate::game::combat::{DropTable, EnemyId};
+use crate::game::event_handling::SimMessageEvent;
 use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
 use crate::game::sim::dungeon::generate_level;
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
 use crate::game::sim::event_handling::SimLootEvent;
-use crate::game::sim::feed::SimMessageEvent;
 use crate::game::ItemId;
 
 /// Handle a state event. Mainly handle hero's death?
@@ -83,7 +83,7 @@ pub fn tick_dungeon(
                     // Monster enounter texts now come from a different source
                     // (each monster has a different one)
                     //.send(SimMessageEvent(TextType::EnemyEncounter));
-                    println!("{}", enemy.enter_combat_text);
+                    msg_events.send(SimMessageEvent(enemy.enter_combat_text));
                     state.combat_state = CombatState::InProgress;
                     return;
                 } else if cbt_state == CombatState::EnemyDead {

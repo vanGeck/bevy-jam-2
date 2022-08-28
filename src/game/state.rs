@@ -8,8 +8,10 @@ use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
 use crate::game::combat::{Combatant, Enemy, Hero};
 use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
-use crate::game::event_handling::{handle_sim_loot, SimLootEvent};
-use crate::game::feed::{handle_sim_message, position_feed_item, SimMessageEvent};
+use crate::game::event_handling::{
+    handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
+};
+use crate::game::feed::{handle_add_to_feed, position_feed_item, AddFeedItemEvent};
 use crate::game::item_info_system::*;
 use crate::game::timed_effect::{test_apply_modifier, tick_temporary_modifiers, TimedEffectTicker};
 use crate::game::{
@@ -31,6 +33,7 @@ impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.add_event::<SpawnItemEvent>()
             .add_event::<DragEvent>()
+            .add_event::<AddFeedItemEvent>()
             .add_event::<SimMessageEvent>()
             .add_event::<SimLootEvent>()
             .add_plugin(bevy_ninepatch::NinePatchPlugin::<()>::default())
@@ -76,6 +79,7 @@ impl Plugin for GamePlugin {
                     .with_system(tick_temporary_modifiers)
                     .with_system(test_apply_modifier)
                     .with_system(handle_sim_message)
+                    .with_system(handle_add_to_feed)
                     .with_system(handle_sim_loot)
                     .with_system(update_health_bar)
                     .with_system(update_hero_stats_display)

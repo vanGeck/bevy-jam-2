@@ -1,7 +1,9 @@
-use crate::game::combat::{DropTable, Enemy};
+use std::fmt::Formatter;
+
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::fmt::Formatter;
+
+use crate::game::combat::{DropTable, Enemy};
 
 #[derive(Debug)]
 pub struct Room {
@@ -35,8 +37,8 @@ impl Default for Room {
 
 impl std::fmt::Display for Room {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "init: {}, corr: {}, door: {}, desc: {}, srch: {}, psrch: {}, end: {}, start: {}, cmbt: {}", 
-        self.init, self.corridor, self.door, self.description, self.search, self.post_search, self.end, self.start, self.combat)
+        write!(f, "init: {}, corr: {}, door: {}, desc: {}, srch: {}, psrch: {}, end: {}, start: {}, cmbt: {}",
+               self.init, self.corridor, self.door, self.description, self.search, self.post_search, self.end, self.start, self.combat)
     }
 }
 
@@ -64,7 +66,7 @@ pub struct DungeonLevel {
     pub loot: DropTable,
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub enum TextType {
     RoomStart,
     RoomEnd,
@@ -82,4 +84,8 @@ pub enum TextType {
     CombatHeroDied,
     EnteredStartRoom,
     EnteredEndRoom,
+    EnterRat,
+    EnterGoblinBrat,
+    EnterGoblinSwordsman,
+    EnterGoblinShieldBearer,
 }

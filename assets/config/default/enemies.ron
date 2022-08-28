@@ -3,7 +3,7 @@
         (
             enemy_id: Rat,
             name: "Rat",
-            enter_combat_text: "A rabid rat, large as a dog, squeaks angrily and jumps towards you!",
+            enter_combat_text: EnterRat,
             combat_stats: (
                 health: 5,
                 max_health: 5,
@@ -27,7 +27,7 @@
         (
             enemy_id: GoblinBrat,
             name: "Goblin Brat",
-            enter_combat_text: "A Goblin Brat dances around you, throwing stones and insults!",
+            enter_combat_text: EnterGoblinBrat,
             combat_stats: (
                 health: 4,
                 max_health: 4,
@@ -53,7 +53,7 @@
         (
             enemy_id: GoblinSwordsman,
             name: "Goblin Swordsman",
-            enter_combat_text: "A Goblin Swordsman shakes a rusty blade at you!",
+            enter_combat_text: EnterGoblinSwordsman,
             combat_stats: (
                 health: 6,
                 max_health: 6,
@@ -79,7 +79,7 @@
         (
             enemy_id: GoblinShieldbearer,
             name: "Goblin Shieldbearer",
-            enter_combat_text: "A Goblin Shieldbearer stands in your way - steady, unflinching and very, very stinky.",
+            enter_combat_text: EnterGoblinShieldBearer,
             combat_stats: (
                 health: 8,
                 max_health: 8,

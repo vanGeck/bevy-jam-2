@@ -17,7 +17,7 @@
             "The room is dark and dusty. Broken furniture stands slumped against the walls.",
             "There's a round pool of muddy water in this room. Your torch is casting shimmering reflections onto the walls.",
             "This room seems to be actively used - torches on walls are lit, and benches lining the walls have various small items strewn around them.",
-            "This room is dark and silent, but seems to have some kind of eerie presence within it. You shiver."
+            "This room is dark and silent, but seems to have some kind of eerie presence within it. You shiver.",
         ],
         Door: [
             "A door. You carefully press the handle and push the door open...",
@@ -40,29 +40,37 @@
         ],
         CombatEnemyHit: [
             "You kick the enemy off balance, and stick the tip of your weapon right between their ribs!",
-            "You whack the enemy right across the chest with your weapon!"
+            "You whack the enemy right across the chest with your weapon!",
         ],
         CombatHeroHit: [
             "An unexpected blow pierces through your defenses!",
-            "A strong hit smashes the air out of your lungs. You stagger backwards, wheezing."
+            "A strong hit smashes the air out of your lungs. You stagger backwards, wheezing.",
         ],
         CombatEnemyDied: [
-            "You end the fight with a decisive strike! Your enemy falls to the ground with a dull thud, dead before it could figure out what killed it."
+            "You end the fight with a decisive strike! Your enemy falls to the ground with a dull thud, dead before it could figure out what killed it.",
         ],
         CombatNoResolution: [
             "You circle each other, looking for openings. Your labored breathing echoes through the dungeon.",
             "You dive under a mortal blow, and throw the enemy off balance with an elbow strike, buying yourself some time and separation.",
-            "You both jump away as a large rock peels away from the ceiling and crashes into a million pieces where you just stood!"
+            "You both jump away as a large rock peels away from the ceiling and crashes into a million pieces where you just stood!",
         ],
         CombatHeroDied: [
             "You are dead!",
         ],
         EnteredStartRoom: [
-            "You descend into a new level of the dungeon."
+            "You descend into a new level of the dungeon.",
         ],
-        EnteredEndRoom: [
-            "You've reached the final room of this level!"
+        EnterRat: [
+            "A rabid rat, large as a dog, squeaks angrily and jumps towards you!",
         ],
-
+        EnterGoblinBrat: [
+            "A Goblin Brat dances around you, throwing stones and insults!",
+        ],
+        EnterGoblinSwordsman: [
+            "A Goblin Swordsman shakes a rusty blade at you!",
+        ],
+        EnterGoblinShieldBearer: [
+            "A Goblin Shieldbearer stands in your way - steady, unflinching and very, very stinky.",
+        ],
     },
 )

@@ -2,15 +2,9 @@ use std::collections::HashMap;
 
 use bevy::prelude::*;
 use bevy::text::{Text2dBounds, Text2dSize};
-use rand::Rng;
 
 use crate::config::data_layout::LayoutData;
-use crate::config::data_sim_texts::DungeonTexts;
-use crate::game::dungeon_components::TextType;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId};
-
-/// Cause a message to be printed and maybe a sound to be played.
-pub struct SimMessageEvent(pub TextType);
 
 /// Cause a message to be printed.
 pub struct AddFeedItemEvent(pub String);
@@ -44,99 +38,82 @@ impl EventFeed {
     }
 }
 
-pub fn handle_sim_message(
+pub fn handle_add_to_feed(
     mut commands: Commands,
     assets: Res<AssetStorage>,
-    mut events: EventReader<SimMessageEvent>,
+    mut events: EventReader<AddFeedItemEvent>,
     mut feed: ResMut<EventFeed>,
-    texts: Res<DungeonTexts>,
     layout: Res<LayoutData>,
     query_container: Query<Entity, With<EventFeedContainer>>,
 ) {
-    for SimMessageEvent(text_type) in events.iter() {
-        trace!("Received sim message event for TextType::{:?}", text_type);
-        let random = pick_random_from_series(texts.map.get(text_type).unwrap_or(&Vec::new()));
-        if let Some(message) = random {
-            let text_style = TextStyle {
-                font: assets.font(&FontId::FiraMonoMedium),
-                font_size: 60.0,
-                color: Color::rgba(1., 1., 1., 0.6),
-            };
-            let text_alignment = TextAlignment {
-                vertical: VerticalAlign::Center,
-                horizontal: HorizontalAlign::Left,
-            };
-            let container_width = layout.factor * layout.left_width();
-            let container_height = layout.factor * layout.c_left.feed_height(&layout);
-            let dimens_text = Vec2::new(
-                container_width - 2. * layout.c_left.feed_padding,
-                layout.c_left.feed_item_height,
-            );
-            let item_id = feed.next_id();
-            let text = commands
-                .spawn()
-                .insert_bundle(Text2dBundle {
-                    // Default text, will probably never be seen:
-                    text: Text::from_section(message, text_style).with_alignment(text_alignment),
-                    // The max size that it should fit in:
-                    text_2d_bounds: Text2dBounds {
-                        size: Vec2::new(
-                            (dimens_text.x - layout.c_left.feed_padding) * layout.text_factor,
-                            dimens_text.y * layout.text_factor,
-                        ),
-                    },
-                    transform: Transform::from_translation(Vec3::new(
-                        container_width * -0.5 + layout.c_left.feed_padding,
-                        container_height * -0.5 + layout.c_left.feed_padding,
-                        20.0, // Relative to the container.
-                    ))
-                    .with_scale(Vec3::new(
-                        0.9 / layout.text_factor,
-                        0.9 / layout.text_factor,
-                        1.,
-                    )),
-                    ..default()
-                })
-                .insert(EventFeedItem { id: item_id })
-                .insert(CleanupOnGameplayEnd)
-                .id();
-            let bg_color = if item_id.rem_euclid(2) == 0 {
-                Color::rgba(0.1, 0.1, 0.1, 1.)
-            } else {
-                Color::rgba(0.15, 0.15, 0.15, 1.)
-            };
-            let text_background = commands
-                .spawn_bundle(SpriteBundle {
-                    sprite: Sprite {
-                        color: bg_color,
-                        custom_size: Some(Vec2::new(dimens_text.x, dimens_text.y)),
-                        ..default()
-                    },
-                    transform: Transform::from_xyz(
-                        container_width * -0.5 + layout.c_left.feed_padding,
-                        container_height * -0.5 + layout.c_left.feed_padding,
-                        10., // Relative to the container.
+    for AddFeedItemEvent(message) in events.iter() {
+        let text_style = TextStyle {
+            font: assets.font(&FontId::FiraMonoMedium),
+            font_size: 60.0,
+            color: Color::rgba(1., 1., 1., 0.6),
+        };
+        let text_alignment = TextAlignment {
+            vertical: VerticalAlign::Center,
+            horizontal: HorizontalAlign::Left,
+        };
+        let container_width = layout.factor * layout.left_width();
+        let container_height = layout.factor * layout.c_left.feed_height(&layout);
+        let dimens_text = Vec2::new(
+            container_width - 2. * layout.c_left.feed_padding,
+            layout.c_left.feed_item_height,
+        );
+        let item_id = feed.next_id();
+        let text = commands
+            .spawn()
+            .insert_bundle(Text2dBundle {
+                // Default text, will probably never be seen:
+                text: Text::from_section(message, text_style).with_alignment(text_alignment),
+                // The max size that it should fit in:
+                text_2d_bounds: Text2dBounds {
+                    size: Vec2::new(
+                        (dimens_text.x - layout.c_left.feed_padding) * layout.text_factor,
+                        dimens_text.y * layout.text_factor,
                     ),
-                    ..default()
-                })
-                .insert(EventFeedItemBg { id: item_id })
-                .id();
-            commands
-                .entity(query_container.single())
-                .push_children(&[text, text_background]);
+                },
+                transform: Transform::from_translation(Vec3::new(
+                    container_width * -0.5 + layout.c_left.feed_padding,
+                    container_height * -0.5 + layout.c_left.feed_padding,
+                    20.0, // Relative to the container.
+                ))
+                .with_scale(Vec3::new(
+                    0.9 / layout.text_factor,
+                    0.9 / layout.text_factor,
+                    1.,
+                )),
+                ..default()
+            })
+            .insert(EventFeedItem { id: item_id })
+            .insert(CleanupOnGameplayEnd)
+            .id();
+        let bg_color = if item_id.rem_euclid(2) == 0 {
+            Color::rgba(0.1, 0.1, 0.1, 1.)
         } else {
-            error!("Missing or empty dungeon text: TextType::{:?}", text_type);
-        }
-    }
-}
-
-fn pick_random_from_series(strings: &Vec<String>) -> Option<String> {
-    if strings.is_empty() {
-        None
-    } else {
-        let mut rng = rand::thread_rng();
-        let idx = rng.gen_range(0..strings.len()) as usize;
-        strings.get(idx).cloned()
+            Color::rgba(0.15, 0.15, 0.15, 1.)
+        };
+        let text_background = commands
+            .spawn_bundle(SpriteBundle {
+                sprite: Sprite {
+                    color: bg_color,
+                    custom_size: Some(Vec2::new(dimens_text.x, dimens_text.y)),
+                    ..default()
+                },
+                transform: Transform::from_xyz(
+                    container_width * -0.5 + layout.c_left.feed_padding,
+                    container_height * -0.5 + layout.c_left.feed_padding,
+                    10., // Relative to the container.
+                ),
+                ..default()
+            })
+            .insert(EventFeedItemBg { id: item_id })
+            .id();
+        commands
+            .entity(query_container.single())
+            .push_children(&[text, text_background]);
     }
 }
 
