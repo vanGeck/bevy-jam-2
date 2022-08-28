@@ -32,7 +32,7 @@
     c_right: (
         margin_left: 2.,
         margin_right: 2.,
-        foo: (
+        combine_button: (
             margin_bottom: 2.,
             height: 4.
         ),

@@ -23,7 +23,7 @@ use crate::mouse::{Mouse, MouseInteractive};
 use crate::positioning::{Coords, Dimens, Pos};
 use crate::AppState;
 
-use super::{update_health_bar, Eyes, Iris};
+use super::{update_health_bar, update_hero_stats_display, Eyes, Iris};
 
 pub struct GamePlugin;
 
@@ -78,6 +78,7 @@ impl Plugin for GamePlugin {
                     .with_system(handle_sim_message)
                     .with_system(handle_sim_loot)
                     .with_system(update_health_bar)
+                    .with_system(update_hero_stats_display)
                     .with_system(eye_tracking_system)
                     .with_system(update_mouse_over_item_info_system)
                     .with_system(update_mouse_over_item_info_style_position_system)

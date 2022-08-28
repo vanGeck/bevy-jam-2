@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 
+use crate::audio::sound_event::SoundEvent;
 use crate::config::data_items::ItemsData;
 use crate::config::data_recipes::RecipesData;
 use crate::game::items::Item;
 use crate::game::recipes::Recipe;
-use crate::game::{find_free_space, SpawnItemEvent};
+use crate::game::{find_free_space, SoundId, SpawnItemEvent};
 use crate::mouse::MouseInteractive;
 use crate::positioning::{Coords, GridData};
 
@@ -19,6 +20,7 @@ pub struct CombineButton {
 pub fn combine_items_system(
     mut commands: Commands,
     mut spawn_event_writer: EventWriter<SpawnItemEvent>,
+    mut audio: EventWriter<SoundEvent>,
     recipes_data: Res<RecipesData>,
     items_data: Res<ItemsData>,
     grid: Res<GridData>,
@@ -55,10 +57,14 @@ pub fn combine_items_system(
                         for (entity, _) in crafting_items_query.iter() {
                             commands.entity(entity).despawn_recursive();
                         }
+                        // Alchemy sound not working or extremely low volume?
+                        audio.send(SoundEvent::Sfx(SoundId::Alchemy))
                     } else {
                         warn!("Tried to find free space but failed.");
                     }
                 }
+            } else {
+                audio.send(SoundEvent::Sfx(SoundId::SwordClang))
             }
         }
     }

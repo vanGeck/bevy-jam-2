@@ -27,6 +27,7 @@
         SwordMasterworkSpeed: "SwordMasterworkSpeed.png",
         SwordWounding: "SwordWounding.png",
         SwordMasterworkWounding: "SwordMasterworkWounding.png",
+        CombineButton: "Combine_Button.png",
     },
     atlases: {
         NotFound: "not_found.ron",
@@ -42,6 +43,7 @@
         SlashHit:"slash_hit",
         SwordClang:"sword_clang",
         WaterDripping:"water_dripping",
+        Alchemy:"Alchemy",
     },
     music: {
         Jazz: "jazz/",

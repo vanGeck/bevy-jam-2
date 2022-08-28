@@ -1,7 +1,10 @@
 use bevy::prelude::*;
+use bevy::text::Text2dBounds;
 
 use crate::config::data_layout::LayoutData;
-use crate::game::{AssetStorage, CleanupOnGameplayEnd, CombineButton, Eyes, Iris, TextureId};
+use crate::game::{
+    AssetStorage, CleanupOnGameplayEnd, CombineButton, Eyes, FontId, Iris, TextureId,
+};
 use crate::mouse::MouseInteractive;
 use crate::positioning::{Coords, Depth, Dimens, GridData, Pos};
 
@@ -98,20 +101,27 @@ pub fn create_layout_grids(
 }
 
 /// Sets up the lower-right container.
-/// It's called foo for now because I don't think there's a plan for it.
-pub fn create_layout_foo(mut commands: Commands, layout: Res<LayoutData>) {
+#[derive(Component)]
+pub struct CombineButtonText;
+
+pub fn create_layout_combine_button(
+    mut commands: Commands,
+    layout: Res<LayoutData>,
+    assets: Res<AssetStorage>,
+) {
     let x = layout.factor * layout.right_x();
     let width = layout.factor * layout.right_width();
-    let y = layout.factor * layout.c_right.foo_y();
-    let height = layout.factor * layout.c_right.foo_height();
+    let y = layout.factor * layout.c_right.combine_button_y();
+    let height = layout.factor * layout.c_right.combine_button_height();
+    let dimens_text = Vec2::new(width - 6. * layout.factor, 2. * layout.factor);
 
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {
-                color: Color::rgba(0.2, 0.2, 0.2, 0.8),
                 custom_size: Some(Vec2::new(width, height)),
                 ..default()
             },
+            texture: assets.texture(&TextureId::CombineButton),
             transform: Transform::from_xyz(x + width * 0.5, y + height * 0.5, Depth::Grid.z()),
             ..default()
         })
@@ -123,7 +133,46 @@ pub fn create_layout_foo(mut commands: Commands, layout: Res<LayoutData>) {
             },
         })
         .insert(MouseInteractive::new(Vec2::new(width, height), true))
-        .insert(CleanupOnGameplayEnd);
+        .insert(CleanupOnGameplayEnd)
+        .with_children(|parent| {
+            parent
+                .spawn()
+                .insert(CombineButtonText)
+                .insert_bundle(Text2dBundle {
+                    text: Text::from_section(
+                        "Combine",
+                        TextStyle {
+                            font: assets.font(&FontId::Square),
+                            font_size: 80.0,
+                            color: Color::ANTIQUE_WHITE,
+                        },
+                    )
+                    .with_alignment(TextAlignment {
+                        vertical: VerticalAlign::Center,
+                        horizontal: HorizontalAlign::Left,
+                    }),
+
+                    // The max size that it should fit in:
+                    text_2d_bounds: Text2dBounds {
+                        size: Vec2::new(
+                            dimens_text.x * layout.text_factor,
+                            dimens_text.y * layout.text_factor,
+                        ),
+                    },
+                    // magic numbers..
+                    transform: Transform::from_xyz(
+                        -0.8, // Centered on parent.
+                        height * 0.5 - 0.6,
+                        11., // Relative to parent
+                    )
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
+                    ..default()
+                });
+        });
 }
 
 fn create_grid(commands: &mut Commands, assets: &AssetStorage, dimens: &Dimens, offset: Vec2) {

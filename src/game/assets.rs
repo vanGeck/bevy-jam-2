@@ -170,6 +170,7 @@ pub enum TextureId {
     SwordMasterworkWounding,
     SwordSpeed,
     SwordMasterworkSpeed,
+    CombineButton,
 }
 
 impl Default for TextureId {
@@ -189,6 +190,7 @@ pub enum SoundId {
     SlashHit,
     SwordClang,
     WaterDripping,
+    Alchemy,
     /// Sound effect that plays when combining things:
     PositiveAffirmation,
 }
