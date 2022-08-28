@@ -33,7 +33,6 @@ impl Plugin for MainMenuPlugin {
                 .with_system(create_layout_toasts)
                 .with_system(create_layout_combine_button)
                 .with_system(create_layout_hero)
-                .with_system(setup_gold)
                 .with_system(play_menu_music)
                 .into(),
         )

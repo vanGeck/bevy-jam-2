@@ -72,7 +72,6 @@ impl Plugin for GamePlugin {
                     .with_system(check_drag_end)
                     .with_system(process_drag_event)
                     .with_system(combine_items_system)
-                    .with_system(gold_update_system)
                     .with_system(animate)
                     .with_system(tick_dungeon)
                     .with_system(tick_temporary_modifiers)
@@ -128,8 +127,8 @@ pub fn eye_tracking_system(
             let white_pos = white.translation.truncate();
             let new_iris_trans = white.translation
                 + ((mouse.position - white_pos) / 100.0)
-                    .clamp_length(0.0, 0.2)
-                    .extend(1.0);
+                .clamp_length(0.0, 0.2)
+                .extend(1.0);
             iris.translation = new_iris_trans;
         }
     }
@@ -198,8 +197,8 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             texture_id: TextureId::SwordRusty,
             name: "Sword Rusty".to_string(),
             description:
-                "Tends to be more dangerous to you than to the enemy. Tetanus is a thing, you know."
-                    .to_string(),
+            "Tends to be more dangerous to you than to the enemy. Tetanus is a thing, you know."
+                .to_string(),
             wearable: None,
             ..default()
         },
@@ -212,8 +211,8 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
             texture_id: TextureId::SwordRusty,
             name: "Sword Rusty".to_string(),
             description:
-                "Tends to be more dangerous to you than to the enemy. Tetanus is a thing, you know."
-                    .to_string(),
+            "Tends to be more dangerous to you than to the enemy. Tetanus is a thing, you know."
+                .to_string(),
             wearable: None,
             ..default()
         },
