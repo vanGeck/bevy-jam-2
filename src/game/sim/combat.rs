@@ -106,13 +106,13 @@ pub fn process_combat(
 
     if monster_roll > hero_roll {
         let diff = monster_roll - hero_roll;
-        let damage = (monster.damage_bonus - hero.damage_res + diff).clamp(0, 500);
+        let damage = (monster.damage_bonus - hero.damage_res + diff).clamp(1, 500);
         hero.health -= damage;
         events.send(SimMessageEvent(TextType::CombatHeroHit));
         debug!("Hero hit for {}: HP at {}.", damage, hero.health);
     } else if hero_roll > monster_roll {
         let diff = hero_roll - monster_roll;
-        let damage = (hero.damage_bonus + diff - monster.damage_res).clamp(0, 500);
+        let damage = (hero.damage_bonus + diff - monster.damage_res).clamp(1, 500);
         monster.health -= damage;
         events.send(SimMessageEvent(TextType::CombatEnemyHit));
         debug!("Monster hit for {}: HP at {}.", damage, monster.health);
