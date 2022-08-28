@@ -352,5 +352,123 @@
                 damage_res: 0,
             ),
         )),
+        (((1, 3)), (
+            id: AxeRusty,
+            name: "Rusty Axe",
+            description: "A stick with a piece of rust attached, that once might've been an axe. Still heavy enough to hurt.",
+            texture_id: AxeRusty,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 2,
+                proficiency: -1,
+                damage_res: 0,
+            ),
+        )),
+        (((1, 3)), (
+            id: Axe,
+            name: "Axe",
+            description: "A simple, but very effective weapon. Excellent at crushing through armor.",
+            texture_id: Axe,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 3,
+                proficiency: 0,
+                damage_res: 0,
+            ),
+        )),
+        (((1, 3)), (
+            id: AxeMasterwork,
+            name: "Masterwork Axe",
+            description: "A deadly, well-balanced axe, crafted by a master weaponsmith.",
+            texture_id: AxeMasterwork,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 5,
+                proficiency: 1,
+                damage_res: 0,
+            ),
+        )),
+        (((2, 3)), (
+            id: ArmorRusty,
+            name: "Rusty Armor",
+            description: "A few pieces of rusty scrap mounted on a leather vest.",
+            texture_id: ArmorRusty,
+            stat_bonuses: (
+                health: 0,
+                max_health: 3,
+                damage_bonus: 0,
+                proficiency: -1,
+                damage_res: 1,
+            ),
+        )),
+        (((2, 3)), (
+            id: Armor,
+            name: "Armor",
+            description: "A robust suit of armor. It's somehow very scratchy, like a wool sweater. Weird.",
+            texture_id: Armor,
+            stat_bonuses: (
+                health: 0,
+                max_health: 8,
+                damage_bonus: 0,
+                proficiency: 0,
+                damage_res: 3,
+            ),
+        )),
+        (((2, 3)), (
+            id: ArmorMasterwork,
+            name: "Masterwork Armor",
+            description: "Offers near-flawless protection, at the price of sounding like walking scrapyard.",
+            texture_id: ArmorMasterwork,
+            stat_bonuses: (
+                health: 0,
+                max_health: 12,
+                damage_bonus: 0,
+                proficiency: 0,
+                damage_res: 5
+            ),
+        )),
+        (((2, 2)), (
+            id: ShieldRusty,
+            name: "Rusty Shield",
+            description: "Comes with the added benefit of being able to thrust your weapon through one of the rusted holes",
+            texture_id: ShieldRusty,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 0,
+                proficiency: 0,
+                damage_res: 1,
+            ),
+        )),
+        (((2, 2)), (
+            id: Shield,
+            name: "Shield",
+            description: "A warrior's second best friend. The best one is his backpack goblin, naturally.",
+            texture_id: Shield,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 0,
+                proficiency: 2,
+                damage_res: 1,
+            ),
+        )),
+        (((2, 2)), (
+            id: ShieldMasterwork,
+            name: "Masterwork Shield",
+            description: "Quality shield, resilient like a tavern cockroach.",
+            texture_id: ShieldMasterwork,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 0,
+                proficiency: 4,
+                damage_res: 2
+            ),
+        ))
+        
     ]
 )

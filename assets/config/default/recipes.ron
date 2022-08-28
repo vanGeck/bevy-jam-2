@@ -149,6 +149,60 @@
                 )
             ],
         ),
+        (
+            result: Axe,
+            ingredients: [
+                (
+                    item_id: AxeRusty,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: AxeMasterwork,
+            ingredients: [
+                (
+                    item_id: Axe,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: Shield,
+            ingredients: [
+                (
+                    item_id: ShieldRusty,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: ShieldMasterwork,
+            ingredients: [
+                (
+                    item_id: Shield,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: Armor,
+            ingredients: [
+                (
+                    item_id: ArmorRusty,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: ArmorMasterwork,
+            ingredients: [
+                (
+                    item_id: Armor,
+                    quantity: 2
+                )
+            ],
+        ),
     ],
     
 )

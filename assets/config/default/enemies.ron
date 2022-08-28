@@ -7,9 +7,9 @@
             combat_stats: (
                 health: 5,
                 max_health: 5,
-                proficiency: -1,
+                proficiency: 1,
                 damage_res: 0,
-                damage_bonus: -2,
+                damage_bonus: 0,
             ),
             drop_table: (
                 items: [
@@ -18,7 +18,7 @@
                     HerbGreen,
                 ],
                 chances: [
-                    20,
+                    30,
                     20,
                     20
                 ]
@@ -57,9 +57,9 @@
             combat_stats: (
                 health: 6,
                 max_health: 6,
-                proficiency: -1,
+                proficiency: 1,
                 damage_res: 0,
-                damage_bonus: -1,
+                damage_bonus: 1,
             ),
             drop_table: (
                 items: [
@@ -83,24 +83,22 @@
             combat_stats: (
                 health: 8,
                 max_health: 8,
-                proficiency: -1,
+                proficiency: 2,
                 damage_res: 2,
                 damage_bonus: -1,
             ),
             drop_table: (
                 items: [
-                    SwordRusty,
+                    ShieldRusty,
                     Vial,
                     HerbViolet,
                     HerbGreen,
-                    //ShieldRusty,
                 ],
                 chances: [
-                    50,
+                    60,
                     40,
                     50,
                     30,
-                    //66,
                 ]
             ),
         ),

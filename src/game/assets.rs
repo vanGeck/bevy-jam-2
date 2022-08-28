@@ -171,6 +171,15 @@ pub enum TextureId {
     MasterworkSwordOfWounding,
     SwordOfSpeed,
     MasterworkSwordOfSpeed,
+    ShieldRusty,
+    Shield,
+    ShieldMasterwork,
+    ArmorRusty,
+    Armor,
+    ArmorMasterwork,
+    AxeRusty,
+    Axe,
+    AxeMasterwork,
     CombineButton,
 }
 

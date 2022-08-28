@@ -70,9 +70,10 @@
             "The monster folds like a wet noodle and expires.",
             "The enemy collapses to the ground!",
             "The hero cuts down the monster with more difficulty than expected, muttering something about 'devs nerfing his class'.",
-            "Enraged by remarks about its personal hygiene, the monster charges forward and prompty loses its head.",
+            "Enraged by remarks about its personal hygiene, the monster charges forward and promptly loses its head.",
             "Sir Hoardalot slashes the enemy in two, ending the fight right there!",
             "The monter faints due to intense bleeding.",
+            "The monster expires due to a fatal dose of steel in it's system.",
         ],
         CombatNoResolution: [
             "Sir Hoardalot circles the enemy, looking for openings. His labored breathing echoes through the dungeon.",
