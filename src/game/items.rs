@@ -6,6 +6,7 @@ use crate::mouse::MouseInteractive;
 use crate::positioning::Pos;
 
 use super::combat::Hero;
+use super::timed_effect::{TemporaryModifier, apply_timed_modifier};
 
 // Marker Component
 #[derive(Component)]
@@ -21,6 +22,7 @@ pub struct Item {
     /// offset in the equipment grid?
     pub wearable: Option<(EquipmentSlot, Pos)>,
     pub stat_bonuses: Option<StatBonus>,
+    pub temporary_effect: Option<TemporaryModifier>,
 }
 
 impl Default for Item {
@@ -32,6 +34,7 @@ impl Default for Item {
             texture_id: TextureId::NotFound,
             wearable: None,
             stat_bonuses: Default::default(),
+            temporary_effect: Default::default(),
         }
     }
 }
@@ -99,14 +102,21 @@ pub fn consume_item(
 ) {
     for (e, item, interactive) in items.iter() {
         if interactive.right_clicked {
-            if let Some(stats) = item.stat_bonuses {
-                hero.combat_stats.health = (hero.combat_stats.health + stats.health).clamp(0, hero.combat_stats.max_health);
+            if let Some(stats) = item.clone().stat_bonuses {
+                hero.combat_stats.health = (hero.combat_stats.health + stats.health)
+                    .clamp(0, hero.combat_stats.max_health);
                 hero.combat_stats.max_health += stats.max_health;
                 hero.combat_stats.proficiency += stats.proficiency;
                 hero.combat_stats.damage_res += stats.damage_res;
                 hero.combat_stats.damage_bonus += stats.damage_bonus;
+
+                commands.entity(e).despawn_recursive();
             }
-            commands.entity(e).despawn_recursive();
+
+            if let Some(modifier) = item.clone().temporary_effect {
+                apply_timed_modifier(modifier, &mut commands);
+                commands.entity(e).despawn_recursive();
+            }
         }
     }
 }

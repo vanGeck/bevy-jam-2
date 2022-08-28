@@ -23,7 +23,7 @@ use crate::mouse::Mouse;
 use crate::positioning::{Coords, Dimens, Pos};
 use crate::AppState;
 
-use super::combat::{Hero, Combatant, Enemy};
+use super::combat::{Combatant, Enemy, Hero};
 use super::{consume_item, update_health_bar, update_hero_stats_display, Eyes, Iris};
 
 pub struct GamePlugin;

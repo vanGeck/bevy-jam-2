@@ -3,12 +3,13 @@ use crate::{default, Entity, KeyCode, Query, Res};
 use bevy::input::Input;
 use bevy::prelude::{Commands, Component, ResMut};
 use bevy::time::{Time, Timer};
+use serde::{Serialize, Deserialize};
 
 pub struct TimedEffectTicker {
     pub timer: Timer,
 }
 
-#[derive(Component)]
+#[derive(Component, Clone, Debug, Serialize, Deserialize)]
 pub struct TemporaryModifier {
     pub time: f32,
     pub max_health_mod: i32,
