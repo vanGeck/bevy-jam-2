@@ -6,10 +6,10 @@ use crate::game::CleanupOnGameplayEnd;
 use crate::positioning::Depth;
 
 pub fn create_layout_feed(mut commands: Commands, layout: Res<LayoutData>) {
-    let x = layout.factor * layout.left_x();
-    let width = layout.factor * layout.left_width();
-    let y = layout.factor * layout.c_left.feed_y();
-    let height = layout.factor * layout.c_left.feed_height(&layout);
+    let x = layout.left_x();
+    let width = layout.left_width();
+    let y = layout.c_left.feed_y();
+    let height = layout.c_left.feed_height(&layout);
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {

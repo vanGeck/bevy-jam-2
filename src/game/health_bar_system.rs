@@ -1,6 +1,8 @@
-use bevy::prelude::*;
-use crate::game::create_widget_hero::{HeroCurrentArmourDisplay, HeroCurrentShieldDisplay, HeroCurrentWeaponDisplay};
+use crate::game::create_widget_hero::{
+    HeroCurrentArmourDisplay, HeroCurrentShieldDisplay, HeroCurrentWeaponDisplay,
+};
 use crate::game::{EquipmentSlot, EquippedItem};
+use bevy::prelude::*;
 
 use super::{
     combat::Hero,
@@ -67,7 +69,8 @@ pub fn update_hero_stats_display(
     if let Ok(mut text) = query.p6().get_single_mut() {
         for equipped_item in equipped_items_query.iter() {
             if equipped_item.slot == EquipmentSlot::Weapon {
-                text.sections[0].value = format!("Weapon: {}", equipped_item.stat_bonus.damage_bonus);
+                text.sections[0].value =
+                    format!("Weapon: {}", equipped_item.stat_bonus.damage_bonus);
             }
         }
     }

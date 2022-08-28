@@ -1,9 +1,8 @@
 use bevy::prelude::*;
 
-use crate::config::data_layout::LayoutData;
 use crate::game::CleanupOnGameplayEnd;
 
-const MAGIC: f32 = 4.;
+const MAGIC: f32 = 1.3333;
 // 16x9 is the most common aspect ratio, make it look the best for those screens.
 // (Black bars down the sides for non-standard screens)
 const ASPECT_RATIO_X: f32 = 16.;
@@ -42,11 +41,10 @@ pub fn create_camera(mut commands: Commands) {
 pub fn set_cam_scale(
     windows: Res<Windows>,
     mut query: Query<(&mut Transform, &GameCamera), With<Camera>>,
-    layout: Res<LayoutData>,
 ) {
     let window = get_primary_window_size(&windows);
     for (mut transform, cam) in query.iter_mut() {
-        let multiplier = MAGIC * layout.factor;
+        let multiplier = MAGIC;
         let width = ASPECT_RATIO_X * multiplier;
         let height = ASPECT_RATIO_Y * multiplier;
         let scale = cam.zoom * (height / window.y).max(width / window.x);

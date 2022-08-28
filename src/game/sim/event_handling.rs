@@ -25,10 +25,7 @@ pub fn handle_sim_loot(
     for SimLootEvent(item_id) in events.iter() {
         trace!("Received sim loot event");
         if let Some((dimens, item)) = items_data.try_get_item(item_id.clone()) {
-            let source = Vec2::new(
-                layout.screen_dimens.x * layout.factor * 0.5,
-                layout.screen_dimens.y * layout.factor + 1.,
-            );
+            let source = Vec2::new(layout.screen_dimens.x * 0.5, layout.screen_dimens.y + 1.);
             let free_coords = find_free_space(&grid, dimens, &items_query, &same_tick_items);
             if let Some(coords) = free_coords {
                 if same_tick_items.contains(&coords) {

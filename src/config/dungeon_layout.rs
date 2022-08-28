@@ -11,7 +11,7 @@ use crate::game::dungeon_gen::LevelBlueprint;
 #[derive(Serialize, Deserialize, Clone, Default)]
 #[serde(deny_unknown_fields)]
 pub struct DungeonBlueprint {
-    pub levels:Vec<LevelBlueprint>
+    pub levels: Vec<LevelBlueprint>,
 }
 
 impl DungeonBlueprint {

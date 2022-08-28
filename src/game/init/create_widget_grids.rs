@@ -13,11 +13,10 @@ pub fn create_layout_grids(
     layout: Res<LayoutData>,
     assets: Res<AssetStorage>,
 ) {
-    let inventory_x = layout.factor * layout.middle_x();
-    let inventory_y = layout.factor
-        * (layout.c_mid.toasts.margin_bottom.unwrap_or(0.)
-            + layout.c_mid.toasts.height.unwrap()
-            + layout.c_mid.inventory.margin_bottom.unwrap_or(0.));
+    let inventory_x = layout.middle_x();
+    let inventory_y = layout.c_mid.toasts.margin_bottom.unwrap_or(0.)
+        + layout.c_mid.toasts.height.unwrap()
+        + layout.c_mid.inventory.margin_bottom.unwrap_or(0.);
     let inventory_coords = Coords::new(Pos::new(0, 0), Dimens::new(8, 5));
     create_grid(
         &mut commands,
@@ -25,7 +24,7 @@ pub fn create_layout_grids(
         &inventory_coords.dimens,
         Vec2::new(inventory_x, inventory_y),
     );
-    let overseer_width = layout.factor * layout.middle_width();
+    let overseer_width = layout.middle_width();
     let overseer_height = overseer_width * 0.3; // Image is 1000x300.
     let inventory_height = 5.;
     let overseer_x = inventory_x;
@@ -83,8 +82,8 @@ pub fn create_layout_grids(
         .insert(Iris)
         .insert(CleanupOnGameplayEnd);
 
-    let x_crafting = layout.factor * (layout.right_x() + 1.);
-    let y_crafting = layout.factor * layout.c_right.crafting_y();
+    let x_crafting = layout.right_x() + 0.3333;
+    let y_crafting = layout.c_right.crafting_y();
     let crafting_coords = Coords::new(Pos::new(9, 1), Dimens::new(4, 3));
     create_grid(
         &mut commands,
@@ -109,11 +108,11 @@ pub fn create_layout_combine_button(
     layout: Res<LayoutData>,
     assets: Res<AssetStorage>,
 ) {
-    let x = layout.factor * layout.right_x();
-    let width = layout.factor * layout.right_width();
-    let y = layout.factor * layout.c_right.combine_button_y();
-    let height = layout.factor * layout.c_right.combine_button_height();
-    let dimens_text = Vec2::new(width - 6. * layout.factor, 2. * layout.factor);
+    let x = layout.right_x();
+    let width = layout.right_width();
+    let y = layout.c_right.combine_button_y();
+    let height = layout.c_right.combine_button_height();
+    let dimens_text = Vec2::new(width - 2., 0.6667);
 
     commands
         .spawn_bundle(SpriteBundle {
@@ -140,7 +139,7 @@ pub fn create_layout_combine_button(
                 .insert(CombineButtonText)
                 .insert_bundle(Text2dBundle {
                     text: Text::from_section(
-                        "Combine",
+                        "COMBINE",
                         TextStyle {
                             font: assets.font(&FontId::FiraSansMedium),
                             font_size: 80.0,
@@ -148,10 +147,9 @@ pub fn create_layout_combine_button(
                         },
                     )
                     .with_alignment(TextAlignment {
+                        horizontal: HorizontalAlign::Center,
                         vertical: VerticalAlign::Center,
-                        horizontal: HorizontalAlign::Left,
                     }),
-
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
                         size: Vec2::new(
@@ -159,10 +157,9 @@ pub fn create_layout_combine_button(
                             dimens_text.y * layout.text_factor,
                         ),
                     },
-                    // magic numbers..
                     transform: Transform::from_xyz(
-                        -0.8, // Centered on parent.
-                        height * 0.5 - 0.6,
+                        0.,  // Centered on parent.
+                        0.1, // Slightly offset to account for asymmetric button
                         11., // Relative to parent
                     )
                     .with_scale(Vec3::new(

@@ -9,8 +9,8 @@ use crate::config::dungeon_layout::DungeonBlueprint;
 use crate::game::combat::{DropTable, EnemyId};
 use crate::game::event_handling::SimMessageEvent;
 use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
-use crate::game::sim::dungeon_gen::generate_level;
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
+use crate::game::sim::dungeon_gen::generate_level;
 use crate::game::sim::event_handling::SimLootEvent;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId, ItemId};
 
@@ -29,7 +29,12 @@ pub struct DungeonState {
 #[derive(Component)]
 pub struct ContinuePrompt;
 
-pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, dungeon_bp: Res<DungeonBlueprint>, enemies: Res<EnemiesData>) {
+pub fn init_dungeon(
+    mut commands: Commands,
+    params: Res<SimConfig>,
+    dungeon_bp: Res<DungeonBlueprint>,
+    enemies: Res<EnemiesData>,
+) {
     let mut state = DungeonState {
         current_room_idx: 0,
         current_level: None,
@@ -37,31 +42,39 @@ pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, dungeon_bp: 
         running: true,
         combat_state: CombatState::Init,
     };
-    state.current_level = Option::from(generate_level(&params, &dungeon_bp.levels[0], &mut commands, &enemies));
+    state.current_level = Option::from(generate_level(
+        &params,
+        &dungeon_bp.levels[0],
+        &mut commands,
+        &enemies,
+    ));
     commands.insert_resource(state);
 }
 
-pub fn manage_continue_prompt(state: Res<DungeonState>, q: Query<Entity, With<ContinuePrompt>>, mut cmd: Commands, assets: Res<AssetStorage>){
+pub fn manage_continue_prompt(
+    state: Res<DungeonState>,
+    q: Query<Entity, With<ContinuePrompt>>,
+    mut cmd: Commands,
+    assets: Res<AssetStorage>,
+) {
     if state.running {
         if let Ok(e) = q.get_single() {
             cmd.entity(e).despawn_recursive();
         }
     } else if !state.running && state.combat_state != CombatState::HeroDead {
         if let Ok(_) = q.get_single() {
-            
         } else {
             spawn_prompt(cmd, assets);
         }
     }
 }
 
-pub fn spawn_prompt(mut cmd: Commands, assets: Res<AssetStorage>)
-{
+pub fn spawn_prompt(mut cmd: Commands, assets: Res<AssetStorage>) {
     cmd.spawn_bundle(NodeBundle {
         style: Style {
             size: Size::new(Val::Percent(100.0), Val::Percent(16.7)),
             justify_content: JustifyContent::Center,
-            position: UiRect{
+            position: UiRect {
                 left: Val::Percent(44.0),
                 right: Val::Percent(40.0),
                 top: Val::Auto,
@@ -71,7 +84,8 @@ pub fn spawn_prompt(mut cmd: Commands, assets: Res<AssetStorage>)
         },
         color: Color::NONE.into(),
         ..default()
-    }).with_children(|parent| {
+    })
+    .with_children(|parent| {
         // text
         parent.spawn_bundle(
             TextBundle::from_section(
@@ -82,13 +96,15 @@ pub fn spawn_prompt(mut cmd: Commands, assets: Res<AssetStorage>)
                     color: Color::WHITE,
                 },
             )
-                .with_style(Style {
-                    margin: UiRect::all(Val::Px(5.0)),
-                    align_self: AlignSelf::Center,
-                    ..default()
-                }),
+            .with_style(Style {
+                margin: UiRect::all(Val::Px(5.0)),
+                align_self: AlignSelf::Center,
+                ..default()
+            }),
         );
-    }).insert(ContinuePrompt).insert(CleanupOnGameplayEnd);
+    })
+    .insert(ContinuePrompt)
+    .insert(CleanupOnGameplayEnd);
 }
 
 pub fn tick_dungeon(
@@ -99,11 +115,11 @@ pub fn tick_dungeon(
     mut state: ResMut<DungeonState>,
     mut hero: ResMut<Hero>,
     mut enemy: ResMut<Enemy>,
-    input: Res<Input<KeyCode>>
+    input: Res<Input<KeyCode>>,
 ) {
     let mut just_resumed = false;
     if !state.running {
-        if input.just_pressed(KeyCode::Space) && state.combat_state != CombatState::HeroDead{
+        if input.just_pressed(KeyCode::Space) && state.combat_state != CombatState::HeroDead {
             state.running = true;
             just_resumed = true;
         } else {
@@ -226,7 +242,7 @@ pub fn tick_dungeon(
                 msg_events.send(SimMessageEvent(TextType::RoomEnd));
                 return;
             }
-            
+
             if level.rooms.len() - 1 > state.current_room_idx as usize {
                 state.current_room_idx += 1;
                 state.combat_state = CombatState::Init;

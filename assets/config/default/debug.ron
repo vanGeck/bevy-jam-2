@@ -6,11 +6,11 @@
     log_filter: "info,wgpu=error,symphonia_core=warn,symphonia_format_ogg=warn,symphonia_codec_vorbis=warn,symphonia_bundle_mp3=warn,bag_goblin=debug",
 
     // If true, opens a secondary window containing debug egui tools, such as the inspector and a tool to win or lose the game.
-    show_debug_window: true,
+    show_debug_window: false,
 
     // If true, skips past the main menu:
     skip_straight_to_game: false,
 
     // If true, launches the game in full screen mode:
-    launch_fullscreen: false,
+    launch_fullscreen: true,
 )

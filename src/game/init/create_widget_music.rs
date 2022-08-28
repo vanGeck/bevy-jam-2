@@ -16,10 +16,10 @@ pub fn create_layout_music(
     layout: Res<LayoutData>,
     assets: Res<AssetStorage>,
 ) {
-    let x = layout.factor * layout.left_x();
-    let width = layout.factor * layout.left_width();
-    let y = layout.factor * layout.c_left.music_y();
-    let height = layout.factor * layout.c_left.music_height();
+    let x = layout.left_x();
+    let width = layout.left_width();
+    let y = layout.c_left.music_y();
+    let height = layout.c_left.music_height();
 
     commands
         .spawn_bundle(SpriteBundle {
@@ -34,8 +34,8 @@ pub fn create_layout_music(
         .insert(Name::new("MusicArea"))
         .insert(CleanupOnGameplayEnd)
         .with_children(|parent| {
-            let pos_box = Vec2::new(0.5 * layout.factor, 0.5 * layout.factor);
-            let dimens_box = Vec2::splat(4. * layout.factor);
+            let pos_box = layout.c_left.music_player.0;
+            let dimens_box = layout.c_left.music_player.1;
             parent
                 .spawn_bundle(SpriteSheetBundle {
                     sprite: TextureAtlasSprite {
@@ -70,8 +70,14 @@ pub fn create_layout_music(
                 horizontal: HorizontalAlign::Left,
             };
 
-            let pos_text = Vec2::new(5. * layout.factor, 2. * layout.factor);
-            let dimens_text = Vec2::new(width - 6. * layout.factor, 2. * layout.factor);
+            let pos_text = Vec2::new(
+                pos_box.x + dimens_box.x + layout.c_left.music_text_margin,
+                height * 0.5,
+            );
+            let dimens_text = Vec2::new(
+                width - (pos_text.x + layout.c_left.music_text_margin),
+                height - layout.c_left.music_text_margin * 2.,
+            );
             parent
                 .spawn()
                 .insert(AudioTextDisplay)

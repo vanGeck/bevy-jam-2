@@ -36,7 +36,6 @@ pub struct HeroCurrentShieldDisplay;
 #[derive(Component)]
 pub struct HeroCurrentWeaponDisplay;
 
-
 // Ridiculous amount of magic number for the hero name and stats..
 pub fn create_layout_hero(
     mut commands: Commands,
@@ -44,10 +43,10 @@ pub fn create_layout_hero(
     assets: Res<AssetStorage>,
     hero: Res<Hero>,
 ) {
-    let x = layout.factor * layout.right_x();
-    let width = layout.factor * layout.right_width();
-    let y = layout.factor * layout.c_right.hero_y();
-    let height = layout.factor * layout.c_right.hero_height(&layout);
+    let x = layout.right_x();
+    let width = layout.right_width();
+    let y = layout.c_right.hero_y();
+    let height = layout.c_right.hero_height(&layout);
     let text_style = TextStyle {
         font: assets.font(&FontId::FiraSansMedium),
         font_size: 60.0,
@@ -63,8 +62,8 @@ pub fn create_layout_hero(
         vertical: VerticalAlign::Center,
         horizontal: HorizontalAlign::Left,
     };
-    // let pos_text = Vec2::new(5. * layout.factor, 2. * layout.factor);
-    let dimens_text = Vec2::new(width - 6. * layout.factor, 2. * layout.factor);
+    // let pos_text = Vec2::new(5., 2.);
+    let dimens_text = Vec2::new(width - 2., 0.6667);
 
     commands
         .spawn_bundle(SpriteBundle {
@@ -99,11 +98,11 @@ pub fn create_layout_hero(
                         height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin + 0.6,
                         11., // Relative to parent
                     )
-                        .with_scale(Vec3::new(
-                            1. / layout.text_factor,
-                            1. / layout.text_factor,
-                            1.,
-                        )),
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
                     ..default()
                 });
             parent
@@ -117,7 +116,7 @@ pub fn create_layout_hero(
                         ),
                         text_style.clone(),
                     )
-                        .with_alignment(text_alignment),
+                    .with_alignment(text_alignment),
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
                         size: Vec2::new(
@@ -130,11 +129,11 @@ pub fn create_layout_hero(
                         height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin,
                         12., // Relative to parent
                     )
-                        .with_scale(Vec3::new(
-                            1. / layout.text_factor,
-                            1. / layout.text_factor,
-                            1.,
-                        )),
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
                     ..default()
                 });
 
@@ -156,11 +155,11 @@ pub fn create_layout_hero(
                         height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 0.5,
                         11., // Relative to parent
                     )
-                        .with_scale(Vec3::new(
-                            1. / layout.text_factor,
-                            1. / layout.text_factor,
-                            1.,
-                        )),
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
                     ..default()
                 });
 
@@ -173,7 +172,7 @@ pub fn create_layout_hero(
                         format!("Combat Proficiency: {}", hero.combat_stats.proficiency),
                         text_style_sm.clone(),
                     )
-                        .with_alignment(text_alignment),
+                    .with_alignment(text_alignment),
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
                         size: Vec2::new(
@@ -186,11 +185,11 @@ pub fn create_layout_hero(
                         height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 1.,
                         11., // Relative to parent
                     )
-                        .with_scale(Vec3::new(
-                            1. / layout.text_factor,
-                            1. / layout.text_factor,
-                            1.,
-                        )),
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
                     ..default()
                 });
             parent
@@ -202,7 +201,7 @@ pub fn create_layout_hero(
                         format!("Damage Resistance: {}", hero.combat_stats.damage_res),
                         text_style_sm.clone(),
                     )
-                        .with_alignment(text_alignment),
+                    .with_alignment(text_alignment),
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
                         size: Vec2::new(
@@ -215,11 +214,11 @@ pub fn create_layout_hero(
                         height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 1.5,
                         11., // Relative to parent
                     )
-                        .with_scale(Vec3::new(
-                            1. / layout.text_factor,
-                            1. / layout.text_factor,
-                            1.,
-                        )),
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
                     ..default()
                 });
             parent
@@ -231,7 +230,7 @@ pub fn create_layout_hero(
                         format!("Damage Bonus: {}", hero.combat_stats.damage_bonus),
                         text_style_sm.clone(),
                     )
-                        .with_alignment(text_alignment),
+                    .with_alignment(text_alignment),
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
                         size: Vec2::new(
@@ -244,11 +243,11 @@ pub fn create_layout_hero(
                         height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 2.,
                         11., // Relative to parent
                     )
-                        .with_scale(Vec3::new(
-                            1. / layout.text_factor,
-                            1. / layout.text_factor,
-                            1.,
-                        )),
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
                     ..default()
                 });
             // Equipped Items
@@ -257,10 +256,7 @@ pub fn create_layout_hero(
                 .insert(HeroStatsDisplay)
                 .insert(HeroCurrentArmourDisplay)
                 .insert_bundle(Text2dBundle {
-                    text: Text::from_section(
-                        format!("Armour: None"),
-                        text_style_sm.clone(),
-                    )
+                    text: Text::from_section(format!("Armour: None"), text_style_sm.clone())
                         .with_alignment(text_alignment),
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
@@ -274,11 +270,11 @@ pub fn create_layout_hero(
                         height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 2.5,
                         11., // Relative to parent
                     )
-                        .with_scale(Vec3::new(
-                            1. / layout.text_factor,
-                            1. / layout.text_factor,
-                            1.,
-                        )),
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
                     ..default()
                 });
             parent
@@ -286,10 +282,7 @@ pub fn create_layout_hero(
                 .insert(HeroStatsDisplay)
                 .insert(HeroCurrentShieldDisplay)
                 .insert_bundle(Text2dBundle {
-                    text: Text::from_section(
-                        format!("Shield: None"),
-                        text_style_sm.clone(),
-                    )
+                    text: Text::from_section(format!("Shield: None"), text_style_sm.clone())
                         .with_alignment(text_alignment),
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
@@ -303,11 +296,11 @@ pub fn create_layout_hero(
                         height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 3.0,
                         11., // Relative to parent
                     )
-                        .with_scale(Vec3::new(
-                            1. / layout.text_factor,
-                            1. / layout.text_factor,
-                            1.,
-                        )),
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
                     ..default()
                 });
             parent
@@ -315,10 +308,7 @@ pub fn create_layout_hero(
                 .insert(HeroStatsDisplay)
                 .insert(HeroCurrentWeaponDisplay)
                 .insert_bundle(Text2dBundle {
-                    text: Text::from_section(
-                        format!("Weapon: None"),
-                        text_style_sm.clone(),
-                    )
+                    text: Text::from_section(format!("Weapon: None"), text_style_sm.clone())
                         .with_alignment(text_alignment),
                     // The max size that it should fit in:
                     text_2d_bounds: Text2dBounds {
@@ -332,11 +322,11 @@ pub fn create_layout_hero(
                         height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 3.5,
                         11., // Relative to parent
                     )
-                        .with_scale(Vec3::new(
-                            1. / layout.text_factor,
-                            1. / layout.text_factor,
-                            1.,
-                        )),
+                    .with_scale(Vec3::new(
+                        1. / layout.text_factor,
+                        1. / layout.text_factor,
+                        1.,
+                    )),
                     ..default()
                 });
             // Health Bar

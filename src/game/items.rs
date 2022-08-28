@@ -1,6 +1,6 @@
-use std::fmt::Formatter;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
+use std::fmt::Formatter;
 
 use crate::game::TextureId;
 use crate::mouse::MouseInteractive;
@@ -40,7 +40,6 @@ impl FallingItem {
 /// Marker component. This item is unavailable, and must be rendered as a dark silhouette.
 #[derive(Component)]
 pub struct Silhouette;
-
 
 #[derive(Component, Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
@@ -149,15 +148,18 @@ pub fn consume_item(
 ) {
     for (e, item, interactive) in items.iter() {
         if interactive.right_clicked {
-
             // Unequip any items already equipped that the new item can override.
             if let Some((new_item_to_equip_slot, _)) = item.wearable {
                 for currently_equipped_item in equipped_items_query.iter() {
                     if currently_equipped_item.slot == new_item_to_equip_slot {
-                        hero.combat_stats.max_health -= currently_equipped_item.stat_bonus.max_health;
-                        hero.combat_stats.proficiency -= currently_equipped_item.stat_bonus.proficiency;
-                        hero.combat_stats.damage_res -= currently_equipped_item.stat_bonus.damage_res;
-                        hero.combat_stats.damage_bonus -= currently_equipped_item.stat_bonus.damage_bonus;
+                        hero.combat_stats.max_health -=
+                            currently_equipped_item.stat_bonus.max_health;
+                        hero.combat_stats.proficiency -=
+                            currently_equipped_item.stat_bonus.proficiency;
+                        hero.combat_stats.damage_res -=
+                            currently_equipped_item.stat_bonus.damage_res;
+                        hero.combat_stats.damage_bonus -=
+                            currently_equipped_item.stat_bonus.damage_bonus;
                     }
                 }
                 // Create a new entity with an EquippedItem component to represent Equipped Items on the Hero

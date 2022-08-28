@@ -6,6 +6,6 @@ pub mod data_items;
 pub mod data_layout;
 pub mod data_recipes;
 pub mod data_sim_texts;
+pub mod dungeon_layout;
 mod file_utils;
 pub mod health_bar;
-pub mod dungeon_layout;

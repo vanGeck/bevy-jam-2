@@ -6,7 +6,6 @@ use serde::{Deserialize, Serialize};
 use crate::game::combat::{DropTable, Enemy};
 use crate::game::feed::MessageColour;
 
-
 #[derive(Debug)]
 pub struct Room {
     // Flags used in room processing. Determine message ordering and room types.
@@ -34,7 +33,7 @@ impl Default for Room {
             end: false,
             start: false,
             combat: false,
-            flavour: None
+            flavour: None,
         }
     }
 }

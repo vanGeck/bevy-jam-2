@@ -80,20 +80,20 @@ pub fn update_mouse_over_item_info_system(
                                         color: Color::WHITE,
                                     },
                                 )
-                                    .with_style(Style {
-                                        position_type: PositionType::Relative,
-                                        position: UiRect {
-                                            top: Val::Px(0.0),
-                                            left: Val::Px(0.0),
-                                            ..default()
-                                        },
-                                        margin: UiRect {
-                                            top: Val::Px(4.0),
-                                            left: Val::Px(8.0),
-                                            ..default()
-                                        },
+                                .with_style(Style {
+                                    position_type: PositionType::Relative,
+                                    position: UiRect {
+                                        top: Val::Px(0.0),
+                                        left: Val::Px(0.0),
                                         ..default()
-                                    }),
+                                    },
+                                    margin: UiRect {
+                                        top: Val::Px(4.0),
+                                        left: Val::Px(8.0),
+                                        ..default()
+                                    },
+                                    ..default()
+                                }),
                             );
                             // Description
                             parent.spawn_bundle(
@@ -105,20 +105,20 @@ pub fn update_mouse_over_item_info_system(
                                         color: Color::WHITE,
                                     },
                                 )
-                                    .with_style(Style {
-                                        position_type: PositionType::Relative,
-                                        position: UiRect {
-                                            top: Val::Px(0.0),
-                                            left: Val::Px(0.0),
-                                            ..default()
-                                        },
-                                        margin: UiRect {
-                                            top: Val::Px(4.0),
-                                            left: Val::Px(8.0),
-                                            ..default()
-                                        },
+                                .with_style(Style {
+                                    position_type: PositionType::Relative,
+                                    position: UiRect {
+                                        top: Val::Px(0.0),
+                                        left: Val::Px(0.0),
                                         ..default()
-                                    }),
+                                    },
+                                    margin: UiRect {
+                                        top: Val::Px(4.0),
+                                        left: Val::Px(8.0),
+                                        ..default()
+                                    },
+                                    ..default()
+                                }),
                             );
                             // Wearable
                             if let Some((slot, _)) = item.wearable.clone() {
@@ -143,15 +143,15 @@ pub fn update_mouse_over_item_info_system(
                                             color: Color::WHITE,
                                         },
                                     )
-                                        .with_style(Style {
-                                            position_type: PositionType::Relative,
-                                            position: UiRect {
-                                                top: Val::Px(4.0),
-                                                left: Val::Px(8.0),
-                                                ..default()
-                                            },
+                                    .with_style(Style {
+                                        position_type: PositionType::Relative,
+                                        position: UiRect {
+                                            top: Val::Px(4.0),
+                                            left: Val::Px(8.0),
                                             ..default()
-                                        }),
+                                        },
+                                        ..default()
+                                    }),
                                 );
                             }
                             // Stat Bonuses
@@ -191,15 +191,15 @@ pub fn update_mouse_over_item_info_system(
                                             color: Color::WHITE,
                                         },
                                     )
-                                        .with_style(Style {
-                                            position_type: PositionType::Relative,
-                                            position: UiRect {
-                                                top: Val::Px(4.0),
-                                                left: Val::Px(8.0),
-                                                ..default()
-                                            },
+                                    .with_style(Style {
+                                        position_type: PositionType::Relative,
+                                        position: UiRect {
+                                            top: Val::Px(4.0),
+                                            left: Val::Px(8.0),
                                             ..default()
-                                        }),
+                                        },
+                                        ..default()
+                                    }),
                                 );
                             }
                         });

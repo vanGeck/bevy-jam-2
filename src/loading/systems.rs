@@ -14,12 +14,12 @@ use crate::config::data_items::ItemsData;
 use crate::config::data_layout::LayoutData;
 use crate::config::data_recipes::RecipesData;
 use crate::config::data_sim_texts::DungeonTexts;
+use crate::config::dungeon_layout::DungeonBlueprint;
 use crate::config::health_bar::HealthBarConfig;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
 use crate::{AppState, WindowMode};
-use crate::config::dungeon_layout::DungeonBlueprint;
 
 pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(DebugConfig::load_from_file());

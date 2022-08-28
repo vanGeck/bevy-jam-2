@@ -97,11 +97,11 @@ pub fn handle_add_to_feed(
             vertical: VerticalAlign::Center,
             horizontal: HorizontalAlign::Left,
         };
-        let container_width = layout.factor * layout.left_width();
-        let container_height = layout.factor * layout.c_left.feed_height(&layout);
+        let container_width = layout.left_width();
+        let container_height = layout.c_left.feed_height(&layout);
         let dimens_text = Vec2::new(
             container_width - 2. * layout.c_left.feed_padding,
-            layout.c_left.feed_item_height,
+            layout.c_left.feed_item_max_height,
         );
         let item_id = feed.next_id();
         let text = commands
@@ -184,8 +184,8 @@ pub fn position_feed_item(
             break;
         }
     }
-    let container_width = layout.factor * layout.left_width();
-    let container_height = layout.factor * layout.c_left.feed_height(&layout);
+    let container_width = layout.left_width();
+    let container_height = layout.c_left.feed_height(&layout);
     let available_height = container_height - layout.c_left.feed_padding * 2.;
     // Set the text translation and delete those that are out of bounds.
     for (entity, item, mut transform, size) in queries.p0().iter_mut() {

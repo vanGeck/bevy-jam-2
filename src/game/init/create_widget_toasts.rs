@@ -5,10 +5,10 @@ use crate::game::CleanupOnGameplayEnd;
 use crate::positioning::Depth;
 
 pub fn create_layout_toasts(mut commands: Commands, layout: Res<LayoutData>) {
-    let x = layout.factor * layout.middle_x();
-    let width = layout.factor * layout.middle_width();
-    let y = layout.factor * (layout.c_mid.toasts.margin_bottom.unwrap_or(0.));
-    let height = layout.factor * (layout.c_mid.toasts.height.unwrap());
+    let x = layout.middle_x();
+    let width = layout.middle_width();
+    let y = layout.c_mid.toasts.margin_bottom.unwrap_or(0.);
+    let height = layout.c_mid.toasts.height.unwrap();
     commands
         .spawn_bundle(SpriteBundle {
             sprite: Sprite {

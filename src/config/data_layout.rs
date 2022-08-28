@@ -13,8 +13,6 @@ use crate::positioning::Coords;
 #[derive(Deserialize, Serialize, Default, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct LayoutData {
-    /// Divide the layout coordinates by this number.
-    pub factor: f32,
     pub text_factor: f32,
     pub screen_dimens: Vec2,
     pub c_left: ColumnLeft,
@@ -29,7 +27,12 @@ pub struct ColumnLeft {
     pub margin_left: f32,
     pub margin_right: f32,
     pub feed_padding: f32,
-    pub feed_item_height: f32,
+    pub feed_item_max_height: f32,
+    /// position and dimensions
+    pub music_player: (Vec2, Vec2),
+    /// position and dimensions
+    pub music_text: (Vec2, Vec2),
+    pub music_text_margin: f32,
     pub music: Container,
     pub feed: Container,
 }

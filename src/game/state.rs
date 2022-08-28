@@ -16,14 +16,14 @@ use crate::game::timed_effect::{test_apply_modifier, tick_temporary_modifiers, T
 use crate::game::{
     animate_falling_item, apply_silhouette, check_drag_begin, check_drag_end,
     check_ghost_placement_validity, combine_items_system, process_drag_event, set_ghost_position,
-    spawn_item, AlbumId, AssetStorage, CleanupOnGameplayEnd, DragEvent, Item, ItemId, Player,
+    spawn_item, AlbumId, AssetStorage, CleanupOnGameplayEnd, DragEvent, ItemId, Player,
     SpawnItemEvent, TextureId,
 };
 //use crate::hud::gold::gold_update_system;
-use crate::mouse::Mouse;
-use crate::positioning::{Coords, Dimens, Pos};
-use crate::AppState;
 use crate::config::data_items::ItemsData;
+use crate::mouse::Mouse;
+use crate::positioning::{Coords, Pos};
+use crate::AppState;
 
 use super::combat::{Combatant, Enemy, Hero};
 use super::{consume_item, update_health_bar, update_hero_stats_display, Eyes, Iris};
@@ -129,15 +129,15 @@ pub fn eye_tracking_system(
             let white_pos = white.translation.truncate();
             let new_iris_trans = white.translation
                 + ((mouse.position - white_pos) / 100.0)
-                .clamp_length(0.0, 0.2)
-                .extend(1.0);
+                    .clamp_length(0.0, 0.2)
+                    .extend(1.0);
             iris.translation = new_iris_trans;
         }
     }
 }
 
 pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<ItemsData>) {
-    let mut item = items_db.try_get_item(ItemId::ScrollBasic5).unwrap();
+    let item = items_db.try_get_item(ItemId::ScrollBasic5).unwrap();
     spawn.send(SpawnItemEvent::without_anim(
         item.1,
         Coords::new(Pos::new(3, 3), item.0),
