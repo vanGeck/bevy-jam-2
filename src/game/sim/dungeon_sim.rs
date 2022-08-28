@@ -1,7 +1,9 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
+use iyes_loopless::prelude::NextState;
 use rand::Rng;
+use crate::AppState;
 
 use crate::config::config_sim::SimConfig;
 use crate::config::data_enemies::EnemiesData;
@@ -17,8 +19,9 @@ use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId, ItemId};
 /// Handle a state event. Mainly handle hero's death?
 pub struct SimStateEvent(String);
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct DungeonState {
+    pub max_depth: i32,
     pub current_room_idx: i32,
     pub current_level: Option<DungeonLevel>,
     pub msg_cooldown: Timer,
@@ -31,75 +34,36 @@ pub struct ContinuePrompt;
 
 pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, dungeon_bp: Res<DungeonBlueprint>, enemies: Res<EnemiesData>) {
     let mut state = DungeonState {
+        max_depth: dungeon_bp.levels.len() as i32 - 1,
         current_room_idx: 0,
         current_level: None,
         msg_cooldown: Timer::new(Duration::from_millis(params.duration_millis), true),
         running: true,
         combat_state: CombatState::Init,
     };
-    state.current_level = Option::from(generate_level(&params, &dungeon_bp.levels[0], &mut commands, &enemies));
+    state.current_level = Option::from(generate_level( &dungeon_bp.levels[0], &mut commands, &enemies));
     commands.insert_resource(state);
 }
 
-pub fn manage_continue_prompt(state: Res<DungeonState>, q: Query<Entity, With<ContinuePrompt>>, mut cmd: Commands, assets: Res<AssetStorage>){
-    if state.running {
-        if let Ok(e) = q.get_single() {
-            cmd.entity(e).despawn_recursive();
-        }
-    } else if !state.running && state.combat_state != CombatState::HeroDead {
-        if let Ok(_) = q.get_single() {
-            
-        } else {
-            spawn_prompt(cmd, assets);
-        }
-    }
-}
-
-pub fn spawn_prompt(mut cmd: Commands, assets: Res<AssetStorage>)
-{
-    cmd.spawn_bundle(NodeBundle {
-        style: Style {
-            size: Size::new(Val::Percent(100.0), Val::Percent(16.7)),
-            justify_content: JustifyContent::Center,
-            position: UiRect{
-                left: Val::Percent(44.0),
-                right: Val::Percent(40.0),
-                top: Val::Auto,
-                bottom: Val::Auto,
-            },
-            ..default()
-        },
-        color: Color::NONE.into(),
-        ..default()
-    }).with_children(|parent| {
-        // text
-        parent.spawn_bundle(
-            TextBundle::from_section(
-                "Press SPACE to continue exploring!",
-                TextStyle {
-                    font: assets.font(&FontId::FiraSansBold),
-                    font_size: 20.0,
-                    color: Color::WHITE,
-                },
-            )
-                .with_style(Style {
-                    margin: UiRect::all(Val::Px(5.0)),
-                    align_self: AlignSelf::Center,
-                    ..default()
-                }),
-        );
-    }).insert(ContinuePrompt).insert(CleanupOnGameplayEnd);
+pub fn progress_dungeon_depth(state: &mut ResMut<DungeonState>, dungeon_bp: Res<DungeonBlueprint>, enemies: Res<EnemiesData>, mut cmd: Commands){
+    let next_level_depth = state.clone().current_level.unwrap().depth+1;
+    state.current_room_idx = 0;
+    state.current_level = Option::from(generate_level(&dungeon_bp.levels[next_level_depth as usize], &mut cmd, &enemies));
+    state.combat_state = CombatState::Init;
 }
 
 pub fn tick_dungeon(
     mut msg_events: EventWriter<SimMessageEvent>,
     mut loot_events: EventWriter<SimLootEvent>,
+    dungeon_bp: Res<DungeonBlueprint>,
+    enemy_data: Res<EnemiesData>,
     time: Res<Time>,
     _config: ResMut<SimConfig>,
     mut state: ResMut<DungeonState>,
     mut hero: ResMut<Hero>,
     mut enemy: ResMut<Enemy>,
-    input: Res<Input<KeyCode>>
+    input: Res<Input<KeyCode>>,
+    mut cmd: Commands,
 ) {
     let mut just_resumed = false;
     if !state.running {
@@ -114,9 +78,9 @@ pub fn tick_dungeon(
         if just_resumed {
             state.msg_cooldown.reset();
         }
-        // hero.combat_stats.health -= 1;
         let cbt_state = state.combat_state.clone();
-        let current_room_idx = state.current_room_idx as usize;
+        let current_room_idx = state.current_room_idx.clone() as usize;
+        let max_depth = (&state.max_depth).clone();
         if let Some(level) = &mut state.current_level {
             let room = &mut level.rooms[current_room_idx as usize];
             let loot = &mut level.loot[current_room_idx as usize];
@@ -159,7 +123,8 @@ pub fn tick_dungeon(
                     msg_events.send(SimMessageEvent(TextType::CombatHeroDied));
                     state.combat_state = CombatState::Ended;
                     halt_dungeon_sim(state);
-                    // TODO: change state to endgame, hero is dead!
+                    // HERO IS DEAD, END GAME
+                    cmd.insert_resource(NextState(AppState::GameEnded));
                     return;
                 } else if cbt_state == CombatState::InProgress {
                     process_combat(
@@ -227,9 +192,20 @@ pub fn tick_dungeon(
                 return;
             }
             
-            if level.rooms.len() - 1 > state.current_room_idx as usize {
+            if level.rooms.len() - 1 > current_room_idx as usize {
                 state.current_room_idx += 1;
                 state.combat_state = CombatState::Init;
+            } else {
+                if level.depth >= max_depth {
+                    // GAME ENDED, REACHED LAST ROOM
+                    info!("Dungeon complete!");
+                    cmd.insert_resource(NextState(AppState::GameEnded));
+                    halt_dungeon_sim(state);
+                    return;
+                } else {
+                    // Generate next floor.
+                    progress_dungeon_depth(&mut state, dungeon_bp, enemy_data, cmd);
+                }
             }
             halt_dungeon_sim(state);
         }
@@ -260,4 +236,54 @@ fn pick_loot_from_drop_table(table: &DropTable) -> Vec<ItemId> {
         }
     }
     return result;
+}
+
+pub fn manage_continue_prompt(state: Res<DungeonState>, q: Query<Entity, With<ContinuePrompt>>, mut cmd: Commands, assets: Res<AssetStorage>){
+    if state.running {
+        if let Ok(e) = q.get_single() {
+            cmd.entity(e).despawn_recursive();
+        }
+    } else if !state.running && state.combat_state != CombatState::HeroDead {
+        if let Ok(_) = q.get_single() {
+
+        } else {
+            spawn_prompt(cmd, assets);
+        }
+    }
+}
+
+pub fn spawn_prompt(mut cmd: Commands, assets: Res<AssetStorage>)
+{
+    cmd.spawn_bundle(NodeBundle {
+        style: Style {
+            size: Size::new(Val::Percent(100.0), Val::Percent(16.7)),
+            justify_content: JustifyContent::Center,
+            position: UiRect{
+                left: Val::Percent(44.0),
+                right: Val::Percent(40.0),
+                top: Val::Auto,
+                bottom: Val::Auto,
+            },
+            ..default()
+        },
+        color: Color::NONE.into(),
+        ..default()
+    }).with_children(|parent| {
+        // text
+        parent.spawn_bundle(
+            TextBundle::from_section(
+                "Press SPACE to continue exploring!",
+                TextStyle {
+                    font: assets.font(&FontId::FiraSansBold),
+                    font_size: 20.0,
+                    color: Color::WHITE,
+                },
+            )
+                .with_style(Style {
+                    margin: UiRect::all(Val::Px(5.0)),
+                    align_self: AlignSelf::Center,
+                    ..default()
+                }),
+        );
+    }).insert(ContinuePrompt).insert(CleanupOnGameplayEnd);
 }

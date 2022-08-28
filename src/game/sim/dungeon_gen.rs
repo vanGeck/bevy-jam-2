@@ -41,7 +41,6 @@ pub enum RoomType {
 }
 
 pub fn generate_level(
-    _params: &SimConfig,
     blueprint: &LevelBlueprint,
     mut _cmd: &mut Commands,
     enemies_data: &Res<EnemiesData>,
@@ -102,9 +101,10 @@ pub fn generate_level(
     for s in 0..rooms.len() {
         rooms[s].print_diag_name();
     }
+    info!("New depth: {}", &blueprint.depth);
 
     DungeonLevel {
-        depth: 0,
+        depth: blueprint.depth.clone(),
         rooms,
         enemies,
         loot

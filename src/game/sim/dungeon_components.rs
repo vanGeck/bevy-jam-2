@@ -7,7 +7,7 @@ use crate::game::combat::{DropTable, Enemy};
 use crate::game::feed::MessageColour;
 
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Room {
     // Flags used in room processing. Determine message ordering and room types.
     pub init: bool,
@@ -63,6 +63,7 @@ impl Room {
     }
 }
 
+#[derive(Clone)]
 pub struct DungeonLevel {
     pub depth: i32,
     pub rooms: Vec<Room>,
