@@ -5,6 +5,7 @@
         ],
         RoomEnd: [
             "Sir Hoardalot reaches the last room. There's a downward staircase here...",
+            "Sir Hoardalot reaches the last room. There's a rickety ladder leading down into the inky void.",
         ],
         Corridor: [
             "Sir Hoardalot enters a dark, silent corridor dug out in a rocky wall.",
@@ -31,12 +32,15 @@
         ],
         SearchingBody: [
             "Sir Hoardalot searches the remains of the enemy.",
+            "Sir Hoardalot searches the enemy for loot.",
         ],
         FoundLoot: [
             "Sir Hoardalot found something!",
+            "Loot, loot, loot!",
         ],
         FoundNothing: [
             "Nothing! Oh well...",
+            "And yet again, Sir Hoardalot finds nothing. The droprate is terrible, man.",
         ],
         CombatEnemyHit: [
             "Sir Hoardalot kicks the enemy off balance, and stick the tip of his weapon right between their ribs!",
@@ -45,9 +49,12 @@
         CombatHeroHit: [
             "An unexpected blow pierces through Sir Hoardalot's defenses!",
             "A strong hit smashes the air out of Sir Hoardalot's lungs. He staggers backwards, wheezing.",
+            "The monster feints high, then strikes low and jabs Sir Hoardalot's leg!",
         ],
         CombatEnemyDied: [
-            "Sir Hoardalot end the fight with a decisive strike! The enemy falls to the ground with a dull thud, dead before it could figure out what killed it.",
+            "Sir Hoardalot ends the fight with a decisive strike! The enemy falls to the ground with a dull thud, dead before it could figure out what killed it.",
+            "The hero cuts down the monster with more difficulty than expected, muttering something about 'devs nerfing his class'.",
+            "Enraged by remarks about its personal hygiene, the monster charges forward and prompty loses its head.",
         ],
         CombatNoResolution: [
             "Sir Hoardalot circles the enemy, looking for openings. His labored breathing echoes through the dungeon.",
@@ -63,15 +70,24 @@
         // Enemy encounters
         EnterRat: [
             "A rabid rat, large as a dog, squeaks angrily and jumps towards Sir Hoardalot!",
+            "A large rat drops unto the hero's back, biting and hissing.",
         ],
         EnterGoblinBrat: [
             "A Goblin Brat dances around Sir Hoardalot, throwing stones and insults!",
+            "As Sir Hoardalot charges into the room, cowardly goblins scurry away through hidden tunnels. One isn't fast enough, finds himself facing the mighty hero.",
         ],
         EnterGoblinSwordsman: [
             "A Goblin Swordsman shakes a rusty blade at Sir Hoardalot!",
         ],
         EnterGoblinShieldBearer: [
             "A Goblin Shieldbearer stands in Sir Hoardalot's way - steady, unflinching and very, very stinky.",
+        ],
+        EnterSkeleton: [
+            "The rattling of bones is heard down a dark corridor. A skeleton approaches.",
+            "Stone grinds on stone; an ancient sarcophagus cracks open and a skeleton steps out.",
+        ],
+        EnterZombie: [
+            "The air is heady with the vile stench of rot. The recently deceased are on the move. A zombie encroaches on Sir Hoardalot while he is busy respeccing his talent tree!",
         ],
         // Special rooms
         PlantRoom: [

@@ -93,6 +93,8 @@ pub enum TextType {
     EnterGoblinBrat,
     EnterGoblinSwordsman,
     EnterGoblinShieldBearer,
+    EnterSkeleton,
+    EnterZombie,
     // special room flavours
     PlantRoom,
 }
@@ -103,7 +105,9 @@ impl TextType {
             TextType::EnterRat
             | TextType::EnterGoblinBrat
             | TextType::EnterGoblinSwordsman
-            | TextType::EnterGoblinShieldBearer => MessageColour::MinorNegative,
+            | TextType::EnterGoblinShieldBearer
+            | TextType::EnterSkeleton
+            | TextType::EnterZombie => MessageColour::MinorNegative,
             TextType::CombatHeroHit => MessageColour::MajorNegative,
             TextType::CombatEnemyHit => MessageColour::MinorPositive,
             TextType::CombatEnemyDied => MessageColour::MajorPositive,

@@ -184,16 +184,21 @@ impl Default for TextureId {
 /// of sound files that the game will randomly pick from.
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub enum SoundId {
-    BigMonsterGrowl,
+    EnterRat,
+    EnterLittleMonster,
+    EnterBigMonster,
+    EnterSkeleton,
+    EnterZombie,
     DoorCreak,
     GoblinAhah,
-    LittleMonsterGrowl,
     SlashHit,
     SwordClang,
     WaterDripping,
+    /// Combining potions and stuff
     Alchemy,
-    /// Sound effect that plays when combining things:
-    PositiveAffirmation,
+    /// Combining swords and stuff.
+    UpgradeWeapon,
+    /// Failing to combine.
     CantCombine,
 }
 
