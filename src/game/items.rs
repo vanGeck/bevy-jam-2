@@ -2,7 +2,10 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::game::TextureId;
+use crate::mouse::MouseInteractive;
 use crate::positioning::Pos;
+
+use super::combat::Hero;
 
 // Marker Component
 #[derive(Component)]
@@ -35,10 +38,11 @@ impl Default for Item {
 
 #[derive(Default, Copy, Clone, Debug, Serialize, Deserialize)]
 pub struct StatBonus {
-    pub max_hp: i32,
-    pub damage: i32,
+    pub health: i32,
+    pub max_health: i32,
+    pub proficiency: i32,
+    pub damage_bonus: i32,
     pub damage_res: i32,
-    pub combat_prof: i32,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
@@ -86,4 +90,23 @@ pub enum EquipmentSlot {
 #[derive(Component)]
 pub struct Equipment {
     pub slot: EquipmentSlot,
+}
+
+pub fn consume_item(
+    mut commands: Commands,
+    mut hero: ResMut<Hero>,
+    items: Query<(Entity, &Item, &MouseInteractive)>,
+) {
+    for (e, item, interactive) in items.iter() {
+        if interactive.right_clicked {
+            if let Some(stats) = item.stat_bonuses {
+                hero.combat_stats.health += stats.health;
+                hero.combat_stats.max_health += stats.max_health;
+                hero.combat_stats.proficiency += stats.proficiency;
+                hero.combat_stats.damage_res += stats.damage_res;
+                hero.combat_stats.damage_bonus += stats.damage_bonus;
+            }
+            commands.entity(e).despawn_recursive();
+        }
+    }
 }

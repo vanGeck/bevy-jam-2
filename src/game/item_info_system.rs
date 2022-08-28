@@ -163,14 +163,17 @@ pub fn update_mouse_over_item_info_system(
                             // Stat Bonuses
                             if let Some(stat_bonus) = item.stat_bonuses {
                                 let mut stats: String = format!("| Stats: ");
-                                if stat_bonus.combat_prof > 0 {
+                                if stat_bonus.proficiency > 0 {
                                     stats.push_str(&*format!(
                                         "Combat Proficiency: {} | ",
-                                        stat_bonus.combat_prof
+                                        stat_bonus.proficiency
                                     ));
                                 }
-                                if stat_bonus.damage > 0 {
-                                    stats.push_str(&*format!("Damage: {} | ", stat_bonus.damage));
+                                if stat_bonus.damage_bonus > 0 {
+                                    stats.push_str(&*format!(
+                                        "Damage: {} | ",
+                                        stat_bonus.damage_bonus
+                                    ));
                                 }
                                 if stat_bonus.damage_res > 0 {
                                     stats.push_str(&*format!(
@@ -178,10 +181,10 @@ pub fn update_mouse_over_item_info_system(
                                         stat_bonus.damage_res
                                     ));
                                 }
-                                if stat_bonus.max_hp > 0 {
+                                if stat_bonus.max_health > 0 {
                                     stats.push_str(&*format!(
                                         "Max HP: {} | ",
-                                        stat_bonus.combat_prof
+                                        stat_bonus.proficiency
                                     ));
                                 }
 
@@ -376,10 +379,10 @@ pub fn update_mouse_over_item_info_style_position_system(
 //                     // Stat Bonuses
 //                     if let Some(stat_bonus) = item.stat_bonuses {
 //                         let mut stats: String = format!("| Stats: ");
-//                         if stat_bonus.combat_prof > 0 {
+//                         if stat_bonus.proficiency > 0 {
 //                             stats.push_str(&*format!(
 //                                 "Combat Proficiency: {} | ",
-//                                 stat_bonus.combat_prof
+//                                 stat_bonus.proficiency
 //                             ));
 //                         }
 //                         if stat_bonus.damage > 0 {
@@ -392,7 +395,7 @@ pub fn update_mouse_over_item_info_style_position_system(
 //                             ));
 //                         }
 //                         if stat_bonus.max_hp > 0 {
-//                             stats.push_str(&*format!("Max HP: {} | ", stat_bonus.combat_prof));
+//                             stats.push_str(&*format!("Max HP: {} | ", stat_bonus.proficiency));
 //                         }
 //
 //                         parent.spawn_bundle(

@@ -6,7 +6,6 @@ use iyes_loopless::prelude::*;
 
 use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
-use crate::game::combat::{Combatant, Enemy, Hero};
 use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
 use crate::game::event_handling::{
     handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
@@ -17,15 +16,15 @@ use crate::game::timed_effect::{test_apply_modifier, tick_temporary_modifiers, T
 use crate::game::{
     apply_scrim_to_being_dragged, check_drag_begin, check_drag_end, check_ghost_placement_validity,
     combine_items_system, process_drag_event, set_ghost_position, spawn_item, AlbumId,
-    AssetStorage, CleanupOnGameplayEnd, DragEvent, Item, ItemId, Player, SoundId, SpawnItemEvent,
-    TextureId,
+    AssetStorage, CleanupOnGameplayEnd, DragEvent, Item, ItemId, Player, SpawnItemEvent, TextureId,
 };
 use crate::hud::gold::gold_update_system;
-use crate::mouse::{Mouse, MouseInteractive};
+use crate::mouse::Mouse;
 use crate::positioning::{Coords, Dimens, Pos};
 use crate::AppState;
 
-use super::{update_health_bar, update_hero_stats_display, Eyes, Iris};
+use super::combat::{Hero, Combatant, Enemy};
+use super::{consume_item, update_health_bar, update_hero_stats_display, Eyes, Iris};
 
 pub struct GamePlugin;
 
@@ -43,7 +42,7 @@ impl Plugin for GamePlugin {
             })
             .insert_resource(Hero {
                 combat_stats: Combatant {
-                    health: 20,
+                    health: 10,
                     max_health: 20,
                     proficiency: 1,
                     damage_res: 1,
@@ -74,7 +73,6 @@ impl Plugin for GamePlugin {
                     .with_system(combine_items_system)
                     .with_system(gold_update_system)
                     .with_system(animate)
-                    .with_system(track_combine_button_hover)
                     .with_system(tick_dungeon)
                     .with_system(tick_temporary_modifiers)
                     .with_system(test_apply_modifier)
@@ -87,6 +85,7 @@ impl Plugin for GamePlugin {
                     .with_system(update_mouse_over_item_info_system)
                     .with_system(update_mouse_over_item_info_style_position_system)
                     .with_system(position_feed_item)
+                    .with_system(consume_item)
                     .into(),
             )
             .add_exit_system_set(
@@ -130,21 +129,6 @@ pub fn eye_tracking_system(
                     .clamp_length(0.0, 0.2)
                     .extend(1.0);
             iris.translation = new_iris_trans;
-        }
-    }
-}
-
-pub fn track_combine_button_hover(
-    mut audio: EventWriter<SoundEvent>,
-    mut button: Query<(&mut Sprite, &MouseInteractive)>,
-) {
-    if let Ok((mut sprite, interactive)) = button.get_single_mut() {
-        if interactive.clicked {
-            audio.send(SoundEvent::Sfx(SoundId::PositiveAffirmation));
-            sprite.color = Color::rgba(255.0, 255.0, 255.0, 0.8);
-            // TODO: Check is_valid_recipe with craft_items, combine()
-        } else {
-            sprite.color = Color::rgba(0.2, 0.2, 0.2, 0.8);
         }
     }
 }

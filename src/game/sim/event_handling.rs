@@ -23,9 +23,10 @@ pub fn handle_sim_loot(
     for SimLootEvent(item_id) in events.iter() {
         trace!("Received sim loot event");
         if let Some((dimens, item)) = items_data.try_get_item(item_id.clone()) {
-            let free_coords = find_free_space(&grid, dimens, &items_query);
+            let free_coords = find_free_space(&grid, dimens, &items_query, &same_tick_items);
             if same_tick_items.contains(&free_coords.unwrap()) {
-                let new_free_coords = find_free_space(&grid, dimens, &items_query);
+                let new_free_coords =
+                    find_free_space(&grid, dimens, &items_query, &same_tick_items);
                 if let Some(coords) = new_free_coords {
                     spawn.send(SpawnItemEvent::new(item, coords));
                 }
