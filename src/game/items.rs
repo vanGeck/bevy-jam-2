@@ -1,3 +1,4 @@
+use std::fmt::Formatter;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -115,6 +116,12 @@ pub enum ItemId {
     ScrollKnowledge1,
     ScrollKnowledge2,
     ScrollKnowledge3,
+}
+
+impl std::fmt::Display for ItemId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq, Hash)]

@@ -19,6 +19,7 @@ use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
 use crate::{AppState, WindowMode};
+use crate::config::dungeon_layout::DungeonBlueprint;
 
 pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(DebugConfig::load_from_file());
@@ -30,6 +31,7 @@ pub fn load_configs(mut commands: Commands) {
     commands.insert_resource(EnemiesData::load_from_file());
     commands.insert_resource(HealthBarConfig::load_from_file());
     commands.insert_resource(LayoutData::load_from_file());
+    commands.insert_resource(DungeonBlueprint::load_from_file());
 }
 
 pub fn load_assets(

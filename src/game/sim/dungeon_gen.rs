@@ -11,11 +11,6 @@ use crate::game::ItemId;
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Clone)]
-pub struct DungeonBlueprint {
-    pub levels:Vec<LevelBlueprint>
-}
-
-#[derive(Serialize, Deserialize, Clone)]
 pub struct LevelBlueprint {
     pub depth:i32,
     pub default_loot:DropTable,
@@ -30,7 +25,7 @@ pub struct LevelBlueprint {
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SegmentBlueprint {
     pub types: HashMap<RoomType, u32>,
-    pub enemies: HashMap<EnemyId, u32>,
+    pub enemies: Option<HashMap<EnemyId, u32>>,
     pub custom_loot: Option<DropTable>,
     pub custom_flavour: Option<String>,
 }
@@ -46,22 +41,15 @@ pub enum RoomType {
 }
 
 pub fn generate_level(
-    len: i32,
     params: &SimConfig,
-    //blueprint: &LevelBlueprint,
+    blueprint: &LevelBlueprint,
     mut _cmd: &mut Commands,
-    enemies: &Res<EnemiesData>,
+    enemies_data: &Res<EnemiesData>,
 ) -> DungeonLevel {
     let mut rooms = Vec::<Room>::new();
     let mut enemies = Vec::<Enemy>::new();
     let mut loot = Vec::<DropTable>::new();
     let mut rng = rand::thread_rng();
-    
-    let blueprint = LevelBlueprint{
-        depth: 0,
-        default_loot: Default::default(),
-        segments: vec![]
-    };
 
     for segment in &blueprint.segments {
         let room_type = choose_room_type(&segment.types, &mut rng);
@@ -72,12 +60,20 @@ pub fn generate_level(
                 if let Some(custom) = &segment.custom_loot {
                     loot.push(custom.clone())
                 } else {
+                    info!("Pushing default loot to an empty room.");
                     loot.push(blueprint.default_loot.clone())
                 }
             }
-            RoomType::Fight => {                
-                rooms.push(generate_corridor());
-                enemies.push(Enemy::default());
+            RoomType::Fight => {
+                if let Some(enemy_opts) = &segment.enemies{
+                    enemies.push(get_enemy(&enemies_data, 
+                                           choose_monster_type(&enemy_opts, &mut rng)
+                    ));
+                } else {
+                    error!("Room type is >Fight<, but there's no enemy list supplied!");
+                    enemies.push(Enemy::default());
+                }
+                rooms.push(generate_fight());
                 loot.push(blueprint.default_loot.clone())}
             RoomType::Corridor => {
                 rooms.push(generate_corridor());
@@ -97,12 +93,6 @@ pub fn generate_level(
         } 
     }
     
-    rooms.push(generate_first_room());
-    enemies.push(Enemy::default());
-
-    rooms.push(generate_last_room());
-    enemies.push(Enemy::default());
-
     info!("Dungeon generation results: ");
     for s in 0..rooms.len() {
         rooms[s].print_diag_name();
@@ -181,10 +171,12 @@ fn generate_fight() -> Room {
     }
 }
 
-fn get_enemy(enemies: &Res<EnemiesData>) -> Enemy {
-    let enemies_len = enemies.enemies.len();
-    let mut rng = rand::thread_rng();
-    let idx = rng.gen_range(0..enemies_len);
-
-    enemies.enemies[idx].clone()
+fn get_enemy(enemies: &Res<EnemiesData>, enemy_id: EnemyId) -> Enemy {
+    if let Some(nmy) = enemies.enemies.clone()
+        .into_iter()
+        .find(|p| p.enemy_id == enemy_id){
+        return nmy;
+    }
+    error!("Error during enemy generation, returning default enemy!");
+    return Enemy::default();
 }

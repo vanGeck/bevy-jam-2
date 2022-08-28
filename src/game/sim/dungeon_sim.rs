@@ -5,6 +5,7 @@ use rand::Rng;
 
 use crate::config::config_sim::SimConfig;
 use crate::config::data_enemies::EnemiesData;
+use crate::config::dungeon_layout::DungeonBlueprint;
 use crate::game::combat::{DropTable, EnemyId};
 use crate::game::event_handling::SimMessageEvent;
 use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
@@ -25,7 +26,7 @@ pub struct DungeonState {
     pub combat_state: CombatState,
 }
 
-pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, enemies: Res<EnemiesData>) {
+pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, dungeon_bp: Res<DungeonBlueprint>, enemies: Res<EnemiesData>) {
     let mut state = DungeonState {
         current_room_idx: 0,
         current_level: None,
@@ -33,7 +34,7 @@ pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, enemies: Res
         running: true,
         combat_state: CombatState::Init,
     };
-    state.current_level = Option::from(generate_level(15, &params, &mut commands, &enemies));
+    state.current_level = Option::from(generate_level(&params, &dungeon_bp.levels[0], &mut commands, &enemies));
     commands.insert_resource(state);
 }
 
