@@ -1,76 +1,76 @@
 (
     map:{
         RoomStart: [
-            "You descend into the darkness of the dungeon...",
+            "Sir Hoardalot descends into the darkness of the dungeon...",
         ],
         RoomEnd: [
-            "You've reached the last room. There's a downward staircase here...",
+            "Sir Hoardalot reaches the last room. There's a downward staircase here...",
         ],
         Corridor: [
-            "You enter a dark, silent corridor dug out in a rocky wall.",
+            "Sir Hoardalot enters a dark, silent corridor dug out in a rocky wall.",
             "This damp passage smells weird. Falling water droplets splash somewhere far ahead.",
             "Pieces of ancient sprung traps litter this corridor, along with some with equally ancient pieces of unfortunate souls.",
-            "This passage is so dusty, you can barely see anything in the torchlight. You sneeze, and the echo parrots you.",
-            "Thick cobwebs hang from the ceiling of the tunnel, flowing down onto the floor. Your footsteps are muffled by the soft, sticky fabric.",
+            "This passage is so dusty, you can barely see anything in the torchlight. Sir Hoardalot sneezes, and the echo parrots you.",
+            "Thick cobwebs hang from the ceiling of the tunnel, flowing down onto the floor. Sir Hoardalot's footsteps are muffled by the soft, sticky fabric.",
         ],
         EnteredRoom: [
             "The room is dark and dusty. Broken furniture stands slumped against the walls.",
-            "There's a round pool of muddy water in this room. Your torch is casting shimmering reflections onto the walls.",
+            "There's a round pool of muddy water in this room. Sir Hoardalot's torch is casting shimmering reflections onto the walls.",
             "This room seems to be actively used - torches on walls are lit, and benches lining the walls have various small items strewn around them.",
-            "This room is dark and silent, but seems to have some kind of eerie presence within it. You shiver.",
+            "This room is dark and silent, but seems to have some kind of eerie presence within it. Sir Hoardalot shivers.",
         ],
         Door: [
-            "A door. You carefully press the handle and push the door open...",
-            "A door. It creaks horribly when you push it open...",
-            "A heavily damaged door. It disassembles itself while you push it open.",
+            "A door. Sir Hoardalot carefully presses the handle and pushes the door open...",
+            "A door. It creaks horribly when Sir Hoardalot pushes it open...",
+            "A heavily damaged door. It disassembles itself as Sir Hoardalot pushes it open.",
         ],
         SearchingRoom: [
-            "You poke through the ancient furniture.",
-            "You carefully inspect the floor for any items.",
-            "You sift through the items littering the floor.",
+            "Sir Hoardalot pokes through the ancient furniture.",
+            "Sir Hoardalot carefully inspects the floor for any items.",
+            "Sir Hoardalot sifts through the items littering the floor.",
         ],
         SearchingBody: [
-            "You search the remains of your enemy.",
+            "Sir Hoardalot searches the remains of your enemy.",
         ],
         FoundLoot: [
-            "You found something!",
+            "Sir Hoardalot found something!",
         ],
         FoundNothing: [
             "Nothing! Oh well...",
         ],
         CombatEnemyHit: [
-            "You kick the enemy off balance, and stick the tip of your weapon right between their ribs!",
-            "You whack the enemy right across the chest with your weapon!",
+            "Sir Hoardalot kicks the enemy off balance, and stick the tip of his weapon right between their ribs!",
+            "Sir Hoardalot whacks the enemy right across the chest with his weapon!",
         ],
         CombatHeroHit: [
-            "An unexpected blow pierces through your defenses!",
-            "A strong hit smashes the air out of your lungs. You stagger backwards, wheezing.",
+            "An unexpected blow pierces through Sir Hoardalot's defenses!",
+            "A strong hit smashes the air out of Sir Hoardalot's lungs. He staggers backwards, wheezing.",
         ],
         CombatEnemyDied: [
-            "You end the fight with a decisive strike! Your enemy falls to the ground with a dull thud, dead before it could figure out what killed it.",
+            "Sir Hoardalot end the fight with a decisive strike! The enemy falls to the ground with a dull thud, dead before it could figure out what killed it.",
         ],
         CombatNoResolution: [
-            "You circle each other, looking for openings. Your labored breathing echoes through the dungeon.",
-            "You dive under a mortal blow, and throw the enemy off balance with an elbow strike, buying yourself some time and separation.",
-            "You both jump away as a large rock peels away from the ceiling and crashes into a million pieces where you just stood!",
+            "Sir Hoardalot circles the enemy, looking for openings. His labored breathing echoes through the dungeon.",
+            "Sir Hoardalot dives under a mortal blow, and throws the enemy off balance with an elbow strike, buying himself some time and separation.",
+            "Sir Hoardalot and the foe both jump away as a large rock peels away from the ceiling and crashes into a million pieces where he just stood!",
         ],
         CombatHeroDied: [
-            "You are dead!",
+            "Sir Hoardalot is dead!",
         ],
         EnteredStartRoom: [
-            "You descend into a new level of the dungeon.",
+            "Sir Hoardalot descends into a new level of the dungeon.",
         ],
         EnterRat: [
-            "A rabid rat, large as a dog, squeaks angrily and jumps towards you!",
+            "A rabid rat, large as a dog, squeaks angrily and jumps towards Sir Hoardalot!",
         ],
         EnterGoblinBrat: [
-            "A Goblin Brat dances around you, throwing stones and insults!",
+            "A Goblin Brat dances around Sir Hoardalot, throwing stones and insults!",
         ],
         EnterGoblinSwordsman: [
-            "A Goblin Swordsman shakes a rusty blade at you!",
+            "A Goblin Swordsman shakes a rusty blade at Sir Hoardalot!",
         ],
         EnterGoblinShieldBearer: [
-            "A Goblin Shieldbearer stands in your way - steady, unflinching and very, very stinky.",
+            "A Goblin Shieldbearer stands in Sir Hoardalot's way - steady, unflinching and very, very stinky.",
         ],
     },
 )
