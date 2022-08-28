@@ -61,6 +61,66 @@
                     types: {End: 100, },
                 )
             ]
+        ),
+        ( // FloorBlueprint
+            depth: 1,
+            default_loot: ( // DropTable
+                items: [ HerbGreen, HerbRed, HerbViolet, Vial ],
+                chances: [ 20, 30, 20, 30 ]
+            ),
+            segments: [ // Room contents defined here
+                (
+                    types: { Start : 100, }
+                ),
+                (
+                    types: { Empty: 100, },
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { GoblinSwordsman: 100, }
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ HerbRed, Vial, HerbViolet ],
+                        chances: [ 100, 100, 65]
+                    )
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { GoblinBrat: 100, }
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { GoblinShieldbearer: 50, GoblinBrat: 50 }
+                ),
+                (
+                    types: { Empty: 75, Fight: 25, },
+                    enemies: { GoblinBrat: 50, Rat: 50 }
+                ),
+                (
+                    types: { Corridor: 100, },
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ Vial, Vial, Vial ],
+                        chances: [ 100, 100, 60]
+                    ),
+                    custom_flavour: AlchemyLab
+                ),
+                (
+                    types: { Empty: 25, Fight: 75, },
+                    enemies: { GoblinShieldbearer: 50, GoblinBrat: 50 }
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { GoblinShieldbearer: 50, GoblinBrat: 50 }
+                ),
+                (
+                    types: {End: 100, },
+                )
+            ]
         )
     ]
 )

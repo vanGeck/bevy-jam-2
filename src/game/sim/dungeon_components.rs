@@ -95,6 +95,7 @@ pub enum TextType {
     EnterGoblinShieldBearer,
     // special room flavours
     PlantRoom,
+    AlchemyLab,
 }
 
 impl TextType {

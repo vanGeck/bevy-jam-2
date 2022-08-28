@@ -10,7 +10,7 @@
             "Sir Hoardalot enters a dark, silent corridor dug out in a rocky wall.",
             "This damp passage smells weird. Falling water droplets splash somewhere far ahead.",
             "Pieces of ancient sprung traps litter this corridor, along with some with equally ancient pieces of unfortunate souls.",
-            "This passage is so dusty, Sir Hoardalot can barely see anything in the torchlight. Sir Hoardalot sneezes, and the echo parrots around the room.",
+            "This passage is so dusty, Sir Hoardalot can barely see anything in the torchlight. He sneezes, and the echo parrots him.",
             "Thick cobwebs hang from the ceiling of the tunnel, flowing down onto the floor. Sir Hoardalot's footsteps are muffled by the soft, sticky fabric.",
         ],
         EnteredRoom: [
@@ -18,6 +18,12 @@
             "There's a round pool of muddy water in this room. Sir Hoardalot's torch is casting shimmering reflections onto the walls.",
             "This room seems to be actively used - torches on walls are lit, and benches lining the walls have various small items strewn around them.",
             "This room is dark and silent, but seems to have some kind of eerie presence within it. Sir Hoardalot shivers.",
+            "This room has suffered a partial cave-in, and more then half of it is buried under rubble.",
+            "This room bears the signs of intense fighting. Fresh, too - there's still stench of blood in the air.",
+            "This room looks (and smells) like orc lavatory. The stench is unbearable.",
+            "There's goblin grafitti in this room, ending weirdly in a dried up spatter of blood. Seems the inhabitants weren't happy with it.",
+            "The walls of this room look all glassy, like the stone melted at one point. Very weird.",
+            "This room doesn't seem to want to be illuminated. It's very dark here despite the torch."
         ],
         Door: [
             "A door. Sir Hoardalot carefully presses the handle and pushes the door open...",
@@ -28,6 +34,7 @@
             "Sir Hoardalot pokes through the ancient furniture.",
             "Sir Hoardalot carefully inspects the floor for any items.",
             "Sir Hoardalot sifts through the items littering the floor.",
+            "Sir Hoardalot searches a small ornate box.",
         ],
         SearchingBody: [
             "Sir Hoardalot searches the remains of the enemy.",
@@ -39,15 +46,26 @@
             "Nothing! Oh well...",
         ],
         CombatEnemyHit: [
-            "Sir Hoardalot kicks the enemy off balance, and stick the tip of his weapon right between their ribs!",
+            "Sir Hoardalot kicks the monster off balance, and sticks the tip of his weapon right between its ribs!",
             "Sir Hoardalot whacks the enemy right across the chest with his weapon!",
+            "Sir Hoardalot pokes the enemy!",
+            "Sir Hoardalot smashes the enemy over the head!",
+            "Sir Hoardalot slices the enemy!",
+            "The enemy gets with with Sir Hoardalot's pocket sand!"
         ],
         CombatHeroHit: [
             "An unexpected blow pierces through Sir Hoardalot's defenses!",
-            "A strong hit smashes the air out of Sir Hoardalot's lungs. He staggers backwards, wheezing.",
+            "Sir Hoardalot gets poked in the leg!",
+            "The enemy strikes Sir Hoardalot!",
+            "Sir Hoardalot gets smacked across the face!",
+            "A strong hit smashes the air out of Sir Hoardalot's lungs!",
         ],
         CombatEnemyDied: [
-            "Sir Hoardalot end the fight with a decisive strike! The enemy falls to the ground with a dull thud, dead before it could figure out what killed it.",
+            "The monster falls to the ground with a dull thud, dead before it could figure out what killed it.",
+            "The monster folds like a wet noodle and expires.",
+            "The enemy collapses to the ground!",
+            "Sir Hoardalot slashes the enemy in two, ending the fight right there!",
+            "The monter faints due to intense bleeding.",
         ],
         CombatNoResolution: [
             "Sir Hoardalot circles the enemy, looking for openings. His labored breathing echoes through the dungeon.",
@@ -76,6 +94,9 @@
         // Special rooms
         PlantRoom: [
             "This room is alive with a myriad of blossoming plants sprouting from all surfaces!",
+        ],
+        AlchemyLab: [
+            "This room sems to be an alchemy lab, there's flasks and vials everywhere! Better stock up...",
         ]
     },
 )
