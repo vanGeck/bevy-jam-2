@@ -151,7 +151,7 @@ pub fn consume_item(
 
             // Unequip any items already equipped that the new item can override.
             if let Some((new_item_to_equip_slot, _)) = item.wearable {
-                for (currently_equipped_item) in equipped_items_query.iter() {
+                for currently_equipped_item in equipped_items_query.iter() {
                     if currently_equipped_item.slot == new_item_to_equip_slot {
                         hero.combat_stats.max_health -= currently_equipped_item.stat_bonus.max_health;
                         hero.combat_stats.proficiency -= currently_equipped_item.stat_bonus.proficiency;

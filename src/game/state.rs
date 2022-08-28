@@ -6,7 +6,7 @@ use iyes_loopless::prelude::*;
 
 use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
-use crate::game::dungeon_sim::{init_dungeon, manage_continue_prompt, spawn_prompt, tick_dungeon};
+use crate::game::dungeon_sim::{init_dungeon, manage_continue_prompt, tick_dungeon};
 use crate::game::event_handling::{
     handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
 };
@@ -19,7 +19,7 @@ use crate::game::{
     spawn_item, AlbumId, AssetStorage, CleanupOnGameplayEnd, DragEvent, Item, ItemId, Player,
     SpawnItemEvent, TextureId,
 };
-use crate::hud::gold::gold_update_system;
+//use crate::hud::gold::gold_update_system;
 use crate::mouse::Mouse;
 use crate::positioning::{Coords, Dimens, Pos};
 use crate::AppState;

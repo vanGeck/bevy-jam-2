@@ -3,7 +3,6 @@ use crate::config::config_sim::SimConfig;
 use crate::config::data_enemies::EnemiesData;
 use crate::game::combat::{DropTable, Enemy, EnemyId};
 use crate::game::sim::dungeon_components::{DungeonLevel, Room};
-use crate::game::ItemId::*;
 use bevy::prelude::*;
 use rand::Rng;
 use rand::rngs::ThreadRng;
@@ -42,7 +41,7 @@ pub enum RoomType {
 }
 
 pub fn generate_level(
-    params: &SimConfig,
+    _params: &SimConfig,
     blueprint: &LevelBlueprint,
     mut _cmd: &mut Commands,
     enemies_data: &Res<EnemiesData>,

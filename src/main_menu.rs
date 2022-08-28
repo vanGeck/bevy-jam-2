@@ -10,7 +10,7 @@ use crate::game::create_widget_hero::create_layout_hero;
 use crate::game::create_widget_music::create_layout_music;
 use crate::game::create_widget_toasts::create_layout_toasts;
 use crate::game::{create_camera, AlbumId};
-use crate::hud::gold::setup_gold;
+//use crate::hud::gold::setup_gold;
 use crate::mouse::MouseInteractive;
 use crate::states::delete_all_entities;
 use crate::transition_state::MenuTransition;

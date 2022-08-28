@@ -13,7 +13,6 @@ use crate::game::sim::dungeon_gen::generate_level;
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
 use crate::game::sim::event_handling::SimLootEvent;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId, ItemId};
-use crate::positioning::Coords;
 
 /// Handle a state event. Mainly handle hero's death?
 pub struct SimStateEvent(String);
@@ -45,14 +44,12 @@ pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, dungeon_bp: 
 pub fn manage_continue_prompt(state: Res<DungeonState>, q: Query<Entity, With<ContinuePrompt>>, mut cmd: Commands, assets: Res<AssetStorage>){
     if state.running {
         if let Ok(e) = q.get_single() {
-            error!("Despawning");
             cmd.entity(e).despawn_recursive();
         }
     } else if !state.running && state.combat_state != CombatState::HeroDead {
         if let Ok(_) = q.get_single() {
             
         } else {
-            error!("Spawning.");
             spawn_prompt(cmd, assets);
         }
     }
