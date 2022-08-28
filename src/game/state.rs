@@ -6,7 +6,7 @@ use iyes_loopless::prelude::*;
 
 use crate::audio::record_player::animate;
 use crate::audio::sound_event::SoundEvent;
-use crate::game::dungeon_sim::{init_dungeon, tick_dungeon};
+use crate::game::dungeon_sim::{init_dungeon, manage_continue_prompt, spawn_prompt, tick_dungeon};
 use crate::game::event_handling::{
     handle_sim_loot, handle_sim_message, SimLootEvent, SimMessageEvent,
 };
@@ -46,7 +46,7 @@ impl Plugin for GamePlugin {
                     health: 20,
                     max_health: 20,
                     proficiency: 1,
-                    damage_res: 1,
+                    damage_res: 0,
                     damage_bonus: 0,
                 },
             })
@@ -78,6 +78,7 @@ impl Plugin for GamePlugin {
                     .with_system(test_apply_modifier)
                     .with_system(handle_sim_message)
                     .with_system(handle_add_to_feed)
+                    .with_system(manage_continue_prompt)
                     .with_system(handle_sim_loot)
                     .with_system(update_health_bar)
                     .with_system(update_hero_stats_display)

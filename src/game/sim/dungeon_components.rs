@@ -19,6 +19,7 @@ pub struct Room {
     pub end: bool,
     pub start: bool,
     pub combat: bool,
+    pub flavour: Option<TextType>,
 }
 
 impl Default for Room {
@@ -33,6 +34,7 @@ impl Default for Room {
             end: false,
             start: false,
             combat: false,
+            flavour: None
         }
     }
 }
@@ -86,10 +88,13 @@ pub enum TextType {
     CombatHeroDied,
     EnteredStartRoom,
     EnteredEndRoom,
+    // enemy ecounters
     EnterRat,
     EnterGoblinBrat,
     EnterGoblinSwordsman,
     EnterGoblinShieldBearer,
+    // special room flavours
+    PlantRoom,
 }
 
 impl TextType {

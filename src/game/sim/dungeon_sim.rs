@@ -12,7 +12,8 @@ use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
 use crate::game::sim::dungeon_gen::generate_level;
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
 use crate::game::sim::event_handling::SimLootEvent;
-use crate::game::ItemId;
+use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId, ItemId};
+use crate::positioning::Coords;
 
 /// Handle a state event. Mainly handle hero's death?
 pub struct SimStateEvent(String);
@@ -26,6 +27,9 @@ pub struct DungeonState {
     pub combat_state: CombatState,
 }
 
+#[derive(Component)]
+pub struct ContinuePrompt;
+
 pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, dungeon_bp: Res<DungeonBlueprint>, enemies: Res<EnemiesData>) {
     let mut state = DungeonState {
         current_room_idx: 0,
@@ -38,6 +42,58 @@ pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, dungeon_bp: 
     commands.insert_resource(state);
 }
 
+pub fn manage_continue_prompt(state: Res<DungeonState>, q: Query<Entity, With<ContinuePrompt>>, mut cmd: Commands, assets: Res<AssetStorage>){
+    if state.running {
+        if let Ok(e) = q.get_single() {
+            error!("Despawning");
+            cmd.entity(e).despawn_recursive();
+        }
+    } else if !state.running && state.combat_state != CombatState::HeroDead {
+        if let Ok(_) = q.get_single() {
+            
+        } else {
+            error!("Spawning.");
+            spawn_prompt(cmd, assets);
+        }
+    }
+}
+
+pub fn spawn_prompt(mut cmd: Commands, assets: Res<AssetStorage>)
+{
+    cmd.spawn_bundle(NodeBundle {
+        style: Style {
+            size: Size::new(Val::Percent(100.0), Val::Percent(16.7)),
+            justify_content: JustifyContent::Center,
+            position: UiRect{
+                left: Val::Percent(44.0),
+                right: Val::Percent(40.0),
+                top: Val::Auto,
+                bottom: Val::Auto,
+            },
+            ..default()
+        },
+        color: Color::NONE.into(),
+        ..default()
+    }).with_children(|parent| {
+        // text
+        parent.spawn_bundle(
+            TextBundle::from_section(
+                "Press SPACE to continue exploring!",
+                TextStyle {
+                    font: assets.font(&FontId::FiraSansBold),
+                    font_size: 20.0,
+                    color: Color::WHITE,
+                },
+            )
+                .with_style(Style {
+                    margin: UiRect::all(Val::Px(5.0)),
+                    align_self: AlignSelf::Center,
+                    ..default()
+                }),
+        );
+    }).insert(ContinuePrompt).insert(CleanupOnGameplayEnd);
+}
+
 pub fn tick_dungeon(
     mut msg_events: EventWriter<SimMessageEvent>,
     mut loot_events: EventWriter<SimLootEvent>,
@@ -46,11 +102,21 @@ pub fn tick_dungeon(
     mut state: ResMut<DungeonState>,
     mut hero: ResMut<Hero>,
     mut enemy: ResMut<Enemy>,
+    input: Res<Input<KeyCode>>
 ) {
+    let mut just_resumed = false;
     if !state.running {
-        return;
+        if input.just_pressed(KeyCode::Space) && state.combat_state != CombatState::HeroDead{
+            state.running = true;
+            just_resumed = true;
+        } else {
+            return;
+        }
     }
-    if state.msg_cooldown.tick(time.delta()).just_finished() {
+    if state.msg_cooldown.tick(time.delta()).just_finished() || just_resumed {
+        if just_resumed {
+            state.msg_cooldown.reset();
+        }
         // hero.combat_stats.health -= 1;
         let cbt_state = state.combat_state.clone();
         let current_room_idx = state.current_room_idx as usize;
@@ -113,7 +179,11 @@ pub fn tick_dungeon(
 
             if room.description {
                 room.description = false;
-                msg_events.send(SimMessageEvent(TextType::EnteredRoom));
+                if let Some(flavour) = room.flavour {
+                    msg_events.send(SimMessageEvent(flavour));
+                } else {
+                    msg_events.send(SimMessageEvent(TextType::EnteredRoom));
+                }
                 return;
             }
 
@@ -159,22 +229,23 @@ pub fn tick_dungeon(
                 msg_events.send(SimMessageEvent(TextType::RoomEnd));
                 return;
             }
-
+            
             if level.rooms.len() - 1 > state.current_room_idx as usize {
                 state.current_room_idx += 1;
                 state.combat_state = CombatState::Init;
             }
+            halt_dungeon_sim(state);
         }
     }
 }
 
 pub fn halt_dungeon_sim(mut state: ResMut<DungeonState>) {
-    info!("Resuming dungeon sim.");
+    info!("Halting dungeon sim.");
     state.running = false;
 }
 
 pub fn resume_dungeon_sim(mut state: ResMut<DungeonState>) {
-    info!("Halting dungeon sim.");
+    info!("Resuming dungeon sim.");
     state.running = true;
 }
 

@@ -60,6 +60,7 @@
         EnteredStartRoom: [
             "Sir Hoardalot descends into a new level of the dungeon.",
         ],
+        // Enemy encounters
         EnterRat: [
             "A rabid rat, large as a dog, squeaks angrily and jumps towards Sir Hoardalot!",
         ],
@@ -72,5 +73,9 @@
         EnterGoblinShieldBearer: [
             "A Goblin Shieldbearer stands in Sir Hoardalot's way - steady, unflinching and very, very stinky.",
         ],
+        // Special rooms
+        PlantRoom: [
+            "This room is alive with a myriad of blossoming plants sprouting from all surfaces!",
+        ]
     },
 )

@@ -9,6 +9,7 @@ use rand::Rng;
 use rand::rngs::ThreadRng;
 use crate::game::ItemId;
 use serde::{Serialize, Deserialize};
+use crate::game::dungeon_components::TextType;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct LevelBlueprint {
@@ -27,7 +28,7 @@ pub struct SegmentBlueprint {
     pub types: HashMap<RoomType, u32>,
     pub enemies: Option<HashMap<EnemyId, u32>>,
     pub custom_loot: Option<DropTable>,
-    pub custom_flavour: Option<String>,
+    pub custom_flavour: Option<TextType>,
 }
 
 #[derive(Default, Clone, Deserialize, Serialize, Eq, PartialEq, Hash)]
@@ -55,7 +56,11 @@ pub fn generate_level(
         let room_type = choose_room_type(&segment.types, &mut rng);
         match room_type {
             RoomType::Empty => {
-                rooms.push(generate_empty());
+                let mut r = generate_empty();
+                if let Some(flavour) = segment.custom_flavour.clone() {
+                    r.flavour = Option::<TextType>::from(flavour);
+                }
+                rooms.push(r);
                 enemies.push(Enemy::default());
                 if let Some(custom) = &segment.custom_loot {
                     let clone = custom.clone();

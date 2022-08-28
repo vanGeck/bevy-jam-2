@@ -4,8 +4,8 @@
         ( // FloorBlueprint
             depth: 0,
             default_loot: ( // DropTable
-                items: [ HerbGreen, HerbRed, HerbViolet, ],
-                chances: [ 10, 10, 10 ]
+                items: [ HerbGreen, HerbRed, HerbViolet, Vial ],
+                chances: [ 20, 20, 20, 20 ]
             ),
             segments: [ // Room contents defined here
                 ( 
@@ -14,13 +14,48 @@
                 (
                     types: { Empty: 100, },
                     custom_loot:(
-                        items: [ HerbRed, Vial ],
+                        items: [ ScrollBasic1, ScrollBasic6 ],
                         chances: [ 100, 100,]
                     )
                 ),
                 (
                     types: { Fight: 100, },
                     enemies: { Rat: 100, }
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ ScrollBasic4, SwordRusty, ScrollBasic2 ],
+                        chances: [ 100, 100, 100]
+                    )
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { GoblinBrat: 100, }
+                ),
+                (
+                    types: { Empty: 50, Fight: 50, },
+                    enemies: { GoblinSwordsman: 50, Rat: 50 }
+                ),
+                (
+                    types: { Empty: 75, Fight: 25, },
+                    enemies: { GoblinBrat: 50, Rat: 50 }
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ HerbRed, HerbRed, HerbGreen ],
+                        chances: [ 100, 100, 100]
+                    ),
+                    custom_flavour: PlantRoom
+                ),
+                (
+                    types: { Empty: 25, Fight: 75, },
+                    enemies: { GoblinBrat: 50, Rat: 50 }
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { GoblinShieldbearer: 100, }
                 ),
                 (
                     types: {End: 100, },
