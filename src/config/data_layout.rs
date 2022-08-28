@@ -65,25 +65,25 @@ pub struct ColumnMiddle {
 pub struct ColumnRight {
     pub margin_left: f32,
     pub margin_right: f32,
-    pub foo: Container,
+    pub combine_button: Container,
     pub crafting: Container,
     pub hero: Container,
 }
 
 impl ColumnRight {
-    /// Calculate the y position of the foo widget.
-    pub fn foo_y(&self) -> f32 {
-        self.foo.margin_bottom.unwrap_or(0.)
+    /// Calculate the y position of the combine_button widget.
+    pub fn combine_button_y(&self) -> f32 {
+        self.combine_button.margin_bottom.unwrap_or(0.)
     }
-    /// Calculate the height of the foo widget.
-    pub fn foo_height(&self) -> f32 {
-        self.foo.height.unwrap()
+    /// Calculate the height of the combine_button widget.
+    pub fn combine_button_height(&self) -> f32 {
+        self.combine_button.height.unwrap()
     }
     /// Calculate the y-position of the crafting window.
     pub fn crafting_y(&self) -> f32 {
-        let foo_y = self.foo_y();
-        let foo_height = self.foo_height();
-        foo_y + foo_height + self.crafting.margin_bottom.unwrap_or(0.)
+        let combine_button_y = self.combine_button_y();
+        let combine_button_height = self.combine_button_height();
+        combine_button_y + combine_button_height + self.crafting.margin_bottom.unwrap_or(0.)
     }
     /// Calculate the height of the crafting window.
     pub fn crafting_height(&self) -> f32 {

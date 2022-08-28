@@ -1,7 +1,7 @@
-use std::fmt::Formatter;
+use crate::game::combat::{DropTable, Enemy};
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
-use crate::game::combat::{DropTable, Enemy};
+use std::fmt::Formatter;
 
 #[derive(Debug)]
 pub struct Room {

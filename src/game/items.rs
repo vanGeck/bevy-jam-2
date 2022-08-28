@@ -27,7 +27,7 @@ impl Default for Item {
             name: "[EmptyItem]".to_string(),
             description: "[EmptyDescription]".to_string(),
             texture_id: TextureId::NotFound,
-            wearable: None, 
+            wearable: None,
             stat_bonuses: Default::default(),
         }
     }

@@ -1,12 +1,17 @@
 use crate::config::config_sim::SimConfig;
-use crate::game::sim::dungeon_components::{DungeonLevel, Room};
-use bevy::prelude::*;
-use rand::Rng;
 use crate::config::data_enemies::EnemiesData;
 use crate::game::combat::{DropTable, Enemy};
+use crate::game::sim::dungeon_components::{DungeonLevel, Room};
 use crate::game::ItemId::*;
+use bevy::prelude::*;
+use rand::Rng;
 
-pub fn generate_level(len: i32, params: &SimConfig, mut _cmd: &mut Commands, enemies: &Res<EnemiesData>) -> DungeonLevel {
+pub fn generate_level(
+    len: i32,
+    params: &SimConfig,
+    mut _cmd: &mut Commands,
+    enemies: &Res<EnemiesData>,
+) -> DungeonLevel {
     let mut rooms = Vec::<Room>::new();
     let mut fights = Vec::<Enemy>::new();
     let mut rng = rand::thread_rng();
@@ -39,10 +44,10 @@ pub fn generate_level(len: i32, params: &SimConfig, mut _cmd: &mut Commands, ene
         depth: 0,
         rooms,
         enemies: fights,
-        loot: DropTable{
+        loot: DropTable {
             items: vec![HerbRed, HerbGreen, HerbViolet, Vial, SwordRusty],
-            chances: vec![10,10,10,10,15],
-        }
+            chances: vec![10, 10, 10, 10, 15],
+        },
     }
 }
 
@@ -86,10 +91,9 @@ fn generate_fight() -> Room {
 }
 
 fn get_enemy(enemies: &Res<EnemiesData>) -> Enemy {
-    
     let enemies_len = enemies.enemies.len();
     let mut rng = rand::thread_rng();
     let idx = rng.gen_range(0..enemies_len);
-    
+
     enemies.enemies[idx].clone()
 }

@@ -15,7 +15,6 @@ pub struct CombineButton {
     pub coords: Coords,
 }
 
-
 // use events here so this doesn't run once a frame?
 pub fn combine_items_system(
     mut commands: Commands,
