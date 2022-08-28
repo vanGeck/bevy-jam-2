@@ -54,6 +54,7 @@ pub fn find_free_space(
     grid: &GridData,
     dimens: Dimens,
     items_query: &Query<&Coords, With<Item>>, // is there any way to call this function without this query? it forces you to have the exact same query in whichever query you're calling this function from. - Jacques
+    same_tick_items: &[Coords], // Pass this an emtpy vec if not multiple spawn
 ) -> Option<Coords> {
     for y in 0..grid.inventory.dimens.y {
         for x in 0..grid.inventory.dimens.x {
@@ -62,7 +63,8 @@ pub fn find_free_space(
                 dimens,
             };
 
-            let overlap_conflict = items_query.iter().any(|item| coords.overlaps(item));
+            let overlap_conflict = items_query.iter().any(|item| coords.overlaps(item))
+                || same_tick_items.iter().any(|item| coords.overlaps(item));
             let bound_conflict = !grid.inventory.encloses(&coords);
             if !overlap_conflict && !bound_conflict {
                 return Some(coords);

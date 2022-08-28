@@ -1,9 +1,10 @@
 use bevy::prelude::*;
 use rand::Rng;
 use std::fmt::Formatter;
+use std::ops::{Deref, DerefMut};
 
-use crate::game::sim::dungeon_components::TextType;
 use crate::game::sim::event_handling::SimMessageEvent;
+use crate::game::{sim::dungeon_components::TextType, StatBonus};
 
 use crate::game::ItemId;
 use bevy_inspector_egui::Inspectable;
@@ -25,6 +26,15 @@ impl std::fmt::Display for Combatant {
             "{}/{}/{}/{}/{}",
             self.health, self.max_health, self.proficiency, self.damage_res, self.damage_bonus
         )
+    }
+}
+
+impl Combatant {
+    pub fn boost(mut self, stats: StatBonus) {
+        self.max_health += stats.max_health;
+        self.proficiency += stats.proficiency;
+        self.damage_res += stats.damage_res;
+        self.damage_bonus += stats.damage_bonus;
     }
 }
 

@@ -2,7 +2,10 @@ use bevy::prelude::*;
 
 use super::{
     combat::Hero,
-    create_widget_hero::{HeroDamageBonusDisplay, HeroDamageResDisplay, HeroProficiencyDisplay},
+    create_widget_hero::{
+        HeroCurrentHealthDisplay, HeroDamageBonusDisplay, HeroDamageResDisplay,
+        HeroProficiencyDisplay,
+    },
 };
 
 #[derive(Component)]
@@ -23,6 +26,7 @@ pub fn update_hero_stats_display(
         Query<&mut Text, With<HeroProficiencyDisplay>>,
         Query<&mut Text, With<HeroDamageResDisplay>>,
         Query<&mut Text, With<HeroDamageBonusDisplay>>,
+        Query<&mut Text, With<HeroCurrentHealthDisplay>>,
     )>,
 ) {
     if let Ok(mut text) = query.p0().get_single_mut() {
@@ -33,5 +37,11 @@ pub fn update_hero_stats_display(
     }
     if let Ok(mut text) = query.p2().get_single_mut() {
         text.sections[0].value = format!("Damage Bonus: {}", hero.combat_stats.damage_bonus);
+    }
+    if let Ok(mut text) = query.p3().get_single_mut() {
+        text.sections[0].value = format!(
+            "{}/{}",
+            hero.combat_stats.health, hero.combat_stats.max_health
+        );
     }
 }

@@ -5,7 +5,7 @@ use crate::config::data_items::ItemsData;
 use crate::config::data_recipes::RecipesData;
 use crate::game::items::Item;
 use crate::game::recipes::Recipe;
-use crate::game::{find_free_space, SpawnItemEvent, SoundId};
+use crate::game::{find_free_space, SoundId, SpawnItemEvent};
 use crate::mouse::MouseInteractive;
 use crate::positioning::{Coords, GridData};
 
@@ -48,7 +48,8 @@ pub fn combine_items_system(
                 if let Some((dimens, item)) = items_data.try_get_item(recipe.result) {
                     // debug!("got random item: {:?}", item);
 
-                    if let Some(free_coords) = find_free_space(&grid, dimens, &items_query) {
+                    if let Some(free_coords) = find_free_space(&grid, dimens, &items_query, &vec![])
+                    {
                         // ^ this is failing
                         debug!("found free space to place the item");
                         // Spawn the result of the recipe
