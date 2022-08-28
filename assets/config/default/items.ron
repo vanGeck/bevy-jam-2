@@ -27,6 +27,8 @@
         )),
         (((1, 2)), (
             id: EssenceVitality,
+            name: "Essence of Vitality",
+            description: "Restores 10 HP on use.",
             texture_id: EssenceVitality,
             stat_bonuses: (
                 health: 10,
