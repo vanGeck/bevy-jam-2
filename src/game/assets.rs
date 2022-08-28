@@ -190,6 +190,7 @@ pub enum SoundId {
     SlashHit,
     SwordClang,
     WaterDripping,
+    Alchemy,
     /// Sound effect that plays when combining things:
     PositiveAffirmation,
 }
