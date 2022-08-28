@@ -73,9 +73,12 @@ pub fn handle_sim_message(
             error!("Missing or empty dungeon text: TextType::{:?}", text_type);
         }
         let sfx = match text_type {
-            TextType::EnterGoblinBrat => Some(SoundId::LittleMonsterGrowl),
-            TextType::EnterGoblinSwordsman => Some(SoundId::BigMonsterGrowl),
-            TextType::EnterGoblinShieldBearer => Some(SoundId::BigMonsterGrowl),
+            TextType::EnterRat => Some(SoundId::EnterRat),
+            TextType::EnterGoblinBrat => Some(SoundId::EnterLittleMonster),
+            TextType::EnterGoblinSwordsman => Some(SoundId::EnterBigMonster),
+            TextType::EnterGoblinShieldBearer => Some(SoundId::EnterBigMonster),
+            TextType::EnterSkeleton=> Some(SoundId::EnterSkeleton),
+            TextType::EnterZombie => Some(SoundId::EnterZombie),
             TextType::CombatHeroHit => Some(SoundId::SlashHit),
             TextType::CombatEnemyHit => Some(SoundId::SlashHit),
             TextType::CombatHeroDied => Some(SoundId::SlashHit),
