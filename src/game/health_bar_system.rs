@@ -1,4 +1,6 @@
 use bevy::prelude::*;
+use crate::game::create_widget_hero::{HeroCurrentArmourDisplay, HeroCurrentShieldDisplay, HeroCurrentWeaponDisplay};
+use crate::game::{EquipmentSlot, EquippedItem};
 
 use super::{
     combat::Hero,
@@ -27,7 +29,11 @@ pub fn update_hero_stats_display(
         Query<&mut Text, With<HeroDamageResDisplay>>,
         Query<&mut Text, With<HeroDamageBonusDisplay>>,
         Query<&mut Text, With<HeroCurrentHealthDisplay>>,
+        Query<&mut Text, With<HeroCurrentArmourDisplay>>,
+        Query<&mut Text, With<HeroCurrentShieldDisplay>>,
+        Query<&mut Text, With<HeroCurrentWeaponDisplay>>,
     )>,
+    equipped_items_query: Query<&EquippedItem>,
 ) {
     if let Ok(mut text) = query.p0().get_single_mut() {
         text.sections[0].value = format!("Combat Proficiency: {}", hero.combat_stats.proficiency);
@@ -43,5 +49,26 @@ pub fn update_hero_stats_display(
             "{}/{}",
             hero.combat_stats.health, hero.combat_stats.max_health
         );
+    }
+    if let Ok(mut text) = query.p4().get_single_mut() {
+        for equipped_item in equipped_items_query.iter() {
+            if equipped_item.slot == EquipmentSlot::Armour {
+                text.sections[0].value = format!("Armour: {}", equipped_item.stat_bonus.damage_res);
+            }
+        }
+    }
+    if let Ok(mut text) = query.p5().get_single_mut() {
+        for equipped_item in equipped_items_query.iter() {
+            if equipped_item.slot == EquipmentSlot::Shield {
+                text.sections[0].value = format!("Shield: {}", equipped_item.stat_bonus.damage_res);
+            }
+        }
+    }
+    if let Ok(mut text) = query.p6().get_single_mut() {
+        for equipped_item in equipped_items_query.iter() {
+            if equipped_item.slot == EquipmentSlot::Weapon {
+                text.sections[0].value = format!("Weapon: {}", equipped_item.stat_bonus.damage_bonus);
+            }
+        }
     }
 }
