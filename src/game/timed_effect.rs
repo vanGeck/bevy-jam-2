@@ -1,9 +1,9 @@
-﻿use crate::game::combat::{Enemy, Hero};
+use crate::game::combat::{Enemy, Hero};
 use crate::{default, Entity, KeyCode, Query, Res};
 use bevy::input::Input;
 use bevy::prelude::{Commands, Component, ResMut};
 use bevy::time::{Time, Timer};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 pub struct TimedEffectTicker {
     pub timer: Timer,

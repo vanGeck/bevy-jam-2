@@ -178,6 +178,33 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
         },
         Coords::new(Pos::new(3, 1), Dimens::new(1, 1)),
     ));
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            id: ItemId::SwordRusty,
+            texture_id: TextureId::SwordRusty,
+            name: "Sword Rusty".to_string(),
+            description:
+                "Tends to be more dangerous to you than to the enemy. Tetanus is a thing, you know."
+                    .to_string(),
+            wearable: None,
+            ..default()
+        },
+        Coords::new(Pos::new(4, 0), Dimens::new(1, 3)),
+    ));
+
+    spawn.send(SpawnItemEvent::new(
+        Item {
+            id: ItemId::SwordRusty,
+            texture_id: TextureId::SwordRusty,
+            name: "Sword Rusty".to_string(),
+            description:
+                "Tends to be more dangerous to you than to the enemy. Tetanus is a thing, you know."
+                    .to_string(),
+            wearable: None,
+            ..default()
+        },
+        Coords::new(Pos::new(5, 0), Dimens::new(1, 3)),
+    ));
 }
 
 fn test_slice(

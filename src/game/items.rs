@@ -6,7 +6,8 @@ use crate::mouse::MouseInteractive;
 use crate::positioning::Pos;
 
 use super::combat::Hero;
-use super::timed_effect::{TemporaryModifier, apply_timed_modifier};
+use super::item_info_system::MouseOverItemInfo;
+use super::timed_effect::{apply_timed_modifier, TemporaryModifier};
 
 // Marker Component
 #[derive(Component)]
@@ -99,6 +100,7 @@ pub fn consume_item(
     mut commands: Commands,
     mut hero: ResMut<Hero>,
     items: Query<(Entity, &Item, &MouseInteractive)>,
+    mut tooltips: Query<Entity, With<MouseOverItemInfo>>,
 ) {
     for (e, item, interactive) in items.iter() {
         if interactive.right_clicked {
@@ -111,11 +113,17 @@ pub fn consume_item(
                 hero.combat_stats.damage_bonus += stats.damage_bonus;
 
                 commands.entity(e).despawn_recursive();
+                if let Ok(tooltip) = tooltips.get_single_mut() {
+                    commands.entity(tooltip).despawn_recursive();
+                }
             }
 
             if let Some(modifier) = item.clone().temporary_effect {
                 apply_timed_modifier(modifier, &mut commands);
                 commands.entity(e).despawn_recursive();
+                if let Ok(tooltip) = tooltips.get_single_mut() {
+                    commands.entity(tooltip).despawn_recursive();
+                }
             }
         }
     }

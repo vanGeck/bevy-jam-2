@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use bevy::prelude::*;
+use std::collections::HashMap;
 
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_items::ItemsData;
@@ -73,19 +73,23 @@ pub fn combine_items_system(
 
 pub fn try_get_recipe(data: &RecipesData, items: &Vec<Item>) -> Option<Recipe> {
     let mut possible_recipe: Option<Recipe> = None;
-    
+
     let mut flat_recipe = Vec::<ItemId>::new();
-    let items_ids:Vec<ItemId> = items.into_iter().map(|f| f.id.clone()).collect();
-    
+    let items_ids: Vec<ItemId> = items.into_iter().map(|f| f.id.clone()).collect();
+
     for recipe in &data.recipes {
         flat_recipe.clear();
         for ingr in &recipe.ingredients {
-            for _ in 0..(ingr.quantity){
+            for _ in 0..(ingr.quantity) {
                 flat_recipe.push(ingr.item_id.clone());
             }
         }
-        let difference: Vec<_> = items_ids.clone().into_iter().filter(|item| !flat_recipe.contains(item)).collect();
-        if difference.len() == 0{
+        let difference: Vec<_> = items_ids
+            .clone()
+            .into_iter()
+            .filter(|item| !flat_recipe.contains(item))
+            .collect();
+        if difference.len() == 0 {
             possible_recipe = Option::from(recipe.clone());
             break;
         }
