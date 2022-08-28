@@ -205,7 +205,10 @@ pub enum AlbumId {
 
 #[derive(Debug, Copy, Clone, Deserialize, Serialize, PartialEq, Eq, Hash)]
 pub enum FontId {
+    FiraSansLight,
+    FiraSansRegular,
+    /// Thicker than Regular.
+    FiraSansMedium,
     FiraSansBold,
-    FiraMonoMedium,
-    Square,
+    AboretoRegular,
 }

@@ -7,7 +7,43 @@ use crate::config::data_layout::LayoutData;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId};
 
 /// Cause a message to be printed.
-pub struct AddFeedItemEvent(pub String);
+pub struct AddFeedItemEvent {
+    pub message: String,
+    pub font: FontId,
+    pub colour: MessageColour,
+}
+
+pub enum MessageColour {
+    Neutral,
+    MinorPositive,
+    MajorPositive,
+    MinorNegative,
+    MajorNegative,
+}
+
+impl MessageColour {
+    fn rgba(&self) -> Color {
+        match self {
+            MessageColour::Neutral => Color::rgba(1., 1., 1., 0.5),
+            MessageColour::MinorPositive => Color::rgba(0.5, 1., 0.5, 0.5),
+            MessageColour::MajorPositive => Color::rgba(0.5, 1., 0.5, 0.8),
+            MessageColour::MinorNegative => Color::rgba(1., 0.5, 0.5, 0.5),
+            MessageColour::MajorNegative => Color::rgba(1., 0.5, 0.5, 0.8),
+        }
+    }
+    pub fn is_major(&self) -> bool {
+        matches!(
+            self,
+            MessageColour::MajorPositive | MessageColour::MajorNegative
+        )
+    }
+    pub fn is_minor(&self) -> bool {
+        matches!(
+            self,
+            MessageColour::MinorPositive | MessageColour::MinorNegative
+        )
+    }
+}
 
 /// The event feed container.
 #[derive(Component)]
@@ -46,11 +82,16 @@ pub fn handle_add_to_feed(
     layout: Res<LayoutData>,
     query_container: Query<Entity, With<EventFeedContainer>>,
 ) {
-    for AddFeedItemEvent(message) in events.iter() {
+    for AddFeedItemEvent {
+        message,
+        font,
+        colour,
+    } in events.iter()
+    {
         let text_style = TextStyle {
-            font: assets.font(&FontId::FiraMonoMedium),
+            font: assets.font(font),
             font_size: 60.0,
-            color: Color::rgba(1., 1., 1., 0.6),
+            color: colour.rgba(),
         };
         let text_alignment = TextAlignment {
             vertical: VerticalAlign::Center,
@@ -66,7 +107,6 @@ pub fn handle_add_to_feed(
         let text = commands
             .spawn()
             .insert_bundle(Text2dBundle {
-                // Default text, will probably never be seen:
                 text: Text::from_section(message, text_style).with_alignment(text_alignment),
                 // The max size that it should fit in:
                 text_2d_bounds: Text2dBounds {

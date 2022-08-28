@@ -1,11 +1,11 @@
-use bevy::prelude::*;
-use rand::Rng;
-use std::fmt::Formatter;
 use crate::game::sim::event_handling::SimMessageEvent;
-use crate::game::{sim::dungeon_components::TextType, StatBonus};
 use crate::game::ItemId;
+use crate::game::{sim::dungeon_components::TextType, StatBonus};
+use bevy::prelude::*;
 use bevy_inspector_egui::Inspectable;
+use rand::Rng;
 use serde::{Deserialize, Serialize};
+use std::fmt::Formatter;
 
 #[derive(Component, Default, Copy, Clone, Inspectable, Serialize, Deserialize, Debug)]
 pub struct Combatant {

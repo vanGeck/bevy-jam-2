@@ -6,7 +6,7 @@ use crate::config::data_items::ItemsData;
 use crate::config::data_sim_texts::DungeonTexts;
 use crate::game::dungeon_components::TextType;
 use crate::game::feed::AddFeedItemEvent;
-use crate::game::{find_free_space, Item, ItemId, SoundId, SpawnItemEvent};
+use crate::game::{find_free_space, FontId, Item, ItemId, SoundId, SpawnItemEvent};
 use crate::positioning::{Coords, GridData};
 
 /// Handle a looting session.
@@ -50,8 +50,20 @@ pub fn handle_sim_message(
     for SimMessageEvent(text_type) in reader.iter() {
         trace!("Received sim message event for TextType::{:?}", text_type);
         let random = pick_random_from_series(texts.map.get(&text_type).unwrap_or(&Vec::new()));
+        let colour = text_type.colour_hint();
+        let font = if colour.is_major() {
+            FontId::FiraSansBold
+        } else if colour.is_minor() {
+            FontId::FiraSansMedium
+        } else {
+            FontId::FiraSansRegular
+        };
         if let Some(message) = random {
-            write_texts.send(AddFeedItemEvent(message));
+            write_texts.send(AddFeedItemEvent {
+                message,
+                colour,
+                font,
+            });
         } else {
             error!("Missing or empty dungeon text: TextType::{:?}", text_type);
         }

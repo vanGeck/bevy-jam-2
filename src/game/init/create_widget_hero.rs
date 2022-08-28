@@ -39,12 +39,12 @@ pub fn create_layout_hero(
     let y = layout.factor * layout.c_right.hero_y();
     let height = layout.factor * layout.c_right.hero_height(&layout);
     let text_style = TextStyle {
-        font: assets.font(&FontId::Square),
+        font: assets.font(&FontId::FiraSansMedium),
         font_size: 60.0,
         color: Color::WHITE,
     };
     let text_style_sm = TextStyle {
-        font: assets.font(&FontId::Square),
+        font: assets.font(&FontId::FiraSansMedium),
         font_size: 40.0,
         color: Color::WHITE,
     };

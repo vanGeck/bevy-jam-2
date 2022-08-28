@@ -51,8 +51,10 @@
         Ominous: "ominous/",
     },
     fonts: {
-        FiraMonoMedium: "FiraMono-Medium.ttf",
+        FiraSansLight: "FiraSans-Light.ttf",
+        FiraSansRegular: "FiraSans-Regular.ttf",
+        FiraSansMedium: "FiraSans-Medium.ttf",
         FiraSansBold: "FiraSans-Bold.ttf",
-        Square: "square.ttf",
+        AboretoRegular: "Aboreto-Regular.ttf",
     }
 )

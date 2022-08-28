@@ -142,7 +142,7 @@ pub fn create_layout_combine_button(
                     text: Text::from_section(
                         "Combine",
                         TextStyle {
-                            font: assets.font(&FontId::Square),
+                            font: assets.font(&FontId::FiraSansMedium),
                             font_size: 80.0,
                             color: Color::ANTIQUE_WHITE,
                         },
