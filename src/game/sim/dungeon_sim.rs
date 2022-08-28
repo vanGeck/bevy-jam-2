@@ -130,26 +130,18 @@ pub fn tick_dungeon(
                 // Use halt/resume methods to allow for looting in peace.
                 room.post_search = false;
 
-                if enemy.enemy_id == EnemyId::None {
-                    let loot = pick_loot_from_drop_table(&level.loot);
-                    if loot.len() > 0 {
-                        msg_events.send(SimMessageEvent(TextType::FoundLoot));
-                        for i in loot {
-                            loot_events.send(SimLootEvent(i));
-                        }
-                    } else {
-                        msg_events.send(SimMessageEvent(TextType::FoundNothing));
+                let loot = if enemy.enemy_id == EnemyId::None {
+                    pick_loot_from_drop_table(&level.loot)
+                } else {
+                    pick_loot_from_drop_table(&enemy.drop_table)
+                };
+                if loot.len() > 0 {
+                    msg_events.send(SimMessageEvent(TextType::FoundLoot));
+                    for i in loot {
+                        loot_events.send(SimLootEvent(i));
                     }
                 } else {
-                    let loot = pick_loot_from_drop_table(&enemy.drop_table);
-                    if loot.len() > 0 {
-                        msg_events.send(SimMessageEvent(TextType::FoundLoot));
-                        for i in loot {
-                            loot_events.send(SimLootEvent(i));
-                        }
-                    } else {
-                        msg_events.send(SimMessageEvent(TextType::FoundNothing));
-                    }
+                    msg_events.send(SimMessageEvent(TextType::FoundNothing));
                 }
             }
 

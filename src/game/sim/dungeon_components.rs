@@ -4,6 +4,7 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::game::combat::{DropTable, Enemy};
+use crate::game::feed::MessageColour;
 
 #[derive(Debug)]
 pub struct Room {
@@ -88,4 +89,20 @@ pub enum TextType {
     EnterGoblinBrat,
     EnterGoblinSwordsman,
     EnterGoblinShieldBearer,
+}
+
+impl TextType {
+    pub fn colour_hint(&self) -> MessageColour {
+        match self {
+            TextType::EnterRat
+            | TextType::EnterGoblinBrat
+            | TextType::EnterGoblinSwordsman
+            | TextType::EnterGoblinShieldBearer => MessageColour::MinorNegative,
+            TextType::CombatHeroHit => MessageColour::MajorNegative,
+            TextType::CombatEnemyHit => MessageColour::MinorPositive,
+            TextType::CombatEnemyDied => MessageColour::MajorPositive,
+            TextType::FoundLoot => MessageColour::MinorPositive,
+            _ => MessageColour::Neutral,
+        }
+    }
 }

@@ -102,7 +102,7 @@ pub fn consume_item(
 ) {
     for (e, item, interactive) in items.iter() {
         if interactive.right_clicked {
-            if let Some(stats) = item.clone().stat_bonuses {
+            if let Some(stats) = item.stat_bonuses {
                 hero.combat_stats.health = (hero.combat_stats.health + stats.health)
                     .clamp(0, hero.combat_stats.max_health);
                 hero.combat_stats.max_health += stats.max_health;
