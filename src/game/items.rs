@@ -41,6 +41,7 @@ impl FallingItem {
 #[derive(Component)]
 pub struct Silhouette;
 
+
 #[derive(Component, Debug, Clone, Serialize, Deserialize)]
 pub struct Item {
     pub id: ItemId,
@@ -125,28 +126,54 @@ impl std::fmt::Display for ItemId {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq, Hash)]
+#[derive(Serialize, Deserialize, Debug, Copy, Clone, Eq, PartialEq, Hash)]
 pub enum EquipmentSlot {
-    Helmet,
-    Necklace,
     Armour,
     Weapon,
     Shield,
 }
 
-#[derive(Component)]
-pub struct Equipment {
+#[derive(Component, Debug)]
+pub struct EquippedItem {
     pub slot: EquipmentSlot,
+    pub stat_bonus: StatBonus,
 }
 
 pub fn consume_item(
     mut commands: Commands,
     mut hero: ResMut<Hero>,
     items: Query<(Entity, &Item, &MouseInteractive)>,
+    equipped_items_query: Query<&EquippedItem>,
     mut tooltips: Query<Entity, With<MouseOverItemInfo>>,
 ) {
     for (e, item, interactive) in items.iter() {
         if interactive.right_clicked {
+
+            // Unequip any items already equipped that the new item can override.
+            if let Some((new_item_to_equip_slot, _)) = item.wearable {
+                for (currently_equipped_item) in equipped_items_query.iter() {
+                    if currently_equipped_item.slot == new_item_to_equip_slot {
+                        hero.combat_stats.max_health -= currently_equipped_item.stat_bonus.max_health;
+                        hero.combat_stats.proficiency -= currently_equipped_item.stat_bonus.proficiency;
+                        hero.combat_stats.damage_res -= currently_equipped_item.stat_bonus.damage_res;
+                        hero.combat_stats.damage_bonus -= currently_equipped_item.stat_bonus.damage_bonus;
+                    }
+                }
+                // Create a new entity with an EquippedItem component to represent Equipped Items on the Hero
+                if let Some(stats) = item.stat_bonuses {
+                    commands.spawn().insert(EquippedItem {
+                        slot: new_item_to_equip_slot,
+                        stat_bonus: StatBonus {
+                            health: 0,
+                            max_health: stats.max_health,
+                            proficiency: stats.proficiency,
+                            damage_bonus: stats.damage_res,
+                            damage_res: stats.damage_bonus,
+                        },
+                    });
+                }
+            }
+
             if let Some(stats) = item.stat_bonuses {
                 hero.combat_stats.health = (hero.combat_stats.health + stats.health)
                     .clamp(0, hero.combat_stats.max_health);

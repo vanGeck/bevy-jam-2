@@ -80,20 +80,20 @@ pub fn update_mouse_over_item_info_system(
                                         color: Color::WHITE,
                                     },
                                 )
-                                .with_style(Style {
-                                    position_type: PositionType::Relative,
-                                    position: UiRect {
-                                        top: Val::Px(0.0),
-                                        left: Val::Px(0.0),
+                                    .with_style(Style {
+                                        position_type: PositionType::Relative,
+                                        position: UiRect {
+                                            top: Val::Px(0.0),
+                                            left: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                        margin: UiRect {
+                                            top: Val::Px(4.0),
+                                            left: Val::Px(8.0),
+                                            ..default()
+                                        },
                                         ..default()
-                                    },
-                                    margin: UiRect {
-                                        top: Val::Px(4.0),
-                                        left: Val::Px(8.0),
-                                        ..default()
-                                    },
-                                    ..default()
-                                }),
+                                    }),
                             );
                             // Description
                             parent.spawn_bundle(
@@ -105,20 +105,20 @@ pub fn update_mouse_over_item_info_system(
                                         color: Color::WHITE,
                                     },
                                 )
-                                .with_style(Style {
-                                    position_type: PositionType::Relative,
-                                    position: UiRect {
-                                        top: Val::Px(0.0),
-                                        left: Val::Px(0.0),
+                                    .with_style(Style {
+                                        position_type: PositionType::Relative,
+                                        position: UiRect {
+                                            top: Val::Px(0.0),
+                                            left: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                        margin: UiRect {
+                                            top: Val::Px(4.0),
+                                            left: Val::Px(8.0),
+                                            ..default()
+                                        },
                                         ..default()
-                                    },
-                                    margin: UiRect {
-                                        top: Val::Px(4.0),
-                                        left: Val::Px(8.0),
-                                        ..default()
-                                    },
-                                    ..default()
-                                }),
+                                    }),
                             );
                             // Wearable
                             if let Some((slot, _)) = item.wearable.clone() {
@@ -126,12 +126,6 @@ pub fn update_mouse_over_item_info_system(
                                 match slot {
                                     EquipmentSlot::Armour => {
                                         slot_name = "Armour".to_string();
-                                    }
-                                    EquipmentSlot::Helmet => {
-                                        slot_name = "Helmet".to_string();
-                                    }
-                                    EquipmentSlot::Necklace => {
-                                        slot_name = "Necklace".to_string();
                                     }
                                     EquipmentSlot::Shield => {
                                         slot_name = "Shield".to_string();
@@ -149,15 +143,15 @@ pub fn update_mouse_over_item_info_system(
                                             color: Color::WHITE,
                                         },
                                     )
-                                    .with_style(Style {
-                                        position_type: PositionType::Relative,
-                                        position: UiRect {
-                                            top: Val::Px(4.0),
-                                            left: Val::Px(8.0),
+                                        .with_style(Style {
+                                            position_type: PositionType::Relative,
+                                            position: UiRect {
+                                                top: Val::Px(4.0),
+                                                left: Val::Px(8.0),
+                                                ..default()
+                                            },
                                             ..default()
-                                        },
-                                        ..default()
-                                    }),
+                                        }),
                                 );
                             }
                             // Stat Bonuses
@@ -197,15 +191,15 @@ pub fn update_mouse_over_item_info_system(
                                             color: Color::WHITE,
                                         },
                                     )
-                                    .with_style(Style {
-                                        position_type: PositionType::Relative,
-                                        position: UiRect {
-                                            top: Val::Px(4.0),
-                                            left: Val::Px(8.0),
+                                        .with_style(Style {
+                                            position_type: PositionType::Relative,
+                                            position: UiRect {
+                                                top: Val::Px(4.0),
+                                                left: Val::Px(8.0),
+                                                ..default()
+                                            },
                                             ..default()
-                                        },
-                                        ..default()
-                                    }),
+                                        }),
                                 );
                             }
                         });

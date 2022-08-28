@@ -27,6 +27,16 @@ pub struct HeroDamageBonusDisplay;
 #[derive(Component)]
 pub struct HeroCurrentHealthDisplay;
 
+#[derive(Component)]
+pub struct HeroCurrentArmourDisplay;
+
+#[derive(Component)]
+pub struct HeroCurrentShieldDisplay;
+
+#[derive(Component)]
+pub struct HeroCurrentWeaponDisplay;
+
+
 // Ridiculous amount of magic number for the hero name and stats..
 pub fn create_layout_hero(
     mut commands: Commands,
@@ -241,6 +251,95 @@ pub fn create_layout_hero(
                         )),
                     ..default()
                 });
+            // Equipped Items
+            parent
+                .spawn()
+                .insert(HeroStatsDisplay)
+                .insert(HeroCurrentArmourDisplay)
+                .insert_bundle(Text2dBundle {
+                    text: Text::from_section(
+                        format!("Armour: None"),
+                        text_style_sm.clone(),
+                    )
+                        .with_alignment(text_alignment),
+                    // The max size that it should fit in:
+                    text_2d_bounds: Text2dBounds {
+                        size: Vec2::new(
+                            dimens_text.x * layout.text_factor,
+                            dimens_text.y * layout.text_factor,
+                        ),
+                    },
+                    transform: Transform::from_xyz(
+                        -2., // Centered on parent.
+                        height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 2.5,
+                        11., // Relative to parent
+                    )
+                        .with_scale(Vec3::new(
+                            1. / layout.text_factor,
+                            1. / layout.text_factor,
+                            1.,
+                        )),
+                    ..default()
+                });
+            parent
+                .spawn()
+                .insert(HeroStatsDisplay)
+                .insert(HeroCurrentShieldDisplay)
+                .insert_bundle(Text2dBundle {
+                    text: Text::from_section(
+                        format!("Shield: None"),
+                        text_style_sm.clone(),
+                    )
+                        .with_alignment(text_alignment),
+                    // The max size that it should fit in:
+                    text_2d_bounds: Text2dBounds {
+                        size: Vec2::new(
+                            dimens_text.x * layout.text_factor,
+                            dimens_text.y * layout.text_factor,
+                        ),
+                    },
+                    transform: Transform::from_xyz(
+                        -2., // Centered on parent.
+                        height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 3.0,
+                        11., // Relative to parent
+                    )
+                        .with_scale(Vec3::new(
+                            1. / layout.text_factor,
+                            1. / layout.text_factor,
+                            1.,
+                        )),
+                    ..default()
+                });
+            parent
+                .spawn()
+                .insert(HeroStatsDisplay)
+                .insert(HeroCurrentWeaponDisplay)
+                .insert_bundle(Text2dBundle {
+                    text: Text::from_section(
+                        format!("Weapon: None"),
+                        text_style_sm.clone(),
+                    )
+                        .with_alignment(text_alignment),
+                    // The max size that it should fit in:
+                    text_2d_bounds: Text2dBounds {
+                        size: Vec2::new(
+                            dimens_text.x * layout.text_factor,
+                            dimens_text.y * layout.text_factor,
+                        ),
+                    },
+                    transform: Transform::from_xyz(
+                        -2., // Centered on parent.
+                        height * 0.5 - health_bar_size.y * 0.5 - health_bar_margin - 3.5,
+                        11., // Relative to parent
+                    )
+                        .with_scale(Vec3::new(
+                            1. / layout.text_factor,
+                            1. / layout.text_factor,
+                            1.,
+                        )),
+                    ..default()
+                });
+            // Health Bar
             parent
                 .spawn_bundle(SpriteBundle {
                     sprite: Sprite {
