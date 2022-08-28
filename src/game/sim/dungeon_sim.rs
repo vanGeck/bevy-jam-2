@@ -5,10 +5,11 @@ use rand::Rng;
 
 use crate::config::config_sim::SimConfig;
 use crate::config::data_enemies::EnemiesData;
+use crate::config::dungeon_layout::DungeonBlueprint;
 use crate::game::combat::{DropTable, EnemyId};
 use crate::game::event_handling::SimMessageEvent;
 use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
-use crate::game::sim::dungeon::generate_level;
+use crate::game::sim::dungeon_gen::generate_level;
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
 use crate::game::sim::event_handling::SimLootEvent;
 use crate::game::ItemId;
@@ -25,7 +26,7 @@ pub struct DungeonState {
     pub combat_state: CombatState,
 }
 
-pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, enemies: Res<EnemiesData>) {
+pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, dungeon_bp: Res<DungeonBlueprint>, enemies: Res<EnemiesData>) {
     let mut state = DungeonState {
         current_room_idx: 0,
         current_level: None,
@@ -33,7 +34,7 @@ pub fn init_dungeon(mut commands: Commands, params: Res<SimConfig>, enemies: Res
         running: true,
         combat_state: CombatState::Init,
     };
-    state.current_level = Option::from(generate_level(15, &params, &mut commands, &enemies));
+    state.current_level = Option::from(generate_level(&params, &dungeon_bp.levels[0], &mut commands, &enemies));
     commands.insert_resource(state);
 }
 
@@ -55,6 +56,7 @@ pub fn tick_dungeon(
         let current_room_idx = state.current_room_idx as usize;
         if let Some(level) = &mut state.current_level {
             let room = &mut level.rooms[current_room_idx as usize];
+            let loot = &mut level.loot[current_room_idx as usize];
 
             if room.init {
                 room.init = false;
@@ -131,8 +133,10 @@ pub fn tick_dungeon(
                 room.post_search = false;
 
                 let loot = if enemy.enemy_id == EnemyId::None {
-                    pick_loot_from_drop_table(&level.loot)
+                    info!("Loot pool: {}", &loot.items.len());
+                    pick_loot_from_drop_table(&loot)
                 } else {
+                    info!("Loot pool combat: {}", &enemy.drop_table.items.len());
                     pick_loot_from_drop_table(&enemy.drop_table)
                 };
                 if loot.len() > 0 {

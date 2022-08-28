@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::game::combat::{DropTable, Enemy};
 use crate::game::feed::MessageColour;
 
+
 #[derive(Debug)]
 pub struct Room {
     // Flags used in room processing. Determine message ordering and room types.
@@ -64,7 +65,7 @@ pub struct DungeonLevel {
     pub depth: i32,
     pub rooms: Vec<Room>,
     pub enemies: Vec<Enemy>,
-    pub loot: DropTable,
+    pub loot: Vec<DropTable>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Copy, Clone)]

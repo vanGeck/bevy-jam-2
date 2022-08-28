@@ -1,3 +1,4 @@
+use std::fmt::Formatter;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -76,7 +77,7 @@ pub struct StatBonus {
     pub damage_res: i32,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ItemId {
     Croissant,
     Athelas,
@@ -115,6 +116,12 @@ pub enum ItemId {
     ScrollKnowledge1,
     ScrollKnowledge2,
     ScrollKnowledge3,
+}
+
+impl std::fmt::Display for ItemId {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq, Hash)]
