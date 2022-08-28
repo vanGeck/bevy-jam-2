@@ -1,6 +1,54 @@
 #![enable(implicit_some)]
 (
     items: [
+        (((1, 1)), (
+            id: ScrollBasic1,
+            name: "Scroll of basics",
+            description: "Place items in the combining area and click the combine button to make items sronger.",
+            texture_id: NotFound,
+        )),
+        (((1, 1)), (
+            id: ScrollBasic2,
+            name: "Scroll of basics",
+            description: "Right-click an item to use it.",
+            texture_id: NotFound,
+        )),
+        (((1, 1)), (
+            id: ScrollBasic3,
+            name: "Scroll of basics",
+            description: "Click the jukebox to change the song.",
+            texture_id: NotFound,
+        )),
+        (((1, 1)), (
+            id: ScrollBasic4,
+            name: "Scroll of basics",
+            description: "The hero is fighting in the dungeon, help him survive by providing him with powerful items.",
+            texture_id: NotFound,
+        )),
+        (((1, 1)), (
+            id: ScrollBasic5,
+            name: "Scroll of basics",
+            description: "Quick tip: Don't die.",
+            texture_id: NotFound,
+        )),
+        (((1, 1)), (
+            id: ScrollKnowledge1,
+            name: "Scroll of knowledge",
+            description: "Did you know that goblins love to help out adventurers by taking care of their items?",
+            texture_id: NotFound,
+        )),
+        (((1, 1)), (
+            id: ScrollKnowledge2,
+            name: "Scroll of knowledge",
+            description: "Sir Swingalot used to wield a sword that weighted six times more than any regular sword.",
+            texture_id: NotFound,
+        )),
+        (((1, 1)), (
+            id: ScrollKnowledge3,
+            name: "Scroll of knowledge",
+            description: "While some say that the way of steel cannot meet the way of science, rumors have it that an adventurer once made a magic sword by combining his knowledge of both.",
+            texture_id: NotFound,
+        )),
         (((1, 2)), (
             id: Vial,
             name: "Vial",

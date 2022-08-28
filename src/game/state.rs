@@ -138,6 +138,18 @@ pub fn eye_tracking_system(
 pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>) {
     spawn.send(SpawnItemEvent::without_anim(
         Item {
+            id: ItemId::ScrollBasic5,
+            texture_id: TextureId::NotFound,
+            name: "Scroll of basics".to_string(),
+            description: "Quick tip: Don't die.".to_string(),
+            wearable: None,
+            ..default()
+        },
+        Coords::new(Pos::new(3, 3), Dimens::new(1, 1)),
+    ));
+
+    spawn.send(SpawnItemEvent::without_anim(
+        Item {
             id: ItemId::Vial,
             texture_id: TextureId::Vial,
             name: "Vial".to_string(),

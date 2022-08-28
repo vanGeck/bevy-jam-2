@@ -107,6 +107,14 @@ pub enum ItemId {
     MasterworkSwordOfWounding,
     SwordOfSpeed,
     MasterworkSwordOfSpeed,
+    ScrollBasic1,
+    ScrollBasic2,
+    ScrollBasic3,
+    ScrollBasic4,
+    ScrollBasic5,
+    ScrollKnowledge1,
+    ScrollKnowledge2,
+    ScrollKnowledge3,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Eq, PartialEq, Hash)]
