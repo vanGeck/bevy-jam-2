@@ -76,7 +76,7 @@ pub struct StatBonus {
     pub damage_res: i32,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ItemId {
     Croissant,
     Athelas,

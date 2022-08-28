@@ -50,7 +50,7 @@ pub struct Hero {
     pub combat_stats: Combatant,
 }
 
-#[derive(Default, Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
+#[derive(Default, Clone, Serialize, Deserialize, Debug, Eq, PartialEq, Hash)]
 pub enum EnemyId {
     #[default]
     None,

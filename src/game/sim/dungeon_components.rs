@@ -18,6 +18,7 @@ pub struct Room {
     pub end: bool,
     pub start: bool,
     pub combat: bool,
+    pub drops: DropTable,
 }
 
 impl Default for Room {
@@ -32,6 +33,7 @@ impl Default for Room {
             end: false,
             start: false,
             combat: false,
+            drops: Default::default()
         }
     }
 }
@@ -64,7 +66,7 @@ pub struct DungeonLevel {
     pub depth: i32,
     pub rooms: Vec<Room>,
     pub enemies: Vec<Enemy>,
-    pub loot: DropTable,
+    pub loot: Vec<DropTable>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Copy, Clone)]

@@ -8,7 +8,7 @@ use crate::config::data_enemies::EnemiesData;
 use crate::game::combat::{DropTable, EnemyId};
 use crate::game::event_handling::SimMessageEvent;
 use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
-use crate::game::sim::dungeon::generate_level;
+use crate::game::sim::dungeon_gen::generate_level;
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
 use crate::game::sim::event_handling::SimLootEvent;
 use crate::game::ItemId;
@@ -131,7 +131,7 @@ pub fn tick_dungeon(
                 room.post_search = false;
 
                 let loot = if enemy.enemy_id == EnemyId::None {
-                    pick_loot_from_drop_table(&level.loot)
+                    pick_loot_from_drop_table(&room.drops)
                 } else {
                     pick_loot_from_drop_table(&enemy.drop_table)
                 };
