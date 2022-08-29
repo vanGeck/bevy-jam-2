@@ -16,6 +16,7 @@ impl Plugin for LoadingPlugin {
                     .run_in_state(AppState::Loading)
                     .with_system(load_assets)
                     .with_system(load_configs)
+                    .with_system(display_loading_message)
                     .into(),
             )
             .add_system_set(
@@ -32,4 +33,31 @@ impl Plugin for LoadingPlugin {
                     .into(),
             );
     }
+}
+
+pub fn display_loading_message(mut commands: Commands, server: Res<AssetServer>) {
+    commands.spawn_bundle(Camera2dBundle::default());
+    let text_style = TextStyle {
+        font: server.load("fonts/FiraSans-BoldItalic.ttf"),
+        font_size: 250.0,
+        color: Color::WHITE,
+    };
+    let text_alignment = TextAlignment {
+        horizontal: HorizontalAlign::Center,
+        vertical: VerticalAlign::Center,
+    };
+    commands.spawn_bundle(Text2dBundle {
+        text: Text::from_section("Loading...".to_string(), text_style).with_alignment(text_alignment),
+        transform: Transform::from_translation(Vec3::new(
+            0.,
+            0.,
+            0.,
+        ))
+            .with_scale(Vec3::new(
+                1. / 2.,
+                1. / 2.,
+                1.,
+            )),
+        ..default()
+    });
 }
