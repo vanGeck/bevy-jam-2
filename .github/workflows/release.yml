@@ -51,112 +51,112 @@ jobs:
           overwrite: true
 
   # Build for Linux
-  release-linux:
-    runs-on: ubuntu-latest
+#   release-linux:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - uses: little-core-labs/get-git-tag@v3.0.1
-        id: get_version
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: x86_64-unknown-linux-gnu
-          override: true
-      - name: install dependencies
-        run: |
-          sudo apt-get update; sudo apt-get install pkg-config libx11-dev libasound2-dev libudev-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libwayland-dev libxkbcommon-dev
-      - name: Build
-        run: |
-          cargo build --release --target x86_64-unknown-linux-gnu
-      - name: Prepare package
-        run: |
-          mkdir linux
-          cp target/x86_64-unknown-linux-gnu/release/${{ env.binary }} linux/
-          cp -r assets linux/
-      - name: Package as a zip
-        uses: vimtor/action-zip@v1
-        with:
-          files: linux
-          dest: ${{ env.binary }}.zip
+#     steps:
+#       - uses: little-core-labs/get-git-tag@v3.0.1
+#         id: get_version
+#       - uses: actions/checkout@v2
+#       - uses: actions-rs/toolchain@v1
+#         with:
+#           toolchain: stable
+#           target: x86_64-unknown-linux-gnu
+#           override: true
+#       - name: install dependencies
+#         run: |
+#           sudo apt-get update; sudo apt-get install pkg-config libx11-dev libasound2-dev libudev-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libwayland-dev libxkbcommon-dev
+#       - name: Build
+#         run: |
+#           cargo build --release --target x86_64-unknown-linux-gnu
+#       - name: Prepare package
+#         run: |
+#           mkdir linux
+#           cp target/x86_64-unknown-linux-gnu/release/${{ env.binary }} linux/
+#           cp -r assets linux/
+#       - name: Package as a zip
+#         uses: vimtor/action-zip@v1
+#         with:
+#           files: linux
+#           dest: ${{ env.binary }}.zip
 
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.binary }}.zip
-          asset_name: ${{ env.binary }}-linux-${{ steps.get_version.outputs.tag }}.zip
-          tag: ${{ github.ref }}
-          overwrite: true
+#       - name: Upload binaries to release
+#         uses: svenstaro/upload-release-action@v2
+#         with:
+#           repo_token: ${{ secrets.GITHUB_TOKEN }}
+#           file: ${{ env.binary }}.zip
+#           asset_name: ${{ env.binary }}-linux-${{ steps.get_version.outputs.tag }}.zip
+#           tag: ${{ github.ref }}
+#           overwrite: true
 
-  # Build for Windows
-  release-windows:
-    runs-on: windows-latest
+#   # Build for Windows
+#   release-windows:
+#     runs-on: windows-latest
 
-    steps:
-      - uses: little-core-labs/get-git-tag@v3.0.1
-        id: get_version
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: x86_64-pc-windows-msvc
-          override: true
+#     steps:
+#       - uses: little-core-labs/get-git-tag@v3.0.1
+#         id: get_version
+#       - uses: actions/checkout@v2
+#       - uses: actions-rs/toolchain@v1
+#         with:
+#           toolchain: stable
+#           target: x86_64-pc-windows-msvc
+#           override: true
 
-      - name: Build
-        run: |
-          cargo build --release --target x86_64-pc-windows-msvc
-      - name: Prepare package
-        run: |
-          mkdir windows
-          cp target/x86_64-pc-windows-msvc/release/${{ env.binary }}.exe windows/
-          cp -r assets windows/
-      - name: Package as a zip
-        uses: vimtor/action-zip@v1
-        with:
-          files: windows
-          dest: ${{ env.binary }}.zip
+#       - name: Build
+#         run: |
+#           cargo build --release --target x86_64-pc-windows-msvc
+#       - name: Prepare package
+#         run: |
+#           mkdir windows
+#           cp target/x86_64-pc-windows-msvc/release/${{ env.binary }}.exe windows/
+#           cp -r assets windows/
+#       - name: Package as a zip
+#         uses: vimtor/action-zip@v1
+#         with:
+#           files: windows
+#           dest: ${{ env.binary }}.zip
 
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.binary }}.zip
-          asset_name: ${{ env.binary }}-windows-${{ steps.get_version.outputs.tag }}.zip
-          tag: ${{ github.ref }}
-          overwrite: true
+#       - name: Upload binaries to release
+#         uses: svenstaro/upload-release-action@v2
+#         with:
+#           repo_token: ${{ secrets.GITHUB_TOKEN }}
+#           file: ${{ env.binary }}.zip
+#           asset_name: ${{ env.binary }}-windows-${{ steps.get_version.outputs.tag }}.zip
+#           tag: ${{ github.ref }}
+#           overwrite: true
 
-  # Build for macOS
-  release-macos:
-    runs-on: macOS-latest
+#   # Build for macOS
+#   release-macos:
+#     runs-on: macOS-latest
 
-    steps:
-      - uses: little-core-labs/get-git-tag@v3.0.1
-        id: get_version
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: x86_64-apple-darwin
-          override: true
-      - name: Environment Setup
-        run: |
-          export CFLAGS="-fno-stack-check"
-          export MACOSX_DEPLOYMENT_TARGET="10.9"
-      - name: Build
-        run: |
-          cargo build --release --target x86_64-apple-darwin
-      - name: Prepare Package
-        run: |
-          mkdir -p ${{ env.binary }}.app/Contents/MacOS
-          cp target/x86_64-apple-darwin/release/${{ env.binary }} ${{ env.binary }}.app/Contents/MacOS/
-          cp -r assets ${{ env.binary }}.app/Contents/MacOS/
-          hdiutil create -fs HFS+ -volname "${{ env.binary }}" -srcfolder ${{ env.binary }}.app ${{ env.binary }}.dmg
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.binary }}.dmg
-          asset_name: ${{ env.binary }}-macos-${{ steps.get_version.outputs.tag }}.dmg
-          tag: ${{ github.ref }}
-          overwrite: true
+#     steps:
+#       - uses: little-core-labs/get-git-tag@v3.0.1
+#         id: get_version
+#       - uses: actions/checkout@v2
+#       - uses: actions-rs/toolchain@v1
+#         with:
+#           toolchain: stable
+#           target: x86_64-apple-darwin
+#           override: true
+#       - name: Environment Setup
+#         run: |
+#           export CFLAGS="-fno-stack-check"
+#           export MACOSX_DEPLOYMENT_TARGET="10.9"
+#       - name: Build
+#         run: |
+#           cargo build --release --target x86_64-apple-darwin
+#       - name: Prepare Package
+#         run: |
+#           mkdir -p ${{ env.binary }}.app/Contents/MacOS
+#           cp target/x86_64-apple-darwin/release/${{ env.binary }} ${{ env.binary }}.app/Contents/MacOS/
+#           cp -r assets ${{ env.binary }}.app/Contents/MacOS/
+#           hdiutil create -fs HFS+ -volname "${{ env.binary }}" -srcfolder ${{ env.binary }}.app ${{ env.binary }}.dmg
+#       - name: Upload binaries to release
+#         uses: svenstaro/upload-release-action@v2
+#         with:
+#           repo_token: ${{ secrets.GITHUB_TOKEN }}
+#           file: ${{ env.binary }}.dmg
+#           asset_name: ${{ env.binary }}-macos-${{ steps.get_version.outputs.tag }}.dmg
+#           tag: ${{ github.ref }}
+#           overwrite: true
