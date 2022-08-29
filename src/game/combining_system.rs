@@ -62,13 +62,13 @@ pub fn combine_items_system(
                             commands.entity(entity).despawn_recursive();
                         }
                         // Alchemy sound not working or extremely low volume?
-                        audio.send(SoundEvent::Sfx(SoundId::Alchemy))
+                        audio.send(SoundEvent::Sfx(SoundId::CombineAlchemy))
                     } else {
                         warn!("Tried to find free space but failed.");
                     }
                 }
             } else {
-                audio.send(SoundEvent::Sfx(SoundId::CantCombine))
+                audio.send(SoundEvent::Sfx(SoundId::CombineCant))
             }
         }
     }

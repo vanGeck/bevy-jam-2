@@ -64,13 +64,13 @@ impl AssetStorage {
         .clone()
     }
 
-    pub fn put_sound(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
+    pub fn put_sfx(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
         self.sounds
             .entry(sound_type)
             .or_insert_with(Vec::new)
             .push(asset);
     }
-    pub fn sound(&self, asset_type: &SoundId) -> Option<Handle<AudioSource>> {
+    pub fn sfx(&self, asset_type: &SoundId) -> Option<Handle<AudioSource>> {
         self
             .sounds
             .get(asset_type)
@@ -225,11 +225,11 @@ pub enum SoundId {
     SwordClang,
     WaterDripping,
     /// Combining potions and stuff
-    Alchemy,
+    CombineAlchemy,
     /// Combining swords and stuff.
-    UpgradeWeapon,
+    CombineSmithing,
     /// Failing to combine.
-    CantCombine,
+    CombineCant,
 }
 
 /// Identifies a music track or album.

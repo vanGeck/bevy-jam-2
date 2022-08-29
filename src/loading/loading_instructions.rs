@@ -1,16 +1,16 @@
 use std::collections::HashMap;
 
+use crate::game::{FontId, SoundId, TextureId};
 use crate::game::FontId::*;
 use crate::game::SoundId::*;
 use crate::game::TextureId::*;
-use crate::game::{FontId, SoundId, TextureId};
 
 /// This specifies all assets that must be loaded by the `LoadingState`.
 #[derive(Default, Debug)]
 pub struct LoadingConfig {
     pub textures: HashMap<TextureId, String>,
     pub atlases: HashMap<TextureId, String>,
-    pub sfx: HashMap<SoundId, String>,
+    pub sfx: HashMap<SoundId, Vec<String>>,
     pub fonts: HashMap<FontId, String>,
 }
 
@@ -83,24 +83,83 @@ pub fn prepare_loading_config() -> LoadingConfig {
     c.textures
         .insert(ShieldMasterwork, "ShieldMasterwork.png".to_string());
 
-    c.sfx.insert(EnterRat, "monsters/rat/".to_string());
-    c.sfx
-        .insert(EnterLittleMonster, "monsters/little_monster/".to_string());
-    c.sfx
-        .insert(EnterBigMonster, "monsters/big_monster/".to_string());
-    c.sfx
-        .insert(EnterSkeleton, "monsters/skeleton/".to_string());
-    c.sfx.insert(EnterZombie, "monsters/zombie/".to_string());
-    c.sfx.insert(DoorCreak, "door_creak".to_string());
-    c.sfx.insert(GoblinAhah, "goblin_ahah".to_string());
-    c.sfx.insert(SlashHit, "slash_hit".to_string());
-    c.sfx.insert(SwordClang, "sword_clang".to_string());
-    c.sfx.insert(WaterDripping, "water_dripping".to_string());
-    c.sfx.insert(Alchemy, "combining/alchemy.ogg".to_string());
-    c.sfx
-        .insert(CantCombine, "combining/cant_combine.ogg".to_string());
-    c.sfx
-        .insert(UpgradeWeapon, "combining/upgrade_weapon.ogg".to_string());
+
+    // ==============================================================
+    // ================= SFX
+    // ==============================================================
+
+    let mut vec = Vec::new();
+    vec.push("combine_alchemy/alchemy.ogg".to_string());
+    c.sfx.insert(CombineAlchemy, vec);
+
+    let mut vec = Vec::new();
+    vec.push("combine_cant/combine_cant.ogg".to_string());
+    c.sfx.insert(CombineCant, vec);
+
+    let mut vec = Vec::new();
+    vec.push("combine_smithing/upgrade_weapon.ogg".to_string());
+    c.sfx.insert(CombineSmithing, vec);
+
+    let mut vec = Vec::new();
+    vec.push("door_creak/door1.ogg".to_string());
+    vec.push("door_creak/door2.ogg".to_string());
+    c.sfx.insert(DoorCreak, vec);
+
+    let mut vec = Vec::new();
+    vec.push("goblin_ahah/ahah1.ogg".to_string());
+    vec.push("goblin_ahah/ahah2.ogg".to_string());
+    vec.push("goblin_ahah/ahah3.ogg".to_string());
+    vec.push("goblin_ahah/haha1.ogg".to_string());
+    vec.push("goblin_ahah/haha2.ogg".to_string());
+    vec.push("goblin_ahah/haha3.ogg".to_string());
+    vec.push("goblin_ahah/ooh1.ogg".to_string());
+    vec.push("goblin_ahah/ooh2.ogg".to_string());
+    c.sfx.insert(GoblinAhah, vec);
+
+    let mut vec = Vec::new();
+    vec.push("monsters/rat/rat1.ogg".to_string());
+    vec.push("monsters/rat/rat2.ogg".to_string());
+    vec.push("monsters/rat/rat3.ogg".to_string());
+    c.sfx.insert(EnterRat, vec);
+
+    let mut vec = Vec::new();
+    vec.push("monsters/little_monster/little1.ogg".to_string());
+    vec.push("monsters/little_monster/little2.ogg".to_string());
+    vec.push("monsters/little_monster/little3.ogg".to_string());
+    c.sfx.insert(EnterLittleMonster, vec);
+
+    let mut vec = Vec::new();
+    vec.push("monsters/big_monster/big1.ogg".to_string());
+    vec.push("monsters/big_monster/big2.ogg".to_string());
+    vec.push("monsters/big_monster/big3.ogg".to_string());
+    c.sfx.insert(EnterBigMonster, vec);
+
+    let mut vec = Vec::new();
+    vec.push("monsters/skeleton/skeleton1.ogg".to_string());
+    vec.push("monsters/skeleton/skeleton2.ogg".to_string());
+    vec.push("monsters/skeleton/skeleton3.ogg".to_string());
+    c.sfx.insert(EnterSkeleton, vec);
+
+    let mut vec = Vec::new();
+    vec.push("monsters/zombie/zombie1.ogg".to_string());
+    vec.push("monsters/zombie/zombie2.ogg".to_string());
+    c.sfx.insert(EnterZombie, vec);
+
+    let mut vec = Vec::new();
+    vec.push("slash_hit/hit1.ogg".to_string());
+    vec.push("slash_hit/hit2.ogg".to_string());
+    vec.push("slash_hit/hit3.ogg".to_string());
+    c.sfx.insert(SlashHit, vec);
+
+    let mut vec = Vec::new();
+    vec.push("sword_clang/clang1.ogg".to_string());
+    vec.push("sword_clang/clang2.ogg".to_string());
+    vec.push("sword_clang/clang3.ogg".to_string());
+    c.sfx.insert(SwordClang, vec);
+
+    let mut vec = Vec::new();
+    vec.push("water_dripping/drip1.ogg".to_string());
+    c.sfx.insert(WaterDripping, vec);
 
     c.fonts
         .insert(FiraSansLight, "FiraSans-Light.ttf".to_string());
