@@ -45,7 +45,7 @@ mod window_event_handler;
 pub const GAME_NAME: &str = "Bag Goblin";
 
 fn main() {
-    env::set_var("RUST_BACKTRACE", "1");
+    //env::set_var("RUST_BACKTRACE", "1");
     let config = DebugConfig::load_from_file();
     let mut app = App::new();
     app.insert_resource(bevy::log::LogSettings {
