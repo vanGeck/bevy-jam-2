@@ -3,25 +3,24 @@
 
 extern crate core;
 
-use bevy::DefaultPlugins;
 use bevy::log::Level;
-use bevy::prelude::*;
 use bevy::prelude::CoreStage::Update;
-use bevy::window::WindowMode;
+use bevy::prelude::*;
+use bevy::DefaultPlugins;
 use bevy_egui::{egui, EguiContext, EguiPlugin};
 use egui::*;
 use iyes_loopless::prelude::AppLooplessStateExt;
 
 use crate::audio::plugin::MyAudioPlugin;
-use crate::config::config_audio::{AudioConfig, AudioConfigLoader, };
+use crate::config::config_audio::{AudioConfig, AudioConfigLoader};
 use crate::config::config_debug::{DebugConfig, DebugConfigLoader};
-use crate::game::{ GamePlugin};
 use crate::game::camera::set_cam_scale;
+use crate::game::GamePlugin;
 use crate::game_ended::GameEndedPlugin;
 use crate::loading::state::LoadingPlugin;
 use crate::main_menu::MainMenuPlugin;
 use crate::mouse::{Mouse, MousePlugin};
-use crate::states::{AppState, handle_escape, log_state_changes};
+use crate::states::{handle_escape, log_state_changes, AppState};
 use crate::transition_state::TransitionPlugin;
 use crate::window_event_handler::handle_window;
 

@@ -26,7 +26,8 @@ impl Plugin for LoadingPlugin {
             )
             .add_exit_system_set(
                 AppState::Loading,
-                ConditionSet::new().run_in_state(AppState::Loading)
+                ConditionSet::new()
+                    .run_in_state(AppState::Loading)
                     .with_system(add_configs)
                     .into(),
             );

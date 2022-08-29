@@ -2,10 +2,10 @@ use bevy::prelude::*;
 use bevy_kira_audio::{AudioApp, AudioPlugin};
 use iyes_loopless::condition::ConditionSet;
 
-use crate::AppState;
 use crate::audio::play_audio::{change_audio_settings, play_sfx, skip_to_next_song};
 use crate::audio::record_player::check_record_player_input;
 use crate::audio::sound_event::{AudioResource, MusicChannel, SfxChannel, SoundEvent};
+use crate::AppState;
 
 pub struct MyAudioPlugin;
 

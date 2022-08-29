@@ -6,7 +6,6 @@ use bevy::asset::LoadState;
 use bevy::prelude::*;
 use iyes_loopless::prelude::NextState;
 
-use crate::{AppState, };
 use crate::config::config_audio::AudioConfig;
 use crate::config::config_debug::DebugConfig;
 use crate::config::config_sim::SimConfig;
@@ -18,9 +17,13 @@ use crate::config::data_sim_texts::DungeonTexts;
 use crate::config::dungeon_layout::DungeonBlueprint;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
-use crate::loading::config::LoadingConfig;
+use crate::loading::loading_instructions::LoadingConfig;
+use crate::AppState;
 
-pub fn load_configs(mut commands: Commands, server: Res<AssetServer>, mut assets: ResMut<AssetStorage>,
+pub fn load_configs(
+    mut commands: Commands,
+    server: Res<AssetServer>,
+    mut assets: ResMut<AssetStorage>,
 ) {
     // commands.insert_resource(DebugConfig::load_from_file());
     // commands.insert_resource(AudioConfig::load_from_file());
@@ -41,7 +44,7 @@ pub fn load_assets(
     mut texture_atlases: ResMut<Assets<TextureAtlas>>,
     mut storage: ResMut<AssetStorage>,
 ) {
-    let config = LoadingConfig::load_from_file();
+    let config = LoadingConfig::prepare();
     for (sprite_type, path) in config.atlases {
         let file = PathBuf::new().join("assets/atlases/").join(path);
         let data = fs::read_to_string(&file).expect("Unable to read file");
@@ -68,7 +71,7 @@ pub fn load_assets(
         storage.put_font(font_type, font_handle);
     }
 
-    for (sound_type, path) in config.sound_effects {
+    for (sound_type, path) in config.sfx {
         let asset_path = PathBuf::new().join("audio/sfx/").join(path);
         let file = PathBuf::new().join("assets/").join(&asset_path);
         if file.is_file() {
@@ -136,10 +139,22 @@ pub fn check_load_state(
     }
 }
 
-pub fn add_configs(mut commands: Commands,
-                   assets: Res<AssetStorage>,
-                   audio: Res<Assets<AudioConfig>>,
-                   debug: Res<Assets<DebugConfig>>) {
-    commands.insert_resource(audio.get(&assets.audio).cloned().expect("audio.ron wasn't loaded (yet)!"));
-    commands.insert_resource(debug.get(&assets.debug).cloned().expect("debug.ron wasn't loaded (yet)!"));
+pub fn add_configs(
+    mut commands: Commands,
+    assets: Res<AssetStorage>,
+    audio: Res<Assets<AudioConfig>>,
+    debug: Res<Assets<DebugConfig>>,
+) {
+    commands.insert_resource(
+        audio
+            .get(&assets.audio)
+            .cloned()
+            .expect("audio.ron wasn't loaded (yet)!"),
+    );
+    commands.insert_resource(
+        debug
+            .get(&assets.debug)
+            .cloned()
+            .expect("debug.ron wasn't loaded (yet)!"),
+    );
 }

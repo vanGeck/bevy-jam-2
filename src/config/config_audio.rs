@@ -2,9 +2,9 @@ use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
 
-use bevy::reflect::TypeUuid;
 use bevy::asset::{AssetLoader, BoxedFuture, LoadContext, LoadedAsset};
 use bevy::prelude::*;
+use bevy::reflect::TypeUuid;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
