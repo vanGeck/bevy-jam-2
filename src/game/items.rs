@@ -173,13 +173,9 @@ pub fn consume_item(
     mut hero: ResMut<Hero>,
     items: Query<(Entity, &Item, &MouseInteractive)>,
     equipped_items_query: Query<&EquippedItem>,
-    mut tooltips: Query<Entity, With<TooltipBg>>,
+    tooltips: Query<Entity, With<TooltipBg>>,
 ) {
     for (e, item, interactive) in items.iter() {
-        // if interactive.shift_clicked {
-        //     commands.entity(e).despawn_recursive();
-        // }
-
         if interactive.shift_clicked {
             // Unequip any items already equipped that the new item can override.
             if let Some(new_slot) = item.wearable {
@@ -220,7 +216,7 @@ pub fn consume_item(
                 hero.combat_stats.damage_bonus += stats.damage_bonus;
 
                 commands.entity(e).despawn_recursive();
-                if let Ok(tooltip) = tooltips.get_single_mut() {
+                for tooltip in tooltips.iter() {
                     commands.entity(tooltip).despawn_recursive();
                 }
             }
@@ -228,7 +224,7 @@ pub fn consume_item(
             if let Some(modifier) = item.clone().temporary_effect {
                 apply_timed_modifier(modifier, &mut commands);
                 commands.entity(e).despawn_recursive();
-                if let Ok(tooltip) = tooltips.get_single_mut() {
+                for tooltip in tooltips.iter() {
                     commands.entity(tooltip).despawn_recursive();
                 }
             }
@@ -239,12 +235,12 @@ pub fn consume_item(
 pub fn delete_item_system(
     mut commands: Commands,
     items: Query<(Entity, &MouseInteractive), With<Item>>,
-    mut tooltips: Query<Entity, With<MousedOver>>,
+    tooltips: Query<Entity, With<TooltipBg>>,
 ) {
     for (e, interactive) in items.iter() {
         if interactive.ctrl_alt_clicked {
             commands.entity(e).despawn_recursive();
-            if let Ok(tooltip) = tooltips.get_single_mut() {
+            for tooltip in tooltips.iter() {
                 commands.entity(tooltip).despawn_recursive();
             }
         }
