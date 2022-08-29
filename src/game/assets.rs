@@ -6,13 +6,13 @@ use bevy_kira_audio::AudioSource;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
+use crate::{AudioConfig, DebugConfig, SimConfig};
 use crate::config::data_blueprint::BlueprintData;
 use crate::config::data_enemies::EnemiesData;
 use crate::config::data_items::ItemsData;
 use crate::config::data_layout::LayoutData;
 use crate::config::data_recipes::RecipesData;
 use crate::config::data_texts::TextsData;
-use crate::{AudioConfig, DebugConfig, SimConfig};
 
 #[derive(Default, Debug)]
 pub struct AssetStorage {
@@ -46,7 +46,7 @@ impl AssetStorage {
                 self.textures.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-        .clone()
+            .clone()
     }
 
     pub fn put_atlas(&mut self, asset_type: TextureId, asset: Handle<TextureAtlas>) {
@@ -61,7 +61,7 @@ impl AssetStorage {
                 self.atlases.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-        .clone()
+            .clone()
     }
 
     pub fn put_sfx(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
@@ -128,7 +128,20 @@ impl AssetStorage {
     }
 
     pub fn get_all_handle_ids(&self) -> Vec<HandleId> {
-        let mut vec: Vec<HandleId> = self.textures.iter().map(|item| item.1.clone().id).collect();
+        let mut vec = Vec::new();
+        vec.append(&mut self.textures.iter().map(|item| item.1.clone().id).collect());
+        // vec.append(&mut self.atlases.iter().map(|item| item.1.clone().id).collect());
+        vec.append(&mut self.fonts.iter().map(|item| item.1.clone().id).collect());
+        vec.append(&mut self.music.iter()
+            .flat_map(|(_, value)| {
+                value.iter()
+            })
+            .map(|(handle, _)| handle.id).collect());
+        vec.append(&mut self.sounds.iter()
+            .flat_map(|(_, value)| {
+                value.iter()
+            })
+            .map(|handle| handle.id).collect());
         vec.push(self.audio.clone().id);
         vec.push(self.debug.clone().id);
         vec.push(self.sim.clone().id);
