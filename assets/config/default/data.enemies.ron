@@ -17,11 +17,17 @@
                     HerbRed,
                     HerbViolet,
                     HerbGreen,
+                    ScrollAlchemy1,
+                    ScrollAlchemy2,
+                    ScrollAlchemy3,
                 ],
                 chances: [
                     30,
                     10,
-                    15
+                    15,
+                    25,
+                    25,
+                    25,
                 ]
             ),
         ),
@@ -43,12 +49,16 @@
                     HerbRed,
                     HerbViolet,
                     HerbGreen,
+                    ScrollAlchemy4,
+                    ScrollAlchemy5
                 ],
                 chances: [
                     80,
                     40,
                     30,
                     30,
+                    25,
+                    25,
                 ]
             ),
         ),
@@ -57,8 +67,8 @@
             name: "Goblin Swordsman",
             enter_combat_text: EnterGoblinSwordsman,
             combat_stats: (
-                health: 6,
-                max_health: 6,
+                health: 8,
+                max_health: 8,
                 proficiency: 1,
                 damage_res: 0,
                 damage_bonus: 1,
@@ -70,12 +80,16 @@
                     Vial,
                     HerbViolet,
                     HerbGreen,
+                    ScrollAlchemy6,
+                    ScrollAlchemy7,
                 ],
                 chances: [
                     66,
                     50,
                     20,
                     20,
+                    25,
+                    25,
                 ]
             ),
         ),
@@ -84,8 +98,8 @@
             name: "Goblin Shieldbearer",
             enter_combat_text: EnterGoblinShieldBearer,
             combat_stats: (
-                health: 8,
-                max_health: 8,
+                health: 9,
+                max_health: 9,
                 proficiency: 2,
                 damage_res: 2,
                 damage_bonus: -2,
@@ -98,6 +112,8 @@
                     HerbRed,
                     HerbViolet,
                     HerbGreen,
+                    ScrollAlchemy8,
+                    ScrollAlchemy9,
                 ],
                 chances: [
                     66,
@@ -105,6 +121,8 @@
                     30, 
                     30,
                     30,
+                    25,
+                    25,
                 ]
             ),
         ),
@@ -113,9 +131,9 @@
             name: "OrcWarrior",
             enter_combat_text: EnterOrcWarrior,
             combat_stats: (
-                health: 14,
-                max_health: 14,
-                proficiency: 2,
+                health: 16,
+                max_health: 16,
+                proficiency: 3,
                 damage_res: 1,
                 damage_bonus: 3,
                 negative_feedback: 0,
@@ -127,13 +145,19 @@
                     ArmorRusty,
                     Vial,
                     HerbViolet,
+                    ScrollAlchemy10,
+                    ScrollAlchemy11,
+                    ScrollAlchemy12,
                 ],
                 chances: [
                     15,
                     80,
                     30,
                     50,
-                    35
+                    35,
+                    25,
+                    25,
+                    25,
                 ]
             ),
         ),
@@ -146,7 +170,7 @@
                 max_health: 12,
                 proficiency: 2,
                 damage_res: 2,
-                damage_bonus: 1,
+                damage_bonus: 4,
                 negative_feedback: 0,
             ),
             drop_table: (
@@ -156,6 +180,7 @@
                     AxeRusty,
                     SwordRusty,
                     HerbGreen,
+                    ScrollAlchemy13
                 ],
                 chances: [
                     40,
@@ -163,6 +188,7 @@
                     30,
                     30,
                     40,
+                    25,
                 ]
             ),
         ),
@@ -171,8 +197,8 @@
             name: "Zombie",
             enter_combat_text: EnterZombie,
             combat_stats: (
-                health: 16,
-                max_health: 16,
+                health: 18,
+                max_health: 18,
                 proficiency: 2,
                 damage_res: 4,
                 damage_bonus: -1,
@@ -185,6 +211,8 @@
                     AxeRusty,
                     HerbRed,
                     HerbRed,
+                    ScrollAlchemy14,
+                    ScrollAlchemy15,
                 ],
                 chances: [
                     40,
@@ -192,6 +220,8 @@
                     20,
                     60,
                     30,
+                    25,
+                    25,
                 ]
             ),
         ),

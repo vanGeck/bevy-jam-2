@@ -144,7 +144,9 @@ pub fn tick_dungeon(
                     state.combat_state = CombatState::Ended;
                     halt_dungeon_sim(state);
                     // HERO IS DEAD, END GAME
-                    victory.set(GameResult::Lost).unwrap();
+                    if victory.current().clone() == GameResult::Won {
+                        victory.set(GameResult::Lost).unwrap();
+                    }
                     cmd.insert_resource(NextState(AppState::GameEnded));
                     return;
                 } else if cbt_state == CombatState::InProgress {
@@ -219,7 +221,9 @@ pub fn tick_dungeon(
             } else {
                 if level.depth >= max_depth {
                     // GAME ENDED, REACHED LAST ROOM
-                    victory.set(GameResult::Won).unwrap();
+                    if victory.current().clone() == GameResult::Lost {
+                        victory.set(GameResult::Won).unwrap();
+                    }
                     info!("Dungeon complete!");
                     cmd.insert_resource(NextState(AppState::GameEnded));
                     halt_dungeon_sim(state);
