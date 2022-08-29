@@ -56,7 +56,7 @@ pub fn load_assets(
     }
 
     for (sfx_type, vec) in config.sfx {
-        for path in vec.iter(){
+        for path in vec.iter() {
             let sfx_handle = assets.load(PathBuf::new().join("audio/sfx/").join(path));
             storage.put_sfx(sfx_type, sfx_handle);
         }

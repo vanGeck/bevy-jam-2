@@ -45,6 +45,7 @@ mod states;
 mod transition_state;
 mod window_event_handler;
 
+/// Will be visible to the user as the name of the window and on the menu screen.
 pub const GAME_NAME: &str = "Bag Goblin";
 
 fn main() {

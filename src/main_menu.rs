@@ -2,20 +2,20 @@ use bevy::prelude::*;
 use bevy::window::WindowMode;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
 use iyes_loopless::state::NextState;
-
 use crate::audio::sound_event::SoundEvent;
+use crate::config::data_layout::LayoutData;
 use crate::game::create_backpack::create_layout_background;
 use crate::game::create_widget_feed::create_layout_feed;
 use crate::game::create_widget_grids::{create_layout_combine_button, create_layout_grids};
 use crate::game::create_widget_hero::create_layout_hero;
 use crate::game::create_widget_music::create_layout_music;
 use crate::game::create_widget_toasts::create_layout_toasts;
-use crate::game::{create_camera, AlbumId};
-use crate::{AppState, DebugConfig};
-//use crate::hud::gold::setup_gold;
+use crate::game::{create_camera, AlbumId, AssetStorage, FontId, MENU_ZOOM};
 use crate::mouse::MouseInteractive;
+use crate::positioning::Depth;
 use crate::states::delete_all_entities;
 use crate::transition_state::MenuTransition;
+use crate::{AppState, DebugConfig, GAME_NAME};
 
 pub struct MainMenuPlugin;
 
@@ -35,6 +35,7 @@ impl Plugin for MainMenuPlugin {
                 .with_system(create_layout_combine_button)
                 .with_system(create_layout_hero)
                 .with_system(play_menu_music)
+                .with_system(init_menu)
                 .into(),
         )
         .add_system_set(
@@ -47,7 +48,10 @@ impl Plugin for MainMenuPlugin {
         )
         .add_exit_system_set(
             AppState::MainMenu,
-            ConditionSet::new().run_in_state(AppState::MainMenu).into(),
+            ConditionSet::new()
+                .run_in_state(AppState::MainMenu)
+                .with_system(clean_menu_entities)
+                .into(),
         );
     }
 }
@@ -120,5 +124,44 @@ pub fn track_backpack_hover(
         if matches!(backpack.transition, MenuTransition::InactiveMenu) {
             sprite.index = if interactive.hovered { 1 } else { 0 };
         }
+    }
+}
+
+#[derive(Component)]
+pub struct MenuEntity;
+
+pub fn init_menu(mut commands: Commands, assets: Res<AssetStorage>, layout: Res<LayoutData>) {
+    let menu_screen_dimens = layout.screen_dimens * MENU_ZOOM;
+    let screen_center = layout.screen_dimens * 0.5;
+    let screen_anchor = screen_center - menu_screen_dimens * 0.5;
+    let text_style = TextStyle {
+        font: assets.font(&FontId::FiraSansBold),
+        font_size: 250.0,
+        color: Color::WHITE,
+    };
+    let text_alignment = TextAlignment {
+        horizontal: HorizontalAlign::Center,
+        vertical: VerticalAlign::Center,
+    };
+
+    commands.spawn_bundle(Text2dBundle {
+        text: Text::from_section(GAME_NAME, text_style).with_alignment(text_alignment),
+        transform: Transform::from_translation(Vec3::new(
+            screen_anchor.x + menu_screen_dimens.x * 0.2,
+            screen_anchor.y + menu_screen_dimens.y * 0.8,
+            Depth::Menu.z() + 10.,
+        ))
+        .with_scale(Vec3::new(
+            MENU_ZOOM / layout.text_factor,
+            MENU_ZOOM / layout.text_factor,
+            1.,
+        )),
+        ..default()
+    });
+}
+
+pub fn clean_menu_entities(mut commands: Commands, query: Query<Entity, With<MenuEntity>>) {
+    for entity in query.iter() {
+        commands.entity(entity).despawn_recursive();
     }
 }

@@ -157,7 +157,7 @@ pub fn consume_item(
     mut tooltips: Query<Entity, With<MouseOverItemInfo>>,
 ) {
     for (e, item, interactive) in items.iter() {
-        if interactive.right_clicked {
+        if interactive.ctrl_clicked {
             // Unequip any items already equipped that the new item can override.
             if let Some(new_slot) = item.wearable {
                 for currently_equipped_item in equipped_items_query.iter() {
