@@ -8,7 +8,7 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct LevelBlueprint {
     pub depth: i32,
     pub default_loot: DropTable,
@@ -20,7 +20,7 @@ pub struct LevelBlueprint {
 /// One "segment" results in one room generated.
 /// Enemy and room spawn percentages must add up to 100.
 /// NOTE: Custom loot works only in empty rooms. Corridors don't yield loot, enemies have their own loot.
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct SegmentBlueprint {
     pub types: HashMap<RoomType, u32>,
     pub enemies: Option<HashMap<EnemyId, u32>>,
@@ -28,7 +28,7 @@ pub struct SegmentBlueprint {
     pub custom_flavour: Option<TextType>,
 }
 
-#[derive(Default, Clone, Deserialize, Serialize, Eq, PartialEq, Hash)]
+#[derive(Default, Clone, Deserialize, Serialize, Eq, PartialEq, Hash, Debug)]
 pub enum RoomType {
     #[default]
     Empty,

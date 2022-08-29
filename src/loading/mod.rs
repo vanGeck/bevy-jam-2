@@ -1,4 +1,4 @@
 pub mod atlas_prefab;
-pub mod config;
+mod loading_instructions;
 pub mod state;
 mod systems;

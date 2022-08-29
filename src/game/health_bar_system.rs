@@ -69,8 +69,7 @@ pub fn update_hero_stats_display(
     if let Ok(mut text) = query.p6().get_single_mut() {
         for equipped_item in equipped_items_query.iter() {
             if equipped_item.slot == EquipmentSlot::Weapon {
-                text.sections[0].value =
-                    format!("Weapon: {}", equipped_item.name);
+                text.sections[0].value = format!("Weapon: {}", equipped_item.name);
             }
         }
     }

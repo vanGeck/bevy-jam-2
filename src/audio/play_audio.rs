@@ -28,7 +28,7 @@ pub fn play_sfx(
                 channel_music.stop();
             }
             SoundEvent::Sfx(sound_type) => {
-                if let Some(handle) = assets.sound(sound_type) {
+                if let Some(handle) = assets.sfx(sound_type) {
                     channel_sfx.play(handle);
                 } else {
                     info!(

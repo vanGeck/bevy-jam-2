@@ -1,7 +1,0 @@
-(
-    texture: "Record_Player.png",
-    //    tile_size: (128., 128.),
-    tile_size: (640., 640.),
-    columns: 1,
-    rows: 1,
-)

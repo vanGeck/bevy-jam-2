@@ -6,6 +6,14 @@ use bevy_kira_audio::AudioSource;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
+use crate::config::data_blueprint::BlueprintData;
+use crate::config::data_enemies::EnemiesData;
+use crate::config::data_items::ItemsData;
+use crate::config::data_layout::LayoutData;
+use crate::config::data_recipes::RecipesData;
+use crate::config::data_texts::TextsData;
+use crate::{AudioConfig, DebugConfig, SimConfig};
+
 #[derive(Default, Debug)]
 pub struct AssetStorage {
     textures: HashMap<TextureId, Handle<Image>>,
@@ -13,6 +21,15 @@ pub struct AssetStorage {
     sounds: HashMap<SoundId, Vec<Handle<AudioSource>>>,
     music: HashMap<AlbumId, Vec<(Handle<AudioSource>, String)>>,
     fonts: HashMap<FontId, Handle<Font>>,
+    pub audio: Handle<AudioConfig>,
+    pub debug: Handle<DebugConfig>,
+    pub sim: Handle<SimConfig>,
+    pub blueprint: Handle<BlueprintData>,
+    pub enemies: Handle<EnemiesData>,
+    pub items: Handle<ItemsData>,
+    pub layout: Handle<LayoutData>,
+    pub recipes: Handle<RecipesData>,
+    pub texts: Handle<TextsData>,
 }
 
 impl AssetStorage {
@@ -47,13 +64,13 @@ impl AssetStorage {
         .clone()
     }
 
-    pub fn put_sound(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
+    pub fn put_sfx(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
         self.sounds
             .entry(sound_type)
             .or_insert_with(Vec::new)
             .push(asset);
     }
-    pub fn sound(&self, asset_type: &SoundId) -> Option<Handle<AudioSource>> {
+    pub fn sfx(&self, asset_type: &SoundId) -> Option<Handle<AudioSource>> {
         self
             .sounds
             .get(asset_type)
@@ -111,14 +128,18 @@ impl AssetStorage {
     }
 
     pub fn get_all_handle_ids(&self) -> Vec<HandleId> {
-        let vec = self.textures.iter().map(|item| item.1.clone().id).collect();
-        // let vec = self.sounds.iter()
-        //     .flat_map(|item| {
-        //         item.1.clone()
-        //     })
-        //     .collect();
+        let mut vec: Vec<HandleId> = self.textures.iter().map(|item| item.1.clone().id).collect();
+        vec.push(self.audio.clone().id);
+        vec.push(self.debug.clone().id);
+        vec.push(self.sim.clone().id);
+        vec.push(self.blueprint.clone().id);
+        vec.push(self.enemies.clone().id);
+        vec.push(self.items.clone().id);
+        vec.push(self.layout.clone().id);
+        vec.push(self.recipes.clone().id);
+        vec.push(self.texts.clone().id);
         vec
-    } //TODO
+    }
 }
 
 /// Contains both a handle to the sprite sheet and the number of the sprite on the sheet.
@@ -204,11 +225,11 @@ pub enum SoundId {
     SwordClang,
     WaterDripping,
     /// Combining potions and stuff
-    Alchemy,
+    CombineAlchemy,
     /// Combining swords and stuff.
-    UpgradeWeapon,
+    CombineSmithing,
     /// Failing to combine.
-    CantCombine,
+    CombineCant,
 }
 
 /// Identifies a music track or album.
