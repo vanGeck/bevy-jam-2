@@ -273,6 +273,7 @@
                 proficiency: 0,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((1, 3)), (
             id: Sword,
@@ -286,6 +287,7 @@
                 proficiency: 2,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((1, 3)), (
             id: MasterworkSwordOfWounding,
@@ -299,6 +301,7 @@
                 proficiency: 3,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((1, 3)), (
             id: SwordMasterwork,
@@ -312,6 +315,7 @@
                 proficiency: 3,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((1, 3)), (
             id: MasterworkSwordOfSpeed,
@@ -325,6 +329,7 @@
                 proficiency: 5,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((1, 3)), (
             id: SwordOfSpeed,
@@ -338,6 +343,7 @@
                 proficiency: 3,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((1, 3)), (
             id: SwordOfWounding,
@@ -351,6 +357,7 @@
                 proficiency: 2,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((1, 3)), (
             id: AxeRusty,
@@ -364,6 +371,7 @@
                 proficiency: -1,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((1, 3)), (
             id: Axe,
@@ -377,6 +385,7 @@
                 proficiency: 0,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((1, 3)), (
             id: AxeMasterwork,
@@ -390,6 +399,7 @@
                 proficiency: 1,
                 damage_res: 0,
             ),
+            wearable: Weapon
         )),
         (((2, 3)), (
             id: ArmorRusty,
@@ -403,6 +413,7 @@
                 proficiency: -1,
                 damage_res: 1,
             ),
+            wearable: Armour
         )),
         (((2, 3)), (
             id: Armor,
@@ -416,6 +427,7 @@
                 proficiency: 0,
                 damage_res: 3,
             ),
+            wearable: Armour
         )),
         (((2, 3)), (
             id: ArmorMasterwork,
@@ -429,6 +441,7 @@
                 proficiency: 0,
                 damage_res: 5
             ),
+            wearable: Armour
         )),
         (((2, 2)), (
             id: ShieldRusty,
@@ -442,6 +455,7 @@
                 proficiency: 0,
                 damage_res: 1,
             ),
+            wearable: Shield
         )),
         (((2, 2)), (
             id: Shield,
@@ -453,8 +467,9 @@
                 max_health: 0,
                 damage_bonus: 0,
                 proficiency: 2,
-                damage_res: 1,
+                damage_res: 2,
             ),
+            wearable: Shield
         )),
         (((2, 2)), (
             id: ShieldMasterwork,
@@ -466,9 +481,10 @@
                 max_health: 0,
                 damage_bonus: 0,
                 proficiency: 4,
-                damage_res: 2
+                damage_res: 3
             ),
+            wearable: Shield
         ))
-        
+
     ]
 )

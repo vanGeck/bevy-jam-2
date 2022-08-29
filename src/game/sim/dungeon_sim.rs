@@ -267,8 +267,7 @@ pub fn manage_continue_prompt(
             cmd.entity(e).despawn_recursive();
         }
     } else if !state.running && state.combat_state != CombatState::HeroDead {
-        if let Ok(_) = q.get_single() {
-        } else {
+        if let Ok(_) = q.get_single() {} else {
             spawn_prompt(cmd, assets);
         }
     }
@@ -290,24 +289,24 @@ pub fn spawn_prompt(mut cmd: Commands, assets: Res<AssetStorage>) {
         color: Color::NONE.into(),
         ..default()
     })
-    .with_children(|parent| {
-        // text
-        parent.spawn_bundle(
-            TextBundle::from_section(
-                "Press SPACE to continue exploring!",
-                TextStyle {
-                    font: assets.font(&FontId::FiraSansBold),
-                    font_size: 20.0,
-                    color: Color::WHITE,
-                },
-            )
-            .with_style(Style {
-                margin: UiRect::all(Val::Px(5.0)),
-                align_self: AlignSelf::Center,
-                ..default()
-            }),
-        );
-    })
-    .insert(ContinuePrompt)
-    .insert(CleanupOnGameplayEnd);
+        .with_children(|parent| {
+            // text
+            parent.spawn_bundle(
+                TextBundle::from_section(
+                    "Press SPACE to continue exploring!",
+                    TextStyle {
+                        font: assets.font(&FontId::FiraSansBold),
+                        font_size: 32.0,
+                        color: Color::WHITE,
+                    },
+                )
+                    .with_style(Style {
+                        margin: UiRect::all(Val::Px(5.0)),
+                        align_self: AlignSelf::Center,
+                        ..default()
+                    }),
+            );
+        })
+        .insert(ContinuePrompt)
+        .insert(CleanupOnGameplayEnd);
 }

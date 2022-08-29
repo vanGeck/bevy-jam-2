@@ -129,8 +129,8 @@ pub fn eye_tracking_system(
             let white_pos = white.translation.truncate();
             let new_iris_trans = white.translation
                 + ((mouse.position - white_pos) / 100.0)
-                    .clamp_length(0.0, 0.2)
-                    .extend(1.0);
+                .clamp_length(0.0, 0.2)
+                .extend(1.0);
             iris.translation = new_iris_trans;
         }
     }
@@ -184,7 +184,28 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<
         item.1,
         Coords::new(Pos::new(5, 0), item.0),
     ));
+    item = items_db.try_get_item(ItemId::ShieldRusty).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(6, 0), item.0),
+    ));
+    item = items_db.try_get_item(ItemId::Shield).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(0, 2), item.0),
+    ));
+    item = items_db.try_get_item(ItemId::ArmorRusty).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(2, 2), item.0),
+    ));
+    item = items_db.try_get_item(ItemId::ArmorRusty).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(4, 2), item.0),
+    ));
 }
+
 fn test_slice(
     mut commands: Commands,
     assets: Res<AssetStorage>,

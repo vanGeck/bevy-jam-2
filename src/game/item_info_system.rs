@@ -121,7 +121,7 @@ pub fn update_mouse_over_item_info_system(
                                 }),
                             );
                             // Wearable
-                            if let Some((slot, _)) = item.wearable.clone() {
+                            if let Some(slot) = item.wearable.clone() {
                                 let slot_name: String;
                                 match slot {
                                     EquipmentSlot::Armour => {

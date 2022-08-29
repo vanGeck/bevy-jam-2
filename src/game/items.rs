@@ -4,7 +4,7 @@ use std::fmt::Formatter;
 
 use crate::game::TextureId;
 use crate::mouse::MouseInteractive;
-use crate::positioning::{Coords, Pos};
+use crate::positioning::{Coords};
 
 use super::combat::Hero;
 use super::item_info_system::MouseOverItemInfo;
@@ -49,7 +49,7 @@ pub struct Item {
     pub texture_id: TextureId,
     /// If this is an item that can be worn by the hero, which slot is it in and what is the
     /// offset in the equipment grid?
-    pub wearable: Option<(EquipmentSlot, Pos)>,
+    pub wearable: Option<EquipmentSlot>,
     pub stat_bonuses: Option<StatBonus>,
     pub temporary_effect: Option<TemporaryModifier>,
 }
@@ -158,9 +158,9 @@ pub fn consume_item(
     for (e, item, interactive) in items.iter() {
         if interactive.right_clicked {
             // Unequip any items already equipped that the new item can override.
-            if let Some((new_item_to_equip_slot, _)) = item.wearable {
+            if let Some(new_slot) = item.wearable {
                 for currently_equipped_item in equipped_items_query.iter() {
-                    if currently_equipped_item.slot == new_item_to_equip_slot {
+                    if currently_equipped_item.slot == new_slot {
                         hero.combat_stats.max_health -=
                             currently_equipped_item.stat_bonus.max_health;
                         hero.combat_stats.proficiency -=
@@ -174,13 +174,13 @@ pub fn consume_item(
                 // Create a new entity with an EquippedItem component to represent Equipped Items on the Hero
                 if let Some(stats) = item.stat_bonuses {
                     commands.spawn().insert(EquippedItem {
-                        slot: new_item_to_equip_slot,
+                        slot: new_slot,
                         stat_bonus: StatBonus {
                             health: 0,
                             max_health: stats.max_health,
                             proficiency: stats.proficiency,
-                            damage_bonus: stats.damage_res,
-                            damage_res: stats.damage_bonus,
+                            damage_bonus: stats.damage_bonus,
+                            damage_res: stats.damage_res,
                         },
                     });
                 }
