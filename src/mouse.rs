@@ -35,7 +35,7 @@ pub struct MouseInteractive {
     /// Whether the mouse just clicked this entity.
     /// (Set to true upon signal going up, aka the LMB going down.)
     pub clicked: bool,
-    pub right_clicked: bool,
+    pub ctrl_clicked: bool,
 }
 
 impl MouseInteractive {
@@ -45,7 +45,7 @@ impl MouseInteractive {
             clickable,
             hovered: false,
             clicked: false,
-            right_clicked: false,
+            ctrl_clicked: false,
         }
     }
 }
@@ -113,6 +113,7 @@ pub fn calc_mouse_pos(
 /// Runs on a separate stage after cal_mouse_pos but before everything else.
 pub fn track_mouse_hover(
     input: Res<Input<MouseButton>>,
+    keys: Res<Input<KeyCode>>,
     mouse: Res<Mouse>,
     mut query: Query<(&mut MouseInteractive, &GlobalTransform, &Visibility)>,
 ) {
@@ -126,8 +127,8 @@ pub fn track_mouse_hover(
                 && mouse.position.y > transform.translation().y - interactive.size.y * 0.5
                 && mouse.position.y < transform.translation().y + interactive.size.y * 0.5;
             interactive.clicked = interactive.hovered && input.just_pressed(MouseButton::Left);
-            interactive.right_clicked =
-                interactive.hovered && input.just_pressed(MouseButton::Right);
+            interactive.ctrl_clicked =
+                interactive.hovered && input.just_pressed(MouseButton::Left) && keys.pressed(KeyCode::LControl);
             if interactive.hovered {
                 (highest_z.max(transform.translation().z), nr_items + 1)
             } else {

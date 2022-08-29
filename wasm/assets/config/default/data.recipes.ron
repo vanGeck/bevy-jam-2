@@ -1,0 +1,208 @@
+(
+    recipes: [
+        (
+            result: EssenceVitality,
+            ingredients: [
+                (
+                    item_id: Vial,
+                    quantity: 1
+                ),
+                (
+                    item_id: HerbRed,
+                    quantity: 1
+                )
+            ],
+        ),
+        (
+            result: FlaskHealing,
+            ingredients: [
+                (
+                    item_id: EssenceVitality,
+                    quantity: 2
+                ),
+            ],
+        ),
+        (
+            result: EssenceAlacrity,
+            ingredients: [
+                (
+                    item_id: Vial,
+                    quantity: 1
+                ),
+                (
+                    item_id: HerbGreen,
+                    quantity: 1
+                )
+            ],
+        ),
+        (
+            result: FlaskSkill,
+            ingredients: [
+                (
+                    item_id: EssenceVitality,
+                    quantity: 1
+                ),
+                (
+                    item_id: EssenceAlacrity,
+                    quantity: 1
+                ),
+            ],
+        ),
+        (
+            result: FlaskToughness,
+            ingredients: [
+                (
+                    item_id: EssenceVitality,
+                    quantity: 1
+                ),
+                (
+                    item_id: EssenceMight,
+                    quantity: 1
+                ),
+            ],
+        ),
+        (
+            result: EssenceMight,
+            ingredients: [
+                (
+                    item_id: Vial,
+                    quantity: 1
+                ),
+                (
+                    item_id: HerbViolet,
+                    quantity: 1
+                )
+            ],
+        ),
+        (
+            result: FlaskStrength,
+            ingredients: [
+                (
+                    item_id: EssenceAlacrity,
+                    quantity: 1
+                ),
+                (
+                    item_id: EssenceMight,
+                    quantity: 1
+                ),
+            ],
+        ),
+        (
+            result: Sword,
+            ingredients: [
+                (
+                    item_id: SwordRusty,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: SwordMasterwork,
+            ingredients: [
+                (
+                    item_id: Sword,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: SwordOfSpeed,
+            ingredients: [
+                (
+                    item_id: Sword,
+                    quantity: 1
+                ),
+                (
+                    item_id: EssenceAlacrity,
+                    quantity: 1
+                )
+            ],
+        ),
+        (
+            result: MasterworkSwordOfSpeed,
+            ingredients: [
+                (
+                    item_id: SwordOfSpeed,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: MasterworkSwordOfWounding,
+            ingredients: [
+                (
+                    item_id: SwordOfWounding,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: SwordOfWounding,
+            ingredients: [
+                (
+                    item_id: Sword,
+                    quantity: 1
+                ),
+                (
+                    item_id: EssenceMight,
+                    quantity: 1
+                )
+            ],
+        ),
+        (
+            result: Axe,
+            ingredients: [
+                (
+                    item_id: AxeRusty,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: AxeMasterwork,
+            ingredients: [
+                (
+                    item_id: Axe,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: Shield,
+            ingredients: [
+                (
+                    item_id: ShieldRusty,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: ShieldMasterwork,
+            ingredients: [
+                (
+                    item_id: Shield,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: Armor,
+            ingredients: [
+                (
+                    item_id: ArmorRusty,
+                    quantity: 2
+                )
+            ],
+        ),
+        (
+            result: ArmorMasterwork,
+            ingredients: [
+                (
+                    item_id: Armor,
+                    quantity: 2
+                )
+            ],
+        ),
+    ],
+    
+)

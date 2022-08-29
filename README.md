@@ -1,4 +1,5 @@
 # Contributors
+
 - Music by Twitchywhalez [YouTube](https://www.youtube.com/channel/UCSjKBALUTiv8prOCSqdu3xA)/[BandCamp](https://twitchywhalez.bandcamp.com/)
 - Art by DarkDax [YouTube](https://www.youtube.com/darkdax) and InkeFaux
 - Game programming by [@VanGeck](https://github.com/vanGeck), [@Jazzaro](https://github.com/Jazarro), [@frederickjjoubert](https://github.com/frederickjjoubert), [@parK-dev](https://github.com/parK-dev)
@@ -8,7 +9,7 @@
 - `Escape` will back out of the game to the main menu. If you're already on the main menu, it will instantly close the
   game.
 - `F11` will toggle between `BorderlessFullscreen` and `Windowed` mode.
-- `Right-click` will consume items
+- `LCTRL-click` will consume items
 - `Drag` items to move them to the combining area
 - `Left-click` the combine button to combine items
 - `Space` when prompted to press it for the dungeon sim to continue

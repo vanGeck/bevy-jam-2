@@ -1,0 +1,106 @@
+(
+    enemies: [
+        (
+            enemy_id: Rat,
+            name: "Rat",
+            enter_combat_text: EnterRat,
+            combat_stats: (
+                health: 5,
+                max_health: 5,
+                proficiency: 1,
+                damage_res: 0,
+                damage_bonus: 0,
+            ),
+            drop_table: (
+                items: [
+                    HerbRed,
+                    HerbViolet,
+                    HerbGreen,
+                ],
+                chances: [
+                    30,
+                    20,
+                    20
+                ]
+            ),
+        ),
+        (
+            enemy_id: GoblinBrat,
+            name: "Goblin Brat",
+            enter_combat_text: EnterGoblinBrat,
+            combat_stats: (
+                health: 4,
+                max_health: 4,
+                proficiency: 2,
+                damage_res: 0,
+                damage_bonus: -3,
+            ),
+            drop_table: (
+                items: [
+                    Vial,
+                    HerbRed,
+                    HerbViolet,
+                    HerbGreen,
+                ],
+                chances: [
+                    80,
+                    40,
+                    40,
+                    40,
+                ]
+            ),
+        ),
+        (
+            enemy_id: GoblinSwordsman,
+            name: "Goblin Swordsman",
+            enter_combat_text: EnterGoblinSwordsman,
+            combat_stats: (
+                health: 6,
+                max_health: 6,
+                proficiency: 1,
+                damage_res: 0,
+                damage_bonus: 1,
+            ),
+            drop_table: (
+                items: [
+                    SwordRusty,
+                    Vial,
+                    HerbViolet,
+                    HerbGreen,
+                ],
+                chances: [
+                    66,
+                    40,
+                    50,
+                    30,
+                ]
+            ),
+        ),
+        (
+            enemy_id: GoblinShieldbearer,
+            name: "Goblin Shieldbearer",
+            enter_combat_text: EnterGoblinShieldBearer,
+            combat_stats: (
+                health: 8,
+                max_health: 8,
+                proficiency: 2,
+                damage_res: 2,
+                damage_bonus: -1,
+            ),
+            drop_table: (
+                items: [
+                    ShieldRusty,
+                    Vial,
+                    HerbViolet,
+                    HerbGreen,
+                ],
+                chances: [
+                    60,
+                    40,
+                    50,
+                    30,
+                ]
+            ),
+        ),
+    ]
+)

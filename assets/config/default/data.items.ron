@@ -17,7 +17,7 @@
         (((1, 1)), (
             id: ScrollBasic2,
             name: "Scroll of Basics",
-            description: "Right-click an item to use it on the hero (if applicable).",
+            description: "LCTRL-click an item to use it on the hero (if applicable).",
             texture_id: Scroll,
             stat_bonuses: (
                 health: 0,
@@ -56,7 +56,7 @@
         (((1, 1)), (
             id: ScrollBasic5,
             name: "Scroll of Basics",
-            description: "Right-click on scrolls to get rid of them.",
+            description: "LCTRL-click on scrolls to get rid of them.",
             texture_id: Scroll,
             stat_bonuses: (
                 health: 0,

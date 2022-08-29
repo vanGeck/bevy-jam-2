@@ -1,0 +1,10 @@
+# This file is here to make sure that this directory, which would otherwise be empty, is added to the repository.
+#
+# The files in this folder mirror the ones in 'assets/config/default'.
+# When loading configurations, they will be loaded from this directory first, if they don't exist here they will be
+# loaded from the default directory instead.
+
+# Ignore everything in this directory:
+*
+# Except for this file:
+!.gitignore

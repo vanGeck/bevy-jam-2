@@ -46,7 +46,7 @@ pub fn check_drag_begin(
         return;
     }
     for (coords, entity, item, interactive) in query.iter() {
-        if interactive.clicked {
+        if interactive.clicked && !interactive.ctrl_clicked {
             let hovered_over_cell = Pos::from(mouse.position - grid.offset);
             commands.entity(entity).insert(BeingDragged);
             commands.entity(entity).insert(Silhouette);
