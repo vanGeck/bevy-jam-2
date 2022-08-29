@@ -234,7 +234,7 @@
                 max_health: 55,
                 proficiency: 10,
                 damage_res: 4,
-                damage_bonus: 7,
+                damage_bonus: 8,
                 negative_feedback: 0,
             ),
             drop_table: (
