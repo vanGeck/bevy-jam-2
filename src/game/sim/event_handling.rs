@@ -77,7 +77,7 @@ pub fn handle_sim_message(
             TextType::EnterGoblinBrat => Some(SoundId::EnterLittleMonster),
             TextType::EnterGoblinSwordsman => Some(SoundId::EnterBigMonster),
             TextType::EnterGoblinShieldBearer => Some(SoundId::EnterBigMonster),
-            TextType::EnterSkeleton=> Some(SoundId::EnterSkeleton),
+            TextType::EnterSkeleton => Some(SoundId::EnterSkeleton),
             TextType::EnterZombie => Some(SoundId::EnterZombie),
             TextType::CombatHeroHit => Some(SoundId::SlashHit),
             TextType::CombatEnemyHit => Some(SoundId::SlashHit),
