@@ -189,6 +189,11 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<
         item.1,
         Coords::new(Pos::new(3, 1), item.0),
     ));
+    item = items_db.try_get_item(ItemId::MasterworkSwordOfSpeed).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(7, 0), item.0),
+    ));
     // item = items_db.try_get_item(ItemId::SwordRusty).unwrap();
     // spawn.send(SpawnItemEvent::without_anim(
     //     item.1,

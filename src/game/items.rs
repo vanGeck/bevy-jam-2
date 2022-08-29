@@ -8,7 +8,7 @@ use crate::mouse::MouseInteractive;
 use crate::positioning::Coords;
 
 use super::combat::Hero;
-use super::item_info_system::MouseOverItemInfo;
+use super::item_info_system::TooltipBg;
 use super::timed_effect::{apply_timed_modifier, TemporaryModifier};
 
 /// Marker component. This item is currently in the crafting window.
@@ -155,7 +155,7 @@ pub fn consume_item(
     mut hero: ResMut<Hero>,
     items: Query<(Entity, &Item, &MouseInteractive)>,
     equipped_items_query: Query<&EquippedItem>,
-    mut tooltips: Query<Entity, With<MouseOverItemInfo>>,
+    mut tooltips: Query<Entity, With<TooltipBg>>,
 ) {
     for (e, item, interactive) in items.iter() {
         // if interactive.shift_clicked {
