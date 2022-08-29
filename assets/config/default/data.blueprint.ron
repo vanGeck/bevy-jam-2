@@ -169,7 +169,7 @@
                 ),
                 (
                     types: { Fight: 70, Corridor:30 },
-                    enemies: { GoblinBrat: 30, Zombie:50, GoblinShieldbearer: 20 }
+                    enemies: { Skeleton: 30, Zombie:50, GoblinShieldbearer: 20 }
                 ),
                 (
                     types: { Empty: 100, },
