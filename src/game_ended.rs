@@ -48,8 +48,8 @@ fn draw_game_over_screen(
                 rect.center_top() + vec2(0.0, height / 2.0),
                 Align2::CENTER_CENTER,
                 match *result.current() {
-                    GameResult::Won => "The final enemy is dead! You won!",
-                    GameResult::Lost => "You lost!",
+                    GameResult::Won => "The Ogre Necromancer is dead! You win!",
+                    GameResult::Lost => "You lost! Keep Sir Hoardalot alive!",
                 },
                 FontId::proportional(46.0),
                 text_col,
