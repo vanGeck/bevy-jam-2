@@ -1,3 +1,8 @@
+use bevy::prelude::*;
+use bevy::window::WindowMode;
+use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
+use iyes_loopless::state::NextState;
+
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_layout::LayoutData;
 use crate::game::create_backpack::create_layout_background;
@@ -12,47 +17,44 @@ use crate::positioning::Depth;
 use crate::states::delete_all_entities;
 use crate::transition_state::MenuTransition;
 use crate::{AppState, DebugConfig, GAME_NAME};
-use bevy::prelude::*;
-use bevy::window::WindowMode;
-use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
-use iyes_loopless::state::NextState;
 
 pub struct MainMenuPlugin;
 
 impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut App) {
-        app.add_enter_system_set(
-            AppState::MainMenu,
-            ConditionSet::new()
-                .run_in_state(AppState::MainMenu)
-                .with_system(delete_all_entities)
-                .with_system(create_camera)
-                .with_system(create_layout_background)
-                .with_system(create_layout_music)
-                .with_system(create_layout_feed)
-                .with_system(create_layout_grids)
-                .with_system(create_layout_toasts)
-                .with_system(create_layout_combine_button)
-                .with_system(create_layout_hero)
-                .with_system(play_menu_music)
-                .with_system(init_menu)
-                .into(),
-        )
-        .add_system_set(
-            ConditionSet::new()
-                .run_in_state(AppState::MainMenu)
-                .with_system(check_menu_bypass.run_if(should_check_bypass))
-                .with_system(check_fullscreen.run_if(should_check_fullscreen))
-                .with_system(track_backpack_hover)
-                .into(),
-        )
-        .add_exit_system_set(
-            AppState::MainMenu,
-            ConditionSet::new()
-                .run_in_state(AppState::MainMenu)
-                .with_system(clean_menu_entities)
-                .into(),
-        );
+        app.insert_resource(MainMenuMusicTimer::default())
+            .add_enter_system_set(
+                AppState::MainMenu,
+                ConditionSet::new()
+                    .run_in_state(AppState::MainMenu)
+                    .with_system(delete_all_entities)
+                    .with_system(create_camera)
+                    .with_system(create_layout_background)
+                    .with_system(create_layout_music)
+                    .with_system(create_layout_feed)
+                    .with_system(create_layout_grids)
+                    .with_system(create_layout_toasts)
+                    .with_system(create_layout_combine_button)
+                    .with_system(create_layout_hero)
+                    .with_system(init_menu)
+                    .into(),
+            )
+            .add_system_set(
+                ConditionSet::new()
+                    .run_in_state(AppState::MainMenu)
+                    .with_system(check_menu_bypass.run_if(should_check_bypass))
+                    .with_system(check_fullscreen.run_if(should_check_fullscreen))
+                    .with_system(track_backpack_hover)
+                    .with_system(music_countdown_finished)
+                    .into(),
+            )
+            .add_exit_system_set(
+                AppState::MainMenu,
+                ConditionSet::new()
+                    .run_in_state(AppState::MainMenu)
+                    .with_system(clean_menu_entities)
+                    .into(),
+            );
     }
 }
 
@@ -85,10 +87,6 @@ pub fn check_fullscreen(mut windows: ResMut<Windows>, mut config: ResMut<DebugCo
             WindowMode::Windowed
         });
     }
-}
-
-pub fn play_menu_music(mut audio: EventWriter<SoundEvent>) {
-    audio.send(SoundEvent::PlayAlbum(AlbumId::Ominous));
 }
 
 #[derive(Component, Default)]
@@ -163,5 +161,25 @@ pub fn init_menu(mut commands: Commands, assets: Res<AssetStorage>, layout: Res<
 pub fn clean_menu_entities(mut commands: Commands, query: Query<Entity, With<MenuEntity>>) {
     for entity in query.iter() {
         commands.entity(entity).despawn_recursive();
+    }
+}
+
+/// When running the game in the browser, the first half second is always quite stuttery.
+/// This is a timer to wait half a second before starting the music.
+pub struct MainMenuMusicTimer(Timer);
+
+impl Default for MainMenuMusicTimer {
+    fn default() -> Self {
+        MainMenuMusicTimer(Timer::from_seconds(1., false))
+    }
+}
+
+pub fn music_countdown_finished(
+    mut audio: EventWriter<SoundEvent>,
+    time: Res<Time>,
+    mut timer: ResMut<MainMenuMusicTimer>,
+) {
+    if timer.0.tick(time.delta()).just_finished() {
+        audio.send(SoundEvent::PlayAlbum(AlbumId::Ominous));
     }
 }

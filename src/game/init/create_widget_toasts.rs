@@ -1,10 +1,10 @@
 use bevy::prelude::*;
 
 use crate::config::data_layout::LayoutData;
-use crate::game::CleanupOnGameplayEnd;
 use crate::game::dungeon_sim::ContinuePrompt;
-use crate::positioning::Depth;
+use crate::game::CleanupOnGameplayEnd;
 use crate::game::{AssetStorage, FontId};
+use crate::positioning::Depth;
 
 pub fn create_layout_toasts(
     mut commands: Commands,
@@ -46,8 +46,7 @@ pub fn create_layout_toasts(
                     text: Text::from_section("", text_style.clone()).with_alignment(text_alignment),
                     transform: Transform::from_xyz(
                         0., // Centered on parent.
-                        0.,
-                        11., // Relative to parent
+                        0., 11., // Relative to parent
                     )
                     .with_scale(Vec3::new(
                         1. / layout.text_factor,

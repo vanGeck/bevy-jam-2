@@ -47,17 +47,13 @@ pub fn display_loading_message(mut commands: Commands, server: Res<AssetServer>)
         vertical: VerticalAlign::Center,
     };
     commands.spawn_bundle(Text2dBundle {
-        text: Text::from_section("Loading...".to_string(), text_style).with_alignment(text_alignment),
-        transform: Transform::from_translation(Vec3::new(
-            0.,
-            0.,
-            0.,
-        ))
-            .with_scale(Vec3::new(
-                1. / 2.,
-                1. / 2.,
-                1.,
-            )),
+        text: Text::from_section("Loading...".to_string(), text_style)
+            .with_alignment(text_alignment),
+        transform: Transform::from_translation(Vec3::new(0., 0., 0.)).with_scale(Vec3::new(
+            1. / 2.,
+            1. / 2.,
+            1.,
+        )),
         ..default()
     });
 }
