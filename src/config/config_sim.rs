@@ -7,8 +7,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 
-#[derive(Debug, Deserialize, Serialize, Default)]
+use bevy::reflect::TypeUuid;
+#[derive(Debug, Deserialize, Serialize, Default, Clone, TypeUuid)]
 #[serde(deny_unknown_fields)]
+#[uuid = "6d3dff28-404e-4a7a-b386-df43b3464389"]
 pub struct SimConfig {
     /// Time between sim ticks in milliseconds.
     pub duration_millis: u64,

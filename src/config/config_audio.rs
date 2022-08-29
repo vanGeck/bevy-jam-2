@@ -4,11 +4,11 @@ use std::path::Path;
 
 use bevy::asset::{AssetLoader, BoxedFuture, LoadContext, LoadedAsset};
 use bevy::prelude::*;
-use bevy::reflect::TypeUuid;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 
+use bevy::reflect::TypeUuid;
 #[derive(Debug, Deserialize, Serialize, Default, Clone, TypeUuid)]
 #[serde(deny_unknown_fields)]
 #[uuid = "d6b519cf-60bc-47e4-8570-1f40146932c5"]

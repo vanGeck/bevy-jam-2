@@ -8,8 +8,10 @@ use serde::{Deserialize, Serialize};
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 use crate::game::combat::Enemy;
 
-#[derive(Debug, Deserialize, Serialize, Default)]
+use bevy::reflect::TypeUuid;
+#[derive(Debug, Deserialize, Serialize, Default, Clone, TypeUuid)]
 #[serde(deny_unknown_fields)]
+#[uuid = "5286cf90-c4a5-40da-a6c7-1081af73d649"]
 pub struct EnemiesData {
     pub enemies: Vec<Enemy>,
 }

@@ -10,8 +10,10 @@ use crate::config::file_utils::{get_config_default_dir, get_config_override_dir}
 use crate::game::items::EquipmentSlot;
 use crate::positioning::Coords;
 
-#[derive(Deserialize, Serialize, Default, Debug)]
+use bevy::reflect::TypeUuid;
+#[derive(Debug, Deserialize, Serialize, Default, Clone, TypeUuid)]
 #[serde(deny_unknown_fields)]
+#[uuid = "6762d701-5cc0-499c-bf99-8845ff67792e"]
 pub struct LayoutData {
     pub text_factor: f32,
     pub screen_dimens: Vec2,
@@ -22,7 +24,7 @@ pub struct LayoutData {
     pub overseer_baseline: f32,
 }
 
-#[derive(Deserialize, Serialize, Default, Debug)]
+#[derive(Deserialize, Serialize, Default, Debug,Clone)]
 pub struct ColumnLeft {
     pub margin_left: f32,
     pub margin_right: f32,
@@ -58,7 +60,7 @@ impl ColumnLeft {
     }
 }
 
-#[derive(Deserialize, Serialize, Default, Debug)]
+#[derive(Deserialize, Serialize, Default, Debug,Clone)]
 pub struct ColumnMiddle {
     pub x: f32,
     pub width: f32,
@@ -66,7 +68,7 @@ pub struct ColumnMiddle {
     pub inventory: Container,
 }
 
-#[derive(Deserialize, Serialize, Default, Debug)]
+#[derive(Deserialize, Serialize, Default, Debug,Clone)]
 pub struct ColumnRight {
     pub margin_left: f32,
     pub margin_right: f32,
@@ -106,14 +108,14 @@ impl ColumnRight {
     }
 }
 
-#[derive(Deserialize, Serialize, Default, Debug)]
+#[derive(Deserialize, Serialize, Default, Debug,Clone)]
 pub struct Container {
     pub margin_bottom: Option<f32>,
     pub margin_top: Option<f32>,
     pub height: Option<f32>,
 }
 
-#[derive(Deserialize, Serialize, Default, Debug)]
+#[derive(Deserialize, Serialize, Default, Debug,Clone)]
 pub struct EquipmentGrid {
     /// The absolute coordinates of the equipment grid. Coordinates of each of the individual slots
     /// are relative to this.

@@ -33,7 +33,7 @@ impl AssetStorage {
                 self.textures.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-        .clone()
+            .clone()
     }
 
     pub fn put_atlas(&mut self, asset_type: TextureId, asset: Handle<TextureAtlas>) {
@@ -48,7 +48,7 @@ impl AssetStorage {
                 self.atlases.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-        .clone()
+            .clone()
     }
 
     pub fn put_sound(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
@@ -115,14 +115,11 @@ impl AssetStorage {
     }
 
     pub fn get_all_handle_ids(&self) -> Vec<HandleId> {
-        let vec = self.textures.iter().map(|item| item.1.clone().id).collect();
-        // let vec = self.sounds.iter()
-        //     .flat_map(|item| {
-        //         item.1.clone()
-        //     })
-        //     .collect();
+        let mut vec:Vec<HandleId> = self.textures.iter().map(|item| item.1.clone().id).collect();
+        vec.push(self.audio.clone().id);
+        vec.push(self.debug.clone().id);
         vec
-    } //TODO
+    }
 }
 
 /// Contains both a handle to the sprite sheet and the number of the sprite on the sheet.

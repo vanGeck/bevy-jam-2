@@ -8,8 +8,10 @@ use serde::{Deserialize, Serialize};
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 use crate::game::dungeon_gen::LevelBlueprint;
 
-#[derive(Serialize, Deserialize, Clone, Default)]
+use bevy::reflect::TypeUuid;
+#[derive(Debug, Deserialize, Serialize, Default, Clone, TypeUuid)]
 #[serde(deny_unknown_fields)]
+#[uuid = "53da3fb7-6cf8-4fbf-996e-b970037d0625"]
 pub struct DungeonBlueprint {
     pub levels: Vec<LevelBlueprint>,
 }

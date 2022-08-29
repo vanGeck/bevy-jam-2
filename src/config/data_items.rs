@@ -10,8 +10,10 @@ use crate::config::file_utils::{get_config_default_dir, get_config_override_dir}
 use crate::game::items::{Item, ItemId};
 use crate::positioning::Dimens;
 
-#[derive(Debug, Deserialize, Serialize, Default)]
+use bevy::reflect::TypeUuid;
+#[derive(Debug, Deserialize, Serialize, Default, Clone, TypeUuid)]
 #[serde(deny_unknown_fields)]
+#[uuid = "e739c4a0-e8b8-4773-9b3e-7e022c3c4f85"]
 pub struct ItemsData {
     pub items: Vec<(Dimens, Item)>,
 }
