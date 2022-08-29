@@ -14,6 +14,13 @@ use iyes_loopless::prelude::AppLooplessStateExt;
 use crate::audio::plugin::MyAudioPlugin;
 use crate::config::config_audio::{AudioConfig, AudioConfigLoader};
 use crate::config::config_debug::{DebugConfig, DebugConfigLoader};
+use crate::config::config_sim::{SimConfig, SimConfigLoader};
+use crate::config::data_blueprint::{BlueprintData, BlueprintDataLoader};
+use crate::config::data_enemies::{EnemiesData, EnemiesDataLoader};
+use crate::config::data_items::{ItemsData, ItemsDataLoader};
+use crate::config::data_layout::{LayoutData, LayoutDataLoader};
+use crate::config::data_recipes::{RecipesData, RecipesDataLoader};
+use crate::config::data_texts::{TextsData, TextsDataLoader};
 use crate::game::camera::set_cam_scale;
 use crate::game::GamePlugin;
 use crate::game_ended::GameEndedPlugin;
@@ -69,6 +76,20 @@ fn main() {
         .init_asset_loader::<AudioConfigLoader>()
         .add_asset::<DebugConfig>()
         .init_asset_loader::<DebugConfigLoader>()
+        .add_asset::<SimConfig>()
+        .init_asset_loader::<SimConfigLoader>()
+        .add_asset::<BlueprintData>()
+        .init_asset_loader::<BlueprintDataLoader>()
+        .add_asset::<EnemiesData>()
+        .init_asset_loader::<EnemiesDataLoader>()
+        .add_asset::<ItemsData>()
+        .init_asset_loader::<ItemsDataLoader>()
+        .add_asset::<LayoutData>()
+        .init_asset_loader::<LayoutDataLoader>()
+        .add_asset::<RecipesData>()
+        .init_asset_loader::<RecipesDataLoader>()
+        .add_asset::<TextsData>()
+        .init_asset_loader::<TextsDataLoader>()
         .add_system(handle_window)
         .add_system(log_state_changes)
         .add_system(handle_escape)

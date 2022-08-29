@@ -4,7 +4,7 @@ use rand::Rng;
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_items::ItemsData;
 use crate::config::data_layout::LayoutData;
-use crate::config::data_sim_texts::DungeonTexts;
+use crate::config::data_texts::TextsData;
 use crate::game::dungeon_components::TextType;
 use crate::game::feed::AddFeedItemEvent;
 use crate::game::{find_free_space, FontId, Item, ItemId, SoundId, SpawnItemEvent};
@@ -50,7 +50,7 @@ pub fn handle_sim_message(
     mut reader: EventReader<SimMessageEvent>,
     mut write_texts: EventWriter<AddFeedItemEvent>,
     mut write_audio: EventWriter<SoundEvent>,
-    texts: Res<DungeonTexts>,
+    texts: Res<TextsData>,
 ) {
     for SimMessageEvent(text_type) in reader.iter() {
         trace!("Received sim message event for TextType::{:?}", text_type);

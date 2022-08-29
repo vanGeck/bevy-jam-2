@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::game::FontId::*;
 use crate::game::SoundId::*;
 use crate::game::TextureId::*;
-use crate::game::{ FontId, SoundId, TextureId};
+use crate::game::{FontId, SoundId, TextureId};
 
 /// This specifies all assets that must be loaded by the `LoadingState`.
 #[derive(Default, Debug)]

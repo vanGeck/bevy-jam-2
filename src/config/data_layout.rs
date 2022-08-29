@@ -1,16 +1,13 @@
 use std::collections::HashMap;
-use std::fs;
-use std::io::{Error, ErrorKind};
-use std::path::Path;
 
+use bevy::asset::{AssetLoader, BoxedFuture, LoadContext, LoadedAsset};
 use bevy::prelude::*;
+use bevy::reflect::TypeUuid;
 use serde::{Deserialize, Serialize};
 
-use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 use crate::game::items::EquipmentSlot;
 use crate::positioning::Coords;
 
-use bevy::reflect::TypeUuid;
 #[derive(Debug, Deserialize, Serialize, Default, Clone, TypeUuid)]
 #[serde(deny_unknown_fields)]
 #[uuid = "6762d701-5cc0-499c-bf99-8845ff67792e"]
@@ -24,7 +21,7 @@ pub struct LayoutData {
     pub overseer_baseline: f32,
 }
 
-#[derive(Deserialize, Serialize, Default, Debug,Clone)]
+#[derive(Deserialize, Serialize, Default, Debug, Clone)]
 pub struct ColumnLeft {
     pub margin_left: f32,
     pub margin_right: f32,
@@ -60,7 +57,7 @@ impl ColumnLeft {
     }
 }
 
-#[derive(Deserialize, Serialize, Default, Debug,Clone)]
+#[derive(Deserialize, Serialize, Default, Debug, Clone)]
 pub struct ColumnMiddle {
     pub x: f32,
     pub width: f32,
@@ -68,7 +65,7 @@ pub struct ColumnMiddle {
     pub inventory: Container,
 }
 
-#[derive(Deserialize, Serialize, Default, Debug,Clone)]
+#[derive(Deserialize, Serialize, Default, Debug, Clone)]
 pub struct ColumnRight {
     pub margin_left: f32,
     pub margin_right: f32,
@@ -108,14 +105,14 @@ impl ColumnRight {
     }
 }
 
-#[derive(Deserialize, Serialize, Default, Debug,Clone)]
+#[derive(Deserialize, Serialize, Default, Debug, Clone)]
 pub struct Container {
     pub margin_bottom: Option<f32>,
     pub margin_top: Option<f32>,
     pub height: Option<f32>,
 }
 
-#[derive(Deserialize, Serialize, Default, Debug,Clone)]
+#[derive(Deserialize, Serialize, Default, Debug, Clone)]
 pub struct EquipmentGrid {
     /// The absolute coordinates of the equipment grid. Coordinates of each of the individual slots
     /// are relative to this.
@@ -148,32 +145,25 @@ impl LayoutData {
     pub fn right_width(&self) -> f32 {
         self.screen_dimens.x - self.c_right.margin_right - self.right_x()
     }
-
-    /// Loads the most relevant instance of `GridConfig`.
-    ///
-    /// If the `GridConfig` override file exists, tries to load from config/override/ first. If that fails,
-    /// log an error and use the Default trait implementation (ie: `GridConfig::default()`).
-    ///
-    /// If the 'GridConfig' override file does not exist, tries to load from config/default/ instead.
-    #[must_use]
-    pub fn load_from_file() -> LayoutData {
-        let override_file = get_config_override_dir().join("layout.ron");
-        if override_file.exists() {
-            load_from_path(&override_file)
-        } else {
-            load_from_path(&get_config_default_dir().join("layout.ron"))
-        }
-    }
 }
 
-fn load_from_path(path: &Path) -> LayoutData {
-    fs::read_to_string(path)
-        .and_then(|data| ron::de::from_str::<LayoutData>(&data).map_err(|error| Error::new(ErrorKind::Other, error)))
-        .unwrap_or_else(|error| {
-            error!(
-                    "Failed to load the grid config file from {:?}! Falling back to GridConfig::default(). Error: {:?}",
-                    path, error
-                );
-            LayoutData::default()
+#[derive(Default)]
+pub struct LayoutDataLoader;
+
+impl AssetLoader for LayoutDataLoader {
+    fn load<'a>(
+        &'a self,
+        bytes: &'a [u8],
+        load_context: &'a mut LoadContext,
+    ) -> BoxedFuture<'a, Result<(), bevy::asset::Error>> {
+        Box::pin(async move {
+            let custom_asset = ron::de::from_bytes::<LayoutData>(bytes)?;
+            load_context.set_default_asset(LoadedAsset::new(custom_asset));
+            Ok(())
         })
+    }
+
+    fn extensions(&self) -> &[&str] {
+        &["layout.ron"]
+    }
 }

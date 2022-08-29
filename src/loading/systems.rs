@@ -4,36 +4,29 @@ use bevy::asset::LoadState;
 use bevy::prelude::*;
 use iyes_loopless::prelude::NextState;
 
-use crate::AppState;
 use crate::config::config_audio::AudioConfig;
 use crate::config::config_debug::DebugConfig;
 use crate::config::config_sim::SimConfig;
+use crate::config::data_blueprint::BlueprintData;
 use crate::config::data_enemies::EnemiesData;
 use crate::config::data_items::ItemsData;
 use crate::config::data_layout::LayoutData;
 use crate::config::data_recipes::RecipesData;
-use crate::config::data_sim_texts::DungeonTexts;
-use crate::config::dungeon_layout::DungeonBlueprint;
+use crate::config::data_texts::TextsData;
 use crate::game::{AlbumId, AssetStorage, TextureId};
-use crate::loading::loading_instructions::{ prepare_loading_config};
+use crate::loading::loading_instructions::prepare_loading_config;
+use crate::AppState;
 
-pub fn load_configs(
-    mut commands: Commands,
-    server: Res<AssetServer>,
-    mut assets: ResMut<AssetStorage>,
-) {
-    // commands.insert_resource(DebugConfig::load_from_file());
-    // commands.insert_resource(AudioConfig::load_from_file());
-    commands.insert_resource(ItemsData::load_from_file());
-    commands.insert_resource(RecipesData::load_from_file());
-    commands.insert_resource(DungeonTexts::load_from_file());
-    commands.insert_resource(SimConfig::load_from_file());
-    commands.insert_resource(EnemiesData::load_from_file());
-    commands.insert_resource(LayoutData::load_from_file());
-    commands.insert_resource(DungeonBlueprint::load_from_file());
-
+pub fn load_configs(server: Res<AssetServer>, mut assets: ResMut<AssetStorage>) {
     assets.audio = server.load("config/default/config.audio.ron");
     assets.debug = server.load("config/default/config.debug.ron");
+    assets.sim = server.load("config/default/config.sim.ron");
+    assets.blueprint = server.load("config/default/data.blueprint.ron");
+    assets.enemies = server.load("config/default/data.enemies.ron");
+    assets.items = server.load("config/default/data.items.ron");
+    assets.layout = server.load("config/default/data.layout.ron");
+    assets.recipes = server.load("config/default/data.recipes.ron");
+    assets.texts = server.load("config/default/data.texts.ron");
 }
 
 pub fn load_assets(
@@ -120,6 +113,13 @@ pub fn add_configs(
     assets: Res<AssetStorage>,
     audio: Res<Assets<AudioConfig>>,
     debug: Res<Assets<DebugConfig>>,
+    sim: Res<Assets<SimConfig>>,
+    blueprint: Res<Assets<BlueprintData>>,
+    enemies: Res<Assets<EnemiesData>>,
+    items: Res<Assets<ItemsData>>,
+    layout: Res<Assets<LayoutData>>,
+    recipes: Res<Assets<RecipesData>>,
+    texts: Res<Assets<TextsData>>,
 ) {
     commands.insert_resource(
         audio
@@ -132,5 +132,46 @@ pub fn add_configs(
             .get(&assets.debug)
             .cloned()
             .expect("debug.ron wasn't loaded (yet)!"),
+    );
+    commands.insert_resource(
+        sim.get(&assets.sim)
+            .cloned()
+            .expect("sim.ron wasn't loaded (yet)!"),
+    );
+    commands.insert_resource(
+        blueprint
+            .get(&assets.blueprint)
+            .cloned()
+            .expect("blueprint.ron wasn't loaded (yet)!"),
+    );
+    commands.insert_resource(
+        enemies
+            .get(&assets.enemies)
+            .cloned()
+            .expect("enemies.ron wasn't loaded (yet)!"),
+    );
+    commands.insert_resource(
+        items
+            .get(&assets.items)
+            .cloned()
+            .expect("items.ron wasn't loaded (yet)!"),
+    );
+    commands.insert_resource(
+        layout
+            .get(&assets.layout)
+            .cloned()
+            .expect("layout.ron wasn't loaded (yet)!"),
+    );
+    commands.insert_resource(
+        recipes
+            .get(&assets.recipes)
+            .cloned()
+            .expect("recipes.ron wasn't loaded (yet)!"),
+    );
+    commands.insert_resource(
+        texts
+            .get(&assets.texts)
+            .cloned()
+            .expect("texts.ron wasn't loaded (yet)!"),
     );
 }

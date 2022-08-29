@@ -1,12 +1,6 @@
-use std::fs;
-use std::io::{Error, ErrorKind};
-use std::path::Path;
-
-use bevy::prelude::*;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
-use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 use crate::game::items::{Item, ItemId};
 use crate::positioning::Dimens;
 
@@ -17,18 +11,9 @@ use bevy::reflect::TypeUuid;
 pub struct ItemsData {
     pub items: Vec<(Dimens, Item)>,
 }
+use bevy::asset::{AssetLoader, BoxedFuture, LoadContext, LoadedAsset};
 
 impl ItemsData {
-    #[must_use]
-    pub fn load_from_file() -> ItemsData {
-        let override_file = get_config_override_dir().join("items.ron");
-        if override_file.exists() {
-            load_from_path(&override_file)
-        } else {
-            load_from_path(&get_config_default_dir().join("items.ron"))
-        }
-    }
-
     pub fn get_random_item(&self) -> (Dimens, Item) {
         let mut rng = rand::thread_rng();
         let index = rng.gen_range(0..self.items.len());
@@ -42,15 +27,23 @@ impl ItemsData {
             .cloned()
     }
 }
+#[derive(Default)]
+pub struct ItemsDataLoader;
 
-fn load_from_path(path: &Path) -> ItemsData {
-    fs::read_to_string(path)
-        .and_then(|data| ron::de::from_str::<ItemsData>(&data).map_err(|error| Error::new(ErrorKind::Other, error)))
-        .unwrap_or_else(|error| {
-            error!(
-                    "Failed to load the items data file from {:?}! Falling back to ItemsData::default(). Error: {:?}",
-                    path, error
-                );
-            ItemsData::default()
+impl AssetLoader for ItemsDataLoader {
+    fn load<'a>(
+        &'a self,
+        bytes: &'a [u8],
+        load_context: &'a mut LoadContext,
+    ) -> BoxedFuture<'a, Result<(), bevy::asset::Error>> {
+        Box::pin(async move {
+            let custom_asset = ron::de::from_bytes::<ItemsData>(bytes)?;
+            load_context.set_default_asset(LoadedAsset::new(custom_asset));
+            Ok(())
         })
+    }
+
+    fn extensions(&self) -> &[&str] {
+        &["items.ron"]
+    }
 }

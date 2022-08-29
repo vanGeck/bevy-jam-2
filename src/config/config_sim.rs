@@ -1,11 +1,6 @@
-﻿use std::fs;
-use std::io::{Error, ErrorKind};
-use std::path::Path;
+use bevy::asset::{AssetLoader, BoxedFuture, LoadContext, LoadedAsset};
 
-use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
-
-use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 
 use bevy::reflect::TypeUuid;
 #[derive(Debug, Deserialize, Serialize, Default, Clone, TypeUuid)]
@@ -21,32 +16,23 @@ pub struct SimConfig {
     pub chance_fight: f32,
 }
 
-impl SimConfig {
-    /// Loads the most relevant instance of `SimConfig`.
-    ///
-    /// If the `SimConfig` override file exists, tries to load from config/override/ first. If that fails,
-    /// log an error and use the Default trait implementation (ie: `SimConfig::default()`).
-    ///
-    /// If the 'SimConfig' override file does not exist, tries to load from config/default/ instead.
-    #[must_use]
-    pub fn load_from_file() -> SimConfig {
-        let override_file = get_config_override_dir().join("sim.ron");
-        if override_file.exists() {
-            load_from_path(&override_file)
-        } else {
-            load_from_path(&get_config_default_dir().join("sim.ron"))
-        }
-    }
-}
+#[derive(Default)]
+pub struct SimConfigLoader;
 
-fn load_from_path(path: &Path) -> SimConfig {
-    fs::read_to_string(path)
-        .and_then(|data| ron::de::from_str::<SimConfig>(&data).map_err(|error| Error::new(ErrorKind::Other, error)))
-        .unwrap_or_else(|error| {
-            error!(
-                    "Failed to load the config file from {:?}! Falling back to SimConfig::default(). Error: {:?}",
-                    path, error
-                );
-            SimConfig::default()
+impl AssetLoader for SimConfigLoader {
+    fn load<'a>(
+        &'a self,
+        bytes: &'a [u8],
+        load_context: &'a mut LoadContext,
+    ) -> BoxedFuture<'a, Result<(), bevy::asset::Error>> {
+        Box::pin(async move {
+            let custom_asset = ron::de::from_bytes::<SimConfig>(bytes)?;
+            load_context.set_default_asset(LoadedAsset::new(custom_asset));
+            Ok(())
         })
+    }
+
+    fn extensions(&self) -> &[&str] {
+        &["sim.ron"]
+    }
 }

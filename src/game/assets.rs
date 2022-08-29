@@ -6,7 +6,13 @@ use bevy_kira_audio::AudioSource;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
-use crate::{AudioConfig, DebugConfig};
+use crate::config::data_blueprint::BlueprintData;
+use crate::config::data_enemies::EnemiesData;
+use crate::config::data_items::ItemsData;
+use crate::config::data_layout::LayoutData;
+use crate::config::data_recipes::RecipesData;
+use crate::config::data_texts::TextsData;
+use crate::{AudioConfig, DebugConfig, SimConfig};
 
 #[derive(Default, Debug)]
 pub struct AssetStorage {
@@ -17,6 +23,13 @@ pub struct AssetStorage {
     fonts: HashMap<FontId, Handle<Font>>,
     pub audio: Handle<AudioConfig>,
     pub debug: Handle<DebugConfig>,
+    pub sim: Handle<SimConfig>,
+    pub blueprint: Handle<BlueprintData>,
+    pub enemies: Handle<EnemiesData>,
+    pub items: Handle<ItemsData>,
+    pub layout: Handle<LayoutData>,
+    pub recipes: Handle<RecipesData>,
+    pub texts: Handle<TextsData>,
 }
 
 impl AssetStorage {
@@ -33,7 +46,7 @@ impl AssetStorage {
                 self.textures.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-            .clone()
+        .clone()
     }
 
     pub fn put_atlas(&mut self, asset_type: TextureId, asset: Handle<TextureAtlas>) {
@@ -48,7 +61,7 @@ impl AssetStorage {
                 self.atlases.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-            .clone()
+        .clone()
     }
 
     pub fn put_sound(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {
@@ -115,9 +128,16 @@ impl AssetStorage {
     }
 
     pub fn get_all_handle_ids(&self) -> Vec<HandleId> {
-        let mut vec:Vec<HandleId> = self.textures.iter().map(|item| item.1.clone().id).collect();
+        let mut vec: Vec<HandleId> = self.textures.iter().map(|item| item.1.clone().id).collect();
         vec.push(self.audio.clone().id);
         vec.push(self.debug.clone().id);
+        vec.push(self.sim.clone().id);
+        vec.push(self.blueprint.clone().id);
+        vec.push(self.enemies.clone().id);
+        vec.push(self.items.clone().id);
+        vec.push(self.layout.clone().id);
+        vec.push(self.recipes.clone().id);
+        vec.push(self.texts.clone().id);
         vec
     }
 }

@@ -6,8 +6,8 @@ use iyes_loopless::prelude::NextState;
 use rand::Rng;
 
 use crate::config::config_sim::SimConfig;
+use crate::config::data_blueprint::BlueprintData;
 use crate::config::data_enemies::EnemiesData;
-use crate::config::dungeon_layout::DungeonBlueprint;
 use crate::game::combat::{DropTable, EnemyId};
 use crate::game::event_handling::SimMessageEvent;
 use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
@@ -35,7 +35,7 @@ pub struct ContinuePrompt;
 pub fn init_dungeon(
     mut commands: Commands,
     params: Res<SimConfig>,
-    dungeon_bp: Res<DungeonBlueprint>,
+    dungeon_bp: Res<BlueprintData>,
     enemies: Res<EnemiesData>,
 ) {
     let mut state = DungeonState {
@@ -56,7 +56,7 @@ pub fn init_dungeon(
 
 pub fn progress_dungeon_depth(
     state: &mut ResMut<DungeonState>,
-    dungeon_bp: Res<DungeonBlueprint>,
+    dungeon_bp: Res<BlueprintData>,
     enemies: Res<EnemiesData>,
     mut cmd: Commands,
 ) {
@@ -73,7 +73,7 @@ pub fn progress_dungeon_depth(
 pub fn tick_dungeon(
     mut msg_events: EventWriter<SimMessageEvent>,
     mut loot_events: EventWriter<SimLootEvent>,
-    dungeon_bp: Res<DungeonBlueprint>,
+    dungeon_bp: Res<BlueprintData>,
     enemy_data: Res<EnemiesData>,
     time: Res<Time>,
     _config: ResMut<SimConfig>,
