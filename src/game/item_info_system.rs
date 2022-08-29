@@ -195,7 +195,7 @@ pub fn update_mouse_over_item_info_system(
                                 stats_present = true;
                                 stats.push_str(&*format!(
                                     "    | Max HP: {}\n",
-                                    stat_bonus.proficiency
+                                    stat_bonus.max_health
                                 ));
                             }
                             if stats_present {
