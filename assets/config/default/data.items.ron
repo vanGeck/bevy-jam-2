@@ -319,7 +319,7 @@
         )),
         (((1, 3)), (
             id: MasterworkSwordOfSpeed,
-            name: "Masterword Sword of Speed",
+            name: "Masterwork Sword of Speed",
             description: "This blade has a life of it's own, helping you tear through enemy defenses.",
             texture_id: MasterworkSwordOfSpeed,
             stat_bonuses: (
