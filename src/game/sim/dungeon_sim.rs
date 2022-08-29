@@ -258,56 +258,17 @@ fn pick_loot_from_drop_table(table: &DropTable) -> Vec<ItemId> {
 
 pub fn manage_continue_prompt(
     state: Res<DungeonState>,
-    q: Query<Entity, With<ContinuePrompt>>,
+    mut q: Query<&mut Text, With<ContinuePrompt>>,
     mut cmd: Commands,
     assets: Res<AssetStorage>,
 ) {
     if state.running {
-        if let Ok(e) = q.get_single() {
-            cmd.entity(e).despawn_recursive();
+        if let Ok(text) = q.get_single() {
+            text.sections[0].value = "";
         }
     } else if !state.running && state.combat_state != CombatState::HeroDead {
-        if let Ok(_) = q.get_single() {
-        } else {
-            spawn_prompt(cmd, assets);
+        if let Ok(text) = q.get_single() {
+            text.sections[0].value = "Press SPACE to continue exploring.";
         }
     }
-}
-
-pub fn spawn_prompt(mut cmd: Commands, assets: Res<AssetStorage>) {
-    cmd.spawn_bundle(NodeBundle {
-        style: Style {
-            size: Size::new(Val::Percent(100.0), Val::Percent(16.7)),
-            justify_content: JustifyContent::Center,
-            position: UiRect {
-                left: Val::Percent(44.0),
-                right: Val::Percent(40.0),
-                top: Val::Auto,
-                bottom: Val::Auto,
-            },
-            ..default()
-        },
-        color: Color::NONE.into(),
-        ..default()
-    })
-    .with_children(|parent| {
-        // text
-        parent.spawn_bundle(
-            TextBundle::from_section(
-                "Press SPACE to continue exploring!",
-                TextStyle {
-                    font: assets.font(&FontId::FiraSansBold),
-                    font_size: 32.0,
-                    color: Color::WHITE,
-                },
-            )
-            .with_style(Style {
-                margin: UiRect::all(Val::Px(5.0)),
-                align_self: AlignSelf::Center,
-                ..default()
-            }),
-        );
-    })
-    .insert(ContinuePrompt)
-    .insert(CleanupOnGameplayEnd);
 }
