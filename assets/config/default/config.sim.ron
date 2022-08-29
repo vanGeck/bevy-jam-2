@@ -1,5 +1,5 @@
 (
-    duration_millis: 100,
+    duration_millis: 400,
     max_depth: 3,
     chance_corridor: 0.10,
     chance_empty: 0.35,

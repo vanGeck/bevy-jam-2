@@ -101,6 +101,9 @@
         EnterGoblinShieldBearer: [
             "A Goblin Shieldbearer stands in Sir Hoardalot's way - steady, unflinching and very, very stinky.",
         ],
+        EnterOrcWarrior: [
+            "An Orc Warrior's war cry shakes the dungeon, as you smell his breath all the way from across the room. Very... pungent.", 
+        ],
         EnterSkeleton: [
             "The rattling of bones is heard down a dark corridor. A skeleton approaches.",
             "Stone grinds on stone; an ancient sarcophagus cracks open and a skeleton steps out.",

@@ -14,7 +14,7 @@ use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
 use crate::game::sim::dungeon_gen::generate_level;
 use crate::game::sim::event_handling::SimLootEvent;
-use crate::game::ItemId;
+use crate::game::{GameResult, ItemId};
 
 /// Handle a state event. Mainly handle hero's death?
 pub struct SimStateEvent(String);
@@ -82,6 +82,7 @@ pub fn tick_dungeon(
     mut enemy: ResMut<Enemy>,
     input: Res<Input<KeyCode>>,
     mut cmd: Commands,
+    mut victory: ResMut<State<GameResult>>
 ) {
     let mut just_resumed = false;
     if !state.running {
@@ -143,6 +144,7 @@ pub fn tick_dungeon(
                     state.combat_state = CombatState::Ended;
                     halt_dungeon_sim(state);
                     // HERO IS DEAD, END GAME
+                    victory.set(GameResult::Lost).unwrap();
                     cmd.insert_resource(NextState(AppState::GameEnded));
                     return;
                 } else if cbt_state == CombatState::InProgress {
@@ -217,6 +219,7 @@ pub fn tick_dungeon(
             } else {
                 if level.depth >= max_depth {
                     // GAME ENDED, REACHED LAST ROOM
+                    victory.set(GameResult::Won).unwrap();
                     info!("Dungeon complete!");
                     cmd.insert_resource(NextState(AppState::GameEnded));
                     halt_dungeon_sim(state);
