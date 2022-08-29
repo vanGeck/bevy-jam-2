@@ -55,18 +55,10 @@ pub fn load_assets(
         storage.put_font(font_type, font_handle);
     }
 
-    for (sound_type, path) in config.sfx {
-        let asset_path = PathBuf::new().join("audio/sfx/").join(path);
-        let file = PathBuf::new().join("assets/").join(&asset_path);
-        if file.is_file() {
-            let handle = assets.load(asset_path);
-            storage.put_sound(sound_type, handle);
-        } else if file.is_dir() {
-            for handle in assets.load_folder(asset_path).unwrap() {
-                storage.put_sound(sound_type, handle.typed());
-            }
-        } else {
-            warn!("Did not recognise path {:?}", asset_path);
+    for (sfx_type, vec) in config.sfx {
+        for path in vec.iter(){
+            let sfx_handle = assets.load(PathBuf::new().join("audio/sfx/").join(path));
+            storage.put_sfx(sfx_type, sfx_handle);
         }
     }
 
