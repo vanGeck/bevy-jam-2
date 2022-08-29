@@ -60,6 +60,7 @@ fn main() {
         .insert_resource(WindowDescriptor {
             title: GAME_NAME.to_string(),
             resizable: true,
+            fit_canvas_to_parent: true,
             ..default()
         })
         .add_loopless_state(AppState::Loading)
