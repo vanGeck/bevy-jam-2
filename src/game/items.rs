@@ -4,7 +4,7 @@ use std::fmt::Formatter;
 
 use crate::game::TextureId;
 use crate::mouse::MouseInteractive;
-use crate::positioning::{Coords};
+use crate::positioning::Coords;
 
 use super::combat::Hero;
 use super::item_info_system::MouseOverItemInfo;
