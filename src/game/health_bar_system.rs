@@ -55,14 +55,14 @@ pub fn update_hero_stats_display(
     if let Ok(mut text) = query.p4().get_single_mut() {
         for equipped_item in equipped_items_query.iter() {
             if equipped_item.slot == EquipmentSlot::Armour {
-                text.sections[0].value = format!("Armour: {}", equipped_item.stat_bonus.damage_res);
+                text.sections[0].value = format!("Armour: {}", equipped_item.name);
             }
         }
     }
     if let Ok(mut text) = query.p5().get_single_mut() {
         for equipped_item in equipped_items_query.iter() {
             if equipped_item.slot == EquipmentSlot::Shield {
-                text.sections[0].value = format!("Shield: {}", equipped_item.stat_bonus.damage_res);
+                text.sections[0].value = format!("Shield: {}", equipped_item.name);
             }
         }
     }
@@ -70,7 +70,7 @@ pub fn update_hero_stats_display(
         for equipped_item in equipped_items_query.iter() {
             if equipped_item.slot == EquipmentSlot::Weapon {
                 text.sections[0].value =
-                    format!("Weapon: {}", equipped_item.stat_bonus.damage_bonus);
+                    format!("Weapon: {}", equipped_item.name);
             }
         }
     }

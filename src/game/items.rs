@@ -145,6 +145,7 @@ pub enum EquipmentSlot {
 #[derive(Component, Debug)]
 pub struct EquippedItem {
     pub slot: EquipmentSlot,
+    pub name: String,
     pub stat_bonus: StatBonus,
 }
 
@@ -175,6 +176,7 @@ pub fn consume_item(
                 if let Some(stats) = item.stat_bonuses {
                     commands.spawn().insert(EquippedItem {
                         slot: new_slot,
+                        name: item.clone().name,
                         stat_bonus: StatBonus {
                             health: 0,
                             max_health: stats.max_health,

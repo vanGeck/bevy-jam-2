@@ -1,4 +1,6 @@
 /target
+.wasm/
+wasm.zip
 
 .idea/
 .vscode/
