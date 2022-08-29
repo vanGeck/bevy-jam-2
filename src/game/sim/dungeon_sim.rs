@@ -14,7 +14,7 @@ use crate::game::sim::combat::{process_combat, CombatState, Enemy, Hero};
 use crate::game::sim::dungeon_components::{DungeonLevel, TextType};
 use crate::game::sim::dungeon_gen::generate_level;
 use crate::game::sim::event_handling::SimLootEvent;
-use crate::game::{AssetStorage, CleanupOnGameplayEnd, FontId, ItemId};
+use crate::game::ItemId;
 
 /// Handle a state event. Mainly handle hero's death?
 pub struct SimStateEvent(String);
@@ -253,22 +253,20 @@ fn pick_loot_from_drop_table(table: &DropTable) -> Vec<ItemId> {
             result.push(table.items[i].clone());
         }
     }
-    return result;
+    result
 }
 
 pub fn manage_continue_prompt(
     state: Res<DungeonState>,
     mut q: Query<&mut Text, With<ContinuePrompt>>,
-    mut cmd: Commands,
-    assets: Res<AssetStorage>,
 ) {
     if state.running {
-        if let Ok(text) = q.get_single() {
-            text.sections[0].value = "";
+        if let Ok(mut text) = q.get_single_mut() {
+            text.sections[0].value = "".to_string();
         }
     } else if !state.running && state.combat_state != CombatState::HeroDead {
-        if let Ok(text) = q.get_single() {
-            text.sections[0].value = "Press SPACE to continue exploring.";
+        if let Ok(mut text) = q.get_single_mut() {
+            text.sections[0].value = "Press SPACE to continue exploring.".to_string();
         }
     }
 }
