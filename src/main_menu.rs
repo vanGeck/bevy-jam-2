@@ -3,7 +3,7 @@ use bevy::window::WindowMode;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
 use iyes_loopless::state::NextState;
 
-use crate::{AppState, DebugConfig, GAME_NAME};
+use crate::{AppState, DebugConfig};
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_layout::LayoutData;
 use crate::game::{AlbumId, AssetStorage, create_camera, FontId, MENU_ZOOM};
@@ -133,18 +133,29 @@ pub fn init_menu(mut commands: Commands, assets: Res<AssetStorage>, layout: Res<
     let menu_screen_dimens = layout.screen_dimens * MENU_ZOOM;
     let screen_center = layout.screen_dimens * 0.5;
     let screen_anchor = screen_center - menu_screen_dimens * 0.5;
-    let text_style = TextStyle {
+    let title_text_style = TextStyle {
         font: assets.font(&FontId::FiraSansBold),
         font_size: 250.0,
-        color: Color::WHITE,
+        color: Color::ANTIQUE_WHITE,
     };
+    let props_text_style = TextStyle {
+        font: assets.font(&FontId::FiraSansBold),
+        font_size: 75.0,
+        color: Color::ANTIQUE_WHITE,
+    };
+
     let text_alignment = TextAlignment {
         horizontal: HorizontalAlign::Center,
         vertical: VerticalAlign::Center,
     };
 
+    let dev_props = "A Game by: Jazarro FestusVanGeck Jacques parK-dev";
+    let art_props = "Art by: Jack Pettigrew (DarkDax) & InkeFaux";
+    let music_props = "Music by: Twitchywhalez";
+    
+
     commands.spawn_bundle(Text2dBundle {
-        text: Text::from_section(GAME_NAME, text_style).with_alignment(text_alignment),
+        text: Text::from_section("Loot Goblin", title_text_style).with_alignment(text_alignment),
         transform: Transform::from_translation(Vec3::new(
             screen_anchor.x + menu_screen_dimens.x * 0.2,
             screen_anchor.y + menu_screen_dimens.y * 0.8,
@@ -157,6 +168,54 @@ pub fn init_menu(mut commands: Commands, assets: Res<AssetStorage>, layout: Res<
             )),
         ..default()
     });
+
+    commands.spawn_bundle(Text2dBundle {
+        text: Text::from_section(dev_props, props_text_style.clone()).with_alignment(text_alignment),
+        transform: Transform::from_translation(Vec3::new(
+            screen_anchor.x + menu_screen_dimens.x * 0.5,
+            screen_anchor.y + menu_screen_dimens.y * 0.2,
+            Depth::Menu.z() + 10.,
+        ))
+            .with_scale(Vec3::new(
+                MENU_ZOOM / layout.text_factor,
+                MENU_ZOOM / layout.text_factor,
+                1.,
+            )),
+        ..default()
+    });
+    
+    commands.spawn_bundle(Text2dBundle {
+        text: Text::from_section(art_props, props_text_style.clone()).with_alignment(text_alignment),
+        transform: Transform::from_translation(Vec3::new(
+            screen_anchor.x + menu_screen_dimens.x * 0.5,
+            screen_anchor.y + menu_screen_dimens.y * 0.15,
+            Depth::Menu.z() + 10.,
+        ))
+            .with_scale(Vec3::new(
+                MENU_ZOOM / layout.text_factor,
+                MENU_ZOOM / layout.text_factor,
+                1.,
+            )),
+        ..default()
+    });
+    
+    commands.spawn_bundle(Text2dBundle {
+        text: Text::from_section(music_props, props_text_style).with_alignment(text_alignment),
+        transform: Transform::from_translation(Vec3::new(
+            screen_anchor.x + menu_screen_dimens.x * 0.5,
+            screen_anchor.y + menu_screen_dimens.y * 0.1,
+            Depth::Menu.z() + 10.,
+        ))
+            .with_scale(Vec3::new(
+                MENU_ZOOM / layout.text_factor,
+                MENU_ZOOM / layout.text_factor,
+                1.,
+            )),
+        ..default()
+    });
+
+
+
 }
 
 pub fn clean_menu_entities(mut commands: Commands, query: Query<Entity, With<MenuEntity>>) {
