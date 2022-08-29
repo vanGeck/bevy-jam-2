@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::game::CleanupOnGameplayEnd;
 
 const MAGIC: f32 = 1.3333;
+pub const MENU_ZOOM: f32 = 5.;
 // 16x9 is the most common aspect ratio, make it look the best for those screens.
 // (Black bars down the sides for non-standard screens)
 const ASPECT_RATIO_X: f32 = 16.;
@@ -19,7 +20,7 @@ impl Default for GameCamera {
     fn default() -> Self {
         Self {
             /// The zoom factor when in the menu.
-            menu_zoom: 5.,
+            menu_zoom: MENU_ZOOM,
             /// The zoom factor during the game.
             game_zoom: 1.,
             /// Current zoom factor.

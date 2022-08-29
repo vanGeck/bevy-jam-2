@@ -66,8 +66,8 @@ pub fn create_layout_music(
                 color: Color::WHITE,
             };
             let text_alignment = TextAlignment {
-                vertical: VerticalAlign::Center,
                 horizontal: HorizontalAlign::Left,
+                vertical: VerticalAlign::Center,
             };
 
             let pos_text = Vec2::new(
