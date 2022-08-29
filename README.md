@@ -1,4 +1,5 @@
-![image](https://user-images.githubusercontent.com/77372584/187132899-5bfc5d74-efbe-4e23-a9d3-8ab93021d9ae.png)
+![Screenshot from 2022-08-29 10-11-16](https://user-images.githubusercontent.com/77372584/187178819-a0b02458-d273-49c0-b123-5d46fa84f347.png)
+
 
 
 # Contributors
@@ -16,6 +17,8 @@
 - `Drag` items to move them to the combining area
 - `Left-click` the combine button to combine items
 - `Space` when prompted to press it for the dungeon sim to continue
+
+![image](https://user-images.githubusercontent.com/77372584/187132899-5bfc5d74-efbe-4e23-a9d3-8ab93021d9ae.png)
 
 ## Config files
 
