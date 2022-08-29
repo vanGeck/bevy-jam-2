@@ -3,20 +3,20 @@ use bevy::window::WindowMode;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
 use iyes_loopless::state::NextState;
 
-use crate::{AppState, DebugConfig, GAME_NAME};
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_layout::LayoutData;
-use crate::game::{AlbumId, AssetStorage, create_camera, FontId, MENU_ZOOM};
 use crate::game::create_backpack::create_layout_background;
 use crate::game::create_widget_feed::create_layout_feed;
 use crate::game::create_widget_grids::{create_layout_combine_button, create_layout_grids};
 use crate::game::create_widget_hero::create_layout_hero;
 use crate::game::create_widget_music::create_layout_music;
 use crate::game::create_widget_toasts::create_layout_toasts;
+use crate::game::{create_camera, AlbumId, AssetStorage, FontId, MENU_ZOOM};
 use crate::mouse::MouseInteractive;
 use crate::positioning::Depth;
 use crate::states::delete_all_entities;
 use crate::transition_state::MenuTransition;
+use crate::{AppState, DebugConfig, GAME_NAME};
 
 pub struct MainMenuPlugin;
 
@@ -150,11 +150,11 @@ pub fn init_menu(mut commands: Commands, assets: Res<AssetStorage>, layout: Res<
             screen_anchor.y + menu_screen_dimens.y * 0.8,
             Depth::Menu.z() + 10.,
         ))
-            .with_scale(Vec3::new(
-                MENU_ZOOM / layout.text_factor,
-                MENU_ZOOM / layout.text_factor,
-                1.,
-            )),
+        .with_scale(Vec3::new(
+            MENU_ZOOM / layout.text_factor,
+            MENU_ZOOM / layout.text_factor,
+            1.,
+        )),
         ..default()
     });
 }

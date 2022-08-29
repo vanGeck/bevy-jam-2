@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::data_layout::LayoutData;
-use crate::game::{AssetStorage, CleanupOnGameplayEnd, MENU_ZOOM, TextureId};
+use crate::game::{AssetStorage, CleanupOnGameplayEnd, TextureId, MENU_ZOOM};
 use crate::main_menu::MenuBackpack;
 use crate::mouse::MouseInteractive;
 use crate::positioning::Depth;
