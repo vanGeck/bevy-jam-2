@@ -158,6 +158,10 @@ pub fn consume_item(
     mut tooltips: Query<Entity, With<MouseOverItemInfo>>,
 ) {
     for (e, item, interactive) in items.iter() {
+        // if interactive.shift_clicked {
+        //     commands.entity(e).despawn_recursive();
+        // }
+
         if interactive.ctrl_clicked {
             // Unequip any items already equipped that the new item can override.
             if let Some(new_slot) = item.wearable {
@@ -209,6 +213,21 @@ pub fn consume_item(
                 if let Ok(tooltip) = tooltips.get_single_mut() {
                     commands.entity(tooltip).despawn_recursive();
                 }
+            }
+        }
+    }
+}
+
+pub fn delete_item_system(
+    mut commands: Commands,
+    items: Query<(Entity, &MouseInteractive), With<Item>>,
+    mut tooltips: Query<Entity, With<MouseOverItemInfo>>,
+) {
+    for (e, interactive) in items.iter() {
+        if interactive.shift_clicked {
+            commands.entity(e).despawn_recursive();
+            if let Ok(tooltip) = tooltips.get_single_mut() {
+                commands.entity(tooltip).despawn_recursive();
             }
         }
     }

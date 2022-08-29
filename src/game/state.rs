@@ -26,7 +26,7 @@ use crate::positioning::{Coords, Pos};
 use crate::AppState;
 
 use super::combat::{Combatant, Enemy, Hero};
-use super::{consume_item, update_health_bar, update_hero_stats_display, Eyes, Iris};
+use super::{consume_item, update_health_bar, update_hero_stats_display, Eyes, Iris, delete_item_system};
 
 pub struct GamePlugin;
 
@@ -49,7 +49,7 @@ impl Plugin for GamePlugin {
                     proficiency: 1,
                     damage_res: 0,
                     damage_bonus: 0,
-                    negative_feedback: 0
+                    negative_feedback: 0,
                 },
             })
             .init_resource::<Enemy>()
@@ -89,6 +89,7 @@ impl Plugin for GamePlugin {
                     .with_system(update_mouse_over_item_info_style_position_system)
                     .with_system(position_feed_item)
                     .with_system(consume_item)
+                    .with_system(delete_item_system)
                     .with_system(animate_falling_item)
                     .into(),
             )
@@ -131,7 +132,7 @@ fn clear_gameplay_data(mut hero: ResMut<Hero>) {
         proficiency: 1,
         damage_res: 0,
         damage_bonus: 0,
-        negative_feedback: 0
+        negative_feedback: 0,
     };
 }
 
@@ -145,8 +146,8 @@ pub fn eye_tracking_system(
             let white_pos = white.translation.truncate();
             let new_iris_trans = white.translation
                 + ((mouse.position - white_pos) / 100.0)
-                    .clamp_length(0.0, 0.2)
-                    .extend(1.0);
+                .clamp_length(0.0, 0.2)
+                .extend(1.0);
             iris.translation = new_iris_trans;
         }
     }
