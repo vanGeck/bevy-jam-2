@@ -8,6 +8,10 @@
 - `Escape` will back out of the game to the main menu. If you're already on the main menu, it will instantly close the
   game.
 - `F11` will toggle between `BorderlessFullscreen` and `Windowed` mode.
+- `Right-click` will consume items
+- `Drag` items to move them to the combining area
+- `Left-click` the combine button to combine items
+- `Space` when prompted to press it for the dungeon sim to continue
 
 ## Config files
 
