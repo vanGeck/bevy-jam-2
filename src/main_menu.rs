@@ -1,7 +1,3 @@
-use bevy::prelude::*;
-use bevy::window::WindowMode;
-use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
-use iyes_loopless::state::NextState;
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_layout::LayoutData;
 use crate::game::create_backpack::create_layout_background;
@@ -16,6 +12,10 @@ use crate::positioning::Depth;
 use crate::states::delete_all_entities;
 use crate::transition_state::MenuTransition;
 use crate::{AppState, DebugConfig, GAME_NAME};
+use bevy::prelude::*;
+use bevy::window::WindowMode;
+use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
+use iyes_loopless::state::NextState;
 
 pub struct MainMenuPlugin;
 
