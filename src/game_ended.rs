@@ -54,7 +54,7 @@ fn draw_game_over_screen(
                 FontId::proportional(46.0),
                 text_col,
             );
-                        painter.line_segment(
+            painter.line_segment(
                 // divider
                 [
                     rect.left_top() + vec2(2.0, height),
@@ -62,7 +62,7 @@ fn draw_game_over_screen(
                 ],
                 Stroke::new(1.0, text_col),
             );
-         
+
             let quit_btn = ui.put(
                 Rect::from_center_size(pos2(win_wi / 2., win_ht / 2. + 132.), vec2(280., 66.)),
                 egui::Button::new("Back to menu"),

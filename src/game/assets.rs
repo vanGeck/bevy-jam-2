@@ -170,6 +170,7 @@ pub enum TextureId {
     /// Fallback sprite. Will be used if the intended sprite failed to load.
     NotFound,
     UiPanelTexture,
+    TooltipBackground,
     /// Large image for the menu screen
     Backpack,
     MenuCaveBg,
@@ -266,4 +267,5 @@ pub enum FontId {
     /// Thicker than Regular.
     FiraSansMedium,
     FiraSansBold,
+    FiraSansItalic,
 }

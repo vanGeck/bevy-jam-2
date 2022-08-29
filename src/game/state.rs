@@ -26,7 +26,9 @@ use crate::positioning::{Coords, Pos};
 use crate::AppState;
 
 use super::combat::{Combatant, Enemy, Hero};
-use super::{consume_item, update_health_bar, update_hero_stats_display, Eyes, Iris};
+use super::{
+    consume_item, delete_item_system, update_health_bar, update_hero_stats_display, Eyes, Iris,
+};
 
 pub struct GamePlugin;
 
@@ -49,7 +51,7 @@ impl Plugin for GamePlugin {
                     proficiency: 1,
                     damage_res: 0,
                     damage_bonus: 0,
-                    negative_feedback: 0
+                    negative_feedback: 0,
                 },
             })
             .init_resource::<Enemy>()
@@ -89,6 +91,7 @@ impl Plugin for GamePlugin {
                     .with_system(update_mouse_over_item_info_style_position_system)
                     .with_system(position_feed_item)
                     .with_system(consume_item)
+                    .with_system(delete_item_system)
                     .with_system(animate_falling_item)
                     .into(),
             )
@@ -131,7 +134,7 @@ fn clear_gameplay_data(mut hero: ResMut<Hero>) {
         proficiency: 1,
         damage_res: 0,
         damage_bonus: 0,
-        negative_feedback: 0
+        negative_feedback: 0,
     };
 }
 
@@ -153,16 +156,15 @@ pub fn eye_tracking_system(
 }
 
 pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<ItemsData>) {
-    let item = items_db.try_get_item(ItemId::ScrollBasic5).unwrap();
-    spawn.send(SpawnItemEvent::without_anim(
-        item.1,
-        Coords::new(Pos::new(3, 3), item.0),
-    ));
-
     let mut item = items_db.try_get_item(ItemId::ScrollBasic7).unwrap();
     spawn.send(SpawnItemEvent::without_anim(
         item.1,
-        Coords::new(Pos::new(3, 4), item.0),
+        Coords::new(Pos::new(4, 3), item.0),
+    ));
+    item = items_db.try_get_item(ItemId::ScrollBasic8).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(5, 3), item.0),
     ));
 
     item = items_db.try_get_item(ItemId::Vial).unwrap();
@@ -188,6 +190,13 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<
         item.1,
         Coords::new(Pos::new(3, 1), item.0),
     ));
+    // item = items_db
+    //     .try_get_item(ItemId::MasterworkSwordOfSpeed)
+    //     .unwrap();
+    // spawn.send(SpawnItemEvent::without_anim(
+    //     item.1,
+    //     Coords::new(Pos::new(7, 0), item.0),
+    // ));
     // item = items_db.try_get_item(ItemId::SwordRusty).unwrap();
     // spawn.send(SpawnItemEvent::without_anim(
     //     item.1,

@@ -26,6 +26,11 @@ pub fn prepare_loading_config() -> LoadingConfig {
     c.textures.insert(NotFound, "not_found.png".to_string());
     c.textures
         .insert(UiPanelTexture, "MyPanel2.png".to_string());
+    //c.textures.insert(TooltipBackground, "parchment.png".to_string());
+    c.textures.insert(
+        TooltipBackground,
+        "Stone_Tablet_Panel_Shrinked_Uniform_Borders.png".to_string(),
+    );
     c.textures
         .insert(MenuCaveBg, "menu_cave_bg.png".to_string());
     c.textures.insert(Overseer, "overseer.png".to_string());
@@ -88,7 +93,6 @@ pub fn prepare_loading_config() -> LoadingConfig {
     c.textures.insert(Shield, "Shield.png".to_string());
     c.textures
         .insert(ShieldMasterwork, "ShieldMasterwork.png".to_string());
-
 
     // ==============================================================
     // ================= SFX
@@ -179,5 +183,7 @@ pub fn prepare_loading_config() -> LoadingConfig {
         .insert(FiraSansMedium, "FiraSans-Medium.ttf".to_string());
     c.fonts
         .insert(FiraSansBold, "FiraSans-Bold.ttf".to_string());
+    c.fonts
+        .insert(FiraSansItalic, "FiraSans-Italic.ttf".to_string());
     c
 }

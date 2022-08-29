@@ -3,20 +3,20 @@ use bevy::window::WindowMode;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
 use iyes_loopless::state::NextState;
 
-use crate::{AppState, DebugConfig};
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_layout::LayoutData;
-use crate::game::{AlbumId, AssetStorage, create_camera, FontId, MENU_ZOOM};
 use crate::game::create_backpack::create_layout_background;
 use crate::game::create_widget_feed::create_layout_feed;
 use crate::game::create_widget_grids::{create_layout_combine_button, create_layout_grids};
 use crate::game::create_widget_hero::create_layout_hero;
 use crate::game::create_widget_music::create_layout_music;
 use crate::game::create_widget_toasts::create_layout_toasts;
+use crate::game::{create_camera, AlbumId, AssetStorage, FontId, MENU_ZOOM};
 use crate::mouse::MouseInteractive;
 use crate::positioning::Depth;
 use crate::states::delete_all_entities;
 use crate::transition_state::MenuTransition;
+use crate::{AppState, DebugConfig};
 
 pub struct MainMenuPlugin;
 
@@ -152,7 +152,6 @@ pub fn init_menu(mut commands: Commands, assets: Res<AssetStorage>, layout: Res<
     let dev_props = "A Game by: Jazarro FestusVanGeck Jacques parK-dev";
     let art_props = "Art by: Jack Pettigrew (DarkDax) & InkeFaux";
     let music_props = "Music by: Twitchywhalez";
-    
 
     commands.spawn_bundle(Text2dBundle {
         text: Text::from_section("Loot Goblin", title_text_style).with_alignment(text_alignment),
@@ -161,44 +160,46 @@ pub fn init_menu(mut commands: Commands, assets: Res<AssetStorage>, layout: Res<
             screen_anchor.y + menu_screen_dimens.y * 0.8,
             Depth::Menu.z() + 10.,
         ))
-            .with_scale(Vec3::new(
-                MENU_ZOOM / layout.text_factor,
-                MENU_ZOOM / layout.text_factor,
-                1.,
-            )),
+        .with_scale(Vec3::new(
+            MENU_ZOOM / layout.text_factor,
+            MENU_ZOOM / layout.text_factor,
+            1.,
+        )),
         ..default()
     });
 
     commands.spawn_bundle(Text2dBundle {
-        text: Text::from_section(dev_props, props_text_style.clone()).with_alignment(text_alignment),
+        text: Text::from_section(dev_props, props_text_style.clone())
+            .with_alignment(text_alignment),
         transform: Transform::from_translation(Vec3::new(
             screen_anchor.x + menu_screen_dimens.x * 0.5,
             screen_anchor.y + menu_screen_dimens.y * 0.2,
             Depth::Menu.z() + 10.,
         ))
-            .with_scale(Vec3::new(
-                MENU_ZOOM / layout.text_factor,
-                MENU_ZOOM / layout.text_factor,
-                1.,
-            )),
+        .with_scale(Vec3::new(
+            MENU_ZOOM / layout.text_factor,
+            MENU_ZOOM / layout.text_factor,
+            1.,
+        )),
         ..default()
     });
-    
+
     commands.spawn_bundle(Text2dBundle {
-        text: Text::from_section(art_props, props_text_style.clone()).with_alignment(text_alignment),
+        text: Text::from_section(art_props, props_text_style.clone())
+            .with_alignment(text_alignment),
         transform: Transform::from_translation(Vec3::new(
             screen_anchor.x + menu_screen_dimens.x * 0.5,
             screen_anchor.y + menu_screen_dimens.y * 0.15,
             Depth::Menu.z() + 10.,
         ))
-            .with_scale(Vec3::new(
-                MENU_ZOOM / layout.text_factor,
-                MENU_ZOOM / layout.text_factor,
-                1.,
-            )),
+        .with_scale(Vec3::new(
+            MENU_ZOOM / layout.text_factor,
+            MENU_ZOOM / layout.text_factor,
+            1.,
+        )),
         ..default()
     });
-    
+
     commands.spawn_bundle(Text2dBundle {
         text: Text::from_section(music_props, props_text_style).with_alignment(text_alignment),
         transform: Transform::from_translation(Vec3::new(
@@ -206,16 +207,13 @@ pub fn init_menu(mut commands: Commands, assets: Res<AssetStorage>, layout: Res<
             screen_anchor.y + menu_screen_dimens.y * 0.1,
             Depth::Menu.z() + 10.,
         ))
-            .with_scale(Vec3::new(
-                MENU_ZOOM / layout.text_factor,
-                MENU_ZOOM / layout.text_factor,
-                1.,
-            )),
+        .with_scale(Vec3::new(
+            MENU_ZOOM / layout.text_factor,
+            MENU_ZOOM / layout.text_factor,
+            1.,
+        )),
         ..default()
     });
-
-
-
 }
 
 pub fn clean_menu_entities(mut commands: Commands, query: Query<Entity, With<MenuEntity>>) {

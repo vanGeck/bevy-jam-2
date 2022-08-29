@@ -93,6 +93,7 @@ pub enum TextType {
     EnterGoblinBrat,
     EnterGoblinSwordsman,
     EnterGoblinShieldBearer,
+    EnterOrcWarrior,
     EnterSkeleton,
     EnterZombie,
     EnterOgreNecromancer,

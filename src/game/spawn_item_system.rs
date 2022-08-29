@@ -16,14 +16,16 @@ pub struct SpawnItemEvent {
     /// Set to to None for any items that are present at the start of the game. They will spawn
     /// in the inventory without any animations.
     source: Option<Vec2>,
+    combine: bool,
 }
 
 impl SpawnItemEvent {
-    pub fn new(item: Item, coords: Coords, source: Vec2) -> Self {
+    pub fn new(item: Item, coords: Coords, source: Vec2, combine: bool) -> Self {
         SpawnItemEvent {
             item,
             coords,
             source: Some(source),
+            combine,
         }
     }
     /// Use this for items that already exist in the backpack at the start of the game.
@@ -32,6 +34,7 @@ impl SpawnItemEvent {
             item,
             coords,
             source: None,
+            combine: false,
         }
     }
 }
@@ -46,6 +49,7 @@ pub fn spawn_item(
         item,
         coords,
         source,
+        combine,
     } in events.iter()
     {
         trace!("Received SpawnItemEvent( {:?}, {:?} )", item, coords);
@@ -66,6 +70,7 @@ pub fn spawn_item(
                     *coords,
                     *source,
                     coords.pos.as_vec2() + grid.offset,
+                    if *combine { 0.75 } else { 1.25 },
                 ))
                 .insert(CleanupOnGameplayEnd);
         }

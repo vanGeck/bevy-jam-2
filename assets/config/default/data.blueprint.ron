@@ -5,7 +5,7 @@
             depth: 0,
             default_loot: ( // DropTable
                 items: [ HerbGreen, HerbRed, HerbViolet, Vial ],
-                chances: [ 20, 20, 20, 20 ]
+                chances: [ 13, 20, 13, 20 ]
             ),
             segments: [ // Room contents defined here
                 ( 
@@ -38,6 +38,13 @@
                     enemies: { GoblinSwordsman: 50, Rat: 50 }
                 ),
                 (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ SwordRusty, SwordRusty, ShieldRusty ],
+                        chances: [ 100, 100, 100]
+                    ),
+                ),
+                (
                     types: { Empty: 75, Fight: 25, },
                     enemies: { GoblinBrat: 50, Rat: 50 }
                 ),
@@ -54,6 +61,9 @@
                     enemies: { GoblinBrat: 50, Rat: 50 }
                 ),
                 (
+                    types: { Empty: 100, },
+                ),
+                (
                     types: { Fight: 100, },
                     enemies: { GoblinShieldbearer: 100, }
                 ),
@@ -66,11 +76,15 @@
             depth: 1,
             default_loot: ( // DropTable
                 items: [ HerbGreen, HerbRed, HerbViolet, Vial ],
-                chances: [ 20, 30, 10, 35 ]
+                chances: [ 10, 30, 10, 35 ]
             ),
             segments: [ // Room contents defined here
                 (
                     types: { Start : 100, }
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { GoblinSwordsman: 100, }
                 ),
                 (
                     types: { Empty: 100, },                    
@@ -87,24 +101,25 @@
                 (
                     types: { Empty: 100, },
                     custom_loot:(
-                        items: [ HerbRed, Vial, HerbViolet ],
-                        chances: [ 100, 100, 65]
-                    )
+                        items: [ EssenceAlacrity, EssenceMight, ScrollBasic9],
+                        chances: [ 100, 100, 100]
+                    ),
+                    custom_flavour: AlchemyLab
                 ),
                 (
                     types: { Fight: 100, },
-                    enemies: { GoblinBrat: 100, }
+                    enemies: { OrcWarrior: 100, }
                 ),
                 (
                     types: { Fight: 100, },
                     enemies: { GoblinShieldbearer: 50, GoblinBrat: 50 }
                 ),
                 (
-                    types: { Empty: 75, Fight: 25, },
-                    enemies: { GoblinBrat: 50, Rat: 50 }
+                    types: { Corridor: 100, },
                 ),
                 (
-                    types: { Corridor: 100, },
+                    types: { Empty: 75, Fight: 25, },
+                    enemies: { GoblinBrat: 50, Rat: 50 }
                 ),
                 (
                     types: { Empty: 100, },
@@ -120,7 +135,7 @@
                 ),
                 (
                     types: { Fight: 100, },
-                    enemies: { Zombie: 25, GoblinSwordsman:50, GoblinShieldbearer: 25 }
+                    enemies: { OrcWarrior: 25, Zombie:50, GoblinShieldbearer: 25 }
                 ),
                 (
                     types: {End: 100, },
@@ -131,7 +146,7 @@
             depth: 2,
             default_loot: ( // DropTable
                 items: [ HerbGreen, HerbRed, HerbViolet, Vial ],
-                chances: [ 20, 30, 20, 40 ]
+                chances: [ 12, 20, 12, 40 ]
             ),
             segments: [ // Room contents defined here
                 (
@@ -208,8 +223,8 @@
                     custom_flavour: LairEntrance
                 ),
                 ( // Final boss
-                    types: {Fight: 100, },
-                    enemoes: { OgreNecromancer : 100 }
+                    types: { Fight: 100, },
+                    enemies: { OgreNecromancer : 100 }
                 )
             ]
         )

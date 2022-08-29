@@ -56,6 +56,7 @@ pub fn combine_items_system(
                             item,
                             free_coords,
                             grid.center_crafting(),
+                            true,
                         ));
                         // Delete the craft items entities
                         for (entity, _) in crafting_items_query.iter() {

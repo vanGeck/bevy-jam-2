@@ -36,6 +36,7 @@ pub struct MouseInteractive {
     /// (Set to true upon signal going up, aka the LMB going down.)
     pub clicked: bool,
     pub ctrl_clicked: bool,
+    pub shift_clicked: bool,
 }
 
 impl MouseInteractive {
@@ -46,6 +47,7 @@ impl MouseInteractive {
             hovered: false,
             clicked: false,
             ctrl_clicked: false,
+            shift_clicked: false,
         }
     }
 }
@@ -130,6 +132,9 @@ pub fn track_mouse_hover(
             interactive.ctrl_clicked = interactive.hovered
                 && input.just_pressed(MouseButton::Left)
                 && keys.pressed(KeyCode::LControl);
+            interactive.shift_clicked = interactive.hovered
+                && input.just_pressed(MouseButton::Left)
+                && keys.pressed(KeyCode::LShift);
             if interactive.hovered {
                 (highest_z.max(transform.translation().z), nr_items + 1)
             } else {

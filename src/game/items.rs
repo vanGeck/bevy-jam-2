@@ -1,13 +1,15 @@
+use std::fmt::Formatter;
+
+use crate::game::item_info_system::MousedOver;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::fmt::Formatter;
 
 use crate::game::TextureId;
 use crate::mouse::MouseInteractive;
 use crate::positioning::Coords;
 
 use super::combat::Hero;
-use super::item_info_system::MouseOverItemInfo;
+use super::item_info_system::TooltipBg;
 use super::timed_effect::{apply_timed_modifier, TemporaryModifier};
 
 /// Marker component. This item is currently in the crafting window.
@@ -27,12 +29,12 @@ pub struct FallingItem {
 }
 
 impl FallingItem {
-    pub fn new(coords: Coords, source: Vec2, target: Vec2) -> Self {
+    pub fn new(coords: Coords, source: Vec2, target: Vec2, seconds: f32) -> Self {
         Self {
             coords,
             source,
             target,
-            timer: Timer::from_seconds(1.5, false),
+            timer: Timer::from_seconds(seconds, false),
         }
     }
 }
@@ -124,6 +126,8 @@ pub enum ItemId {
     ScrollBasic5,
     ScrollBasic6,
     ScrollBasic7,
+    ScrollBasic8,
+    ScrollBasic9,
     ScrollKnowledge1,
     ScrollKnowledge2,
     ScrollKnowledge3,
@@ -154,9 +158,13 @@ pub fn consume_item(
     mut hero: ResMut<Hero>,
     items: Query<(Entity, &Item, &MouseInteractive)>,
     equipped_items_query: Query<&EquippedItem>,
-    mut tooltips: Query<Entity, With<MouseOverItemInfo>>,
+    mut tooltips: Query<Entity, With<TooltipBg>>,
 ) {
     for (e, item, interactive) in items.iter() {
+        // if interactive.shift_clicked {
+        //     commands.entity(e).despawn_recursive();
+        // }
+
         if interactive.ctrl_clicked {
             // Unequip any items already equipped that the new item can override.
             if let Some(new_slot) = item.wearable {
@@ -208,6 +216,21 @@ pub fn consume_item(
                 if let Ok(tooltip) = tooltips.get_single_mut() {
                     commands.entity(tooltip).despawn_recursive();
                 }
+            }
+        }
+    }
+}
+
+pub fn delete_item_system(
+    mut commands: Commands,
+    items: Query<(Entity, &MouseInteractive), With<Item>>,
+    mut tooltips: Query<Entity, With<MousedOver>>,
+) {
+    for (e, interactive) in items.iter() {
+        if interactive.shift_clicked {
+            commands.entity(e).despawn_recursive();
+            if let Ok(tooltip) = tooltips.get_single_mut() {
+                commands.entity(tooltip).despawn_recursive();
             }
         }
     }

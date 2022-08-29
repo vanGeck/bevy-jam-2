@@ -1,215 +1,247 @@
 use bevy::prelude::*;
+use bevy::text::{Text2dBounds, Text2dSize};
 
-use crate::game::{EquipmentSlot, Item};
+use crate::config::data_layout::LayoutData;
+use crate::game::{AssetStorage, EquipmentSlot, FontId, Item, TextureId};
 use crate::mouse::MouseInteractive;
+use crate::positioning::Depth;
 use crate::Mouse;
 
 /// === Components ===
 
 /// This marker component is added to entities with Item Components that are currently being moused over.
 #[derive(Component)]
-pub struct MouseOver {}
+pub struct MousedOver;
 
 /// This component is added to the entity spawned to display the item info.
 #[derive(Component, Debug)]
-pub struct MouseOverItemInfo {}
+pub struct TooltipBg;
+
+#[derive(Component, Debug)]
+pub struct TooltipName;
+
+#[derive(Component, Debug)]
+pub struct TooltipDescription;
+
+#[derive(Component, Debug)]
+pub struct TooltipWearable;
+
+#[derive(Component, Debug)]
+pub struct TooltipStats;
 
 /// === Systems ===
 
+/// Adds and removes MouseOver components to items that are being hovered over.
+/// Also deletes the tooltip if an item is not hovered over anymore.
 pub fn update_mouse_over_item_info_system(
     mut commands: Commands,
-    new_mouse_over_items_query: Query<(Entity, &MouseInteractive, &Item), Without<MouseOver>>,
-    old_mouse_over_items_query: Query<(Entity, &MouseInteractive, &Item), With<MouseOver>>,
-    item_info_query: Query<Entity, With<MouseOverItemInfo>>,
-    asset_server: Res<AssetServer>,
+    new_mouse_over_items_query: Query<(Entity, &MouseInteractive, &Item), Without<MousedOver>>,
+    old_mouse_over_items_query: Query<(Entity, &MouseInteractive, &Item), With<MousedOver>>,
+    item_info_query: Query<Entity, With<TooltipBg>>,
+    assets: Res<AssetStorage>,
     mouse: Res<Mouse>,
+    layout: Res<LayoutData>,
 ) {
     // Add new item info
     for (item_entity, mouse_interaction, item) in new_mouse_over_items_query.iter() {
         if mouse_interaction.hovered {
-            commands.entity(item_entity).insert(MouseOver {});
+            commands.entity(item_entity).insert(MousedOver);
+
+            // Spawn the container with the sprite background:
             commands
-                .spawn_bundle(NodeBundle {
-                    style: Style {
-                        position_type: PositionType::Absolute,
-                        position: UiRect {
-                            top: Val::Px(mouse.screen_pos_inverted.y),
-                            left: Val::Px(mouse.screen_pos_inverted.x + 32.0),
-                            ..default()
-                        },
+                .spawn_bundle(SpriteBundle {
+                    sprite: Sprite {
+                        custom_size: Some(Vec2::splat(0.)), //Will be adjusted later.
                         ..default()
                     },
+                    texture: assets.texture(&TextureId::TooltipBackground),
+                    transform: Transform::from_xyz(
+                        mouse.position.x,
+                        mouse.position.y,  //Will be adjusted later.
+                        Depth::Cursor.z(), // Relative to parent grid.
+                    ),
                     ..default()
                 })
                 .insert(Name::new("MouseOverItemInfo"))
-                .insert(MouseOverItemInfo {})
+                .insert(TooltipBg)
                 .with_children(|parent| {
+                    let text_alignment = TextAlignment {
+                        horizontal: HorizontalAlign::Left,
+                        vertical: VerticalAlign::Center,
+                    };
+                    let text_bounds = Vec2::new(5., 3.);
+                    // Spawn the name text:
                     parent
-                        .spawn_bundle(ImageBundle {
-                            style: Style {
-                                size: Size::new(Val::Auto, Val::Auto),
-                                padding: UiRect {
-                                    bottom: Val::Px(8.0),
-                                    right: Val::Px(8.0),
-                                    ..default()
+                        .spawn_bundle(Text2dBundle {
+                            // Default text, will probably never be seen:
+                            text: Text::from_section(
+                                &item.name,
+                                TextStyle {
+                                    font: assets.font(&FontId::FiraSansBold),
+                                    font_size: 80.0,
+                                    color: Color::ANTIQUE_WHITE,
                                 },
-                                position_type: PositionType::Absolute,
-                                position: UiRect {
-                                    top: Val::Px(0.0),
-                                    left: Val::Px(0.0),
-                                    ..default()
-                                },
-                                justify_content: JustifyContent::FlexStart,
-                                align_items: AlignItems::FlexStart,
-                                flex_direction: FlexDirection::ColumnReverse,
-                                ..default()
+                            )
+                            .with_alignment(text_alignment),
+                            // The max size that it should fit in:
+                            text_2d_bounds: Text2dBounds {
+                                size: Vec2::new(
+                                    text_bounds.x * layout.text_factor,
+                                    text_bounds.y * layout.text_factor,
+                                ),
                             },
-                            image: asset_server
-                                .load("textures/Stone_Tablet_Panel_Shrinked_Uniform_Borders.png")
-                                .into(),
+                            transform: Transform::from_translation(Vec3::new(0., 0., 1.0))
+                                .with_scale(Vec3::new(
+                                    1. / layout.text_factor,
+                                    1. / layout.text_factor,
+                                    1.,
+                                )),
                             ..default()
                         })
-                        .with_children(|parent| {
-                            // Name
-                            parent.spawn_bundle(
-                                TextBundle::from_section(
-                                    item.name.clone(),
+                        .insert(TooltipName);
+                    // Spawn the description text:
+                    parent
+                        .spawn_bundle(Text2dBundle {
+                            // Default text, will probably never be seen:
+                            text: Text::from_section(
+                                &item.description,
+                                TextStyle {
+                                    font: assets.font(&FontId::FiraSansItalic),
+                                    font_size: 60.0,
+                                    color: Color::ANTIQUE_WHITE,
+                                },
+                            )
+                            .with_alignment(text_alignment),
+                            // The max size that it should fit in:
+                            text_2d_bounds: Text2dBounds {
+                                size: Vec2::new(
+                                    text_bounds.x * layout.text_factor,
+                                    text_bounds.y * layout.text_factor,
+                                ),
+                            },
+                            transform: Transform::from_translation(Vec3::new(0., 0., 1.0))
+                                .with_scale(Vec3::new(
+                                    1. / layout.text_factor,
+                                    1. / layout.text_factor,
+                                    1.,
+                                )),
+                            ..default()
+                        })
+                        .insert(TooltipDescription);
+                    // If applicable, spawn the wearable text:
+                    if let Some(slot) = item.wearable {
+                        let slot_name = match slot {
+                            EquipmentSlot::Armour => "Armour".to_string(),
+                            EquipmentSlot::Shield => "Shield".to_string(),
+                            EquipmentSlot::Weapon => "Weapon".to_string(),
+                        };
+                        parent
+                            .spawn_bundle(Text2dBundle {
+                                // Default text, will probably never be seen:
+                                text: Text::from_section(
+                                    &slot_name,
                                     TextStyle {
-                                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                        font_size: 20.0,
+                                        font: assets.font(&FontId::FiraSansMedium),
+                                        font_size: 60.0,
                                         color: Color::ANTIQUE_WHITE,
                                     },
                                 )
-                                .with_style(Style {
-                                    position_type: PositionType::Relative,
-                                    position: UiRect {
-                                        top: Val::Px(0.0),
-                                        left: Val::Px(0.0),
-                                        ..default()
-                                    },
-                                    margin: UiRect {
-                                        top: Val::Px(4.0),
-                                        left: Val::Px(8.0),
-                                        ..default()
-                                    },
-                                    ..default()
-                                }),
-                            );
-                            // Description
-                            parent.spawn_bundle(
-                                TextBundle::from_section(
-                                    item.description.clone(),
+                                .with_alignment(text_alignment),
+                                // The max size that it should fit in:
+                                text_2d_bounds: Text2dBounds {
+                                    size: Vec2::new(
+                                        text_bounds.x * layout.text_factor,
+                                        text_bounds.y * layout.text_factor,
+                                    ),
+                                },
+                                transform: Transform::from_translation(Vec3::new(0., 0., 1.0))
+                                    .with_scale(Vec3::new(
+                                        1. / layout.text_factor,
+                                        1. / layout.text_factor,
+                                        1.,
+                                    )),
+                                ..default()
+                            })
+                            .insert(TooltipWearable);
+                    }
+                    // If applicable, spawn Stat Bonuses text:
+                    let stats_text = item
+                        .stat_bonuses
+                        .map(|stat_bonus| {
+                            let mut stats: String = format!("Stats:\n");
+                            let mut stats_present = false;
+                            if stat_bonus.proficiency > 0 {
+                                stats_present = true;
+                                stats.push_str(&*format!(
+                                    "    | Combat Proficiency: {}\n",
+                                    stat_bonus.proficiency
+                                ));
+                            }
+                            if stat_bonus.damage_bonus > 0 {
+                                stats_present = true;
+                                stats.push_str(&*format!(
+                                    "    | Damage: {}\n",
+                                    stat_bonus.damage_bonus
+                                ));
+                            }
+                            if stat_bonus.damage_res > 0 {
+                                stats_present = true;
+                                stats.push_str(&*format!(
+                                    "    | Damage Resistance: {}\n",
+                                    stat_bonus.damage_res
+                                ));
+                            }
+                            if stat_bonus.max_health > 0 {
+                                stats_present = true;
+                                stats.push_str(&*format!(
+                                    "    | Max HP: {}\n",
+                                    stat_bonus.proficiency
+                                ));
+                            }
+                            if stats_present {
+                                Some(stats)
+                            } else {
+                                None
+                            }
+                        })
+                        .flatten();
+                    if let Some(stat_bonus) = stats_text {
+                        parent
+                            .spawn_bundle(Text2dBundle {
+                                // Default text, will probably never be seen:
+                                text: Text::from_section(
+                                    stat_bonus,
                                     TextStyle {
-                                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                        font_size: 16.0,
+                                        font: assets.font(&FontId::FiraSansMedium),
+                                        font_size: 60.0,
                                         color: Color::ANTIQUE_WHITE,
                                     },
                                 )
-                                .with_style(Style {
-                                    position_type: PositionType::Relative,
-                                    position: UiRect {
-                                        top: Val::Px(0.0),
-                                        left: Val::Px(0.0),
-                                        ..default()
-                                    },
-                                    margin: UiRect {
-                                        top: Val::Px(4.0),
-                                        left: Val::Px(8.0),
-                                        ..default()
-                                    },
-                                    ..default()
-                                }),
-                            );
-                            // Wearable
-                            if let Some(slot) = item.wearable.clone() {
-                                let slot_name: String;
-                                match slot {
-                                    EquipmentSlot::Armour => {
-                                        slot_name = "Armour".to_string();
-                                    }
-                                    EquipmentSlot::Shield => {
-                                        slot_name = "Shield".to_string();
-                                    }
-                                    EquipmentSlot::Weapon => {
-                                        slot_name = "Weapon".to_string();
-                                    }
-                                }
-                                parent.spawn_bundle(
-                                    TextBundle::from_section(
-                                        slot_name,
-                                        TextStyle {
-                                            font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                            font_size: 16.0,
-                                            color: Color::ANTIQUE_WHITE,
-                                        },
-                                    )
-                                    .with_style(Style {
-                                        position_type: PositionType::Relative,
-                                        position: UiRect {
-                                            top: Val::Px(4.0),
-                                            left: Val::Px(8.0),
-                                            ..default()
-                                        },
-                                        ..default()
-                                    }),
-                                );
-                            }
-                            // Stat Bonuses
-                            if let Some(stat_bonus) = item.stat_bonuses {
-                                let mut stats: String = format!("| Stats: ");
-                                if stat_bonus.proficiency > 0 {
-                                    stats.push_str(&*format!(
-                                        "Combat Proficiency: {} | ",
-                                        stat_bonus.proficiency
-                                    ));
-                                }
-                                if stat_bonus.damage_bonus > 0 {
-                                    stats.push_str(&*format!(
-                                        "Damage: {} | ",
-                                        stat_bonus.damage_bonus
-                                    ));
-                                }
-                                if stat_bonus.damage_res > 0 {
-                                    stats.push_str(&*format!(
-                                        "Damage Resistance: {} | ",
-                                        stat_bonus.damage_res
-                                    ));
-                                }
-                                if stat_bonus.max_health > 0 {
-                                    stats.push_str(&*format!(
-                                        "Max HP: {} | ",
-                                        stat_bonus.proficiency
-                                    ));
-                                }
-
-                                parent.spawn_bundle(
-                                    TextBundle::from_section(
-                                        stats,
-                                        TextStyle {
-                                            font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                                            font_size: 16.0,
-                                            color: Color::ANTIQUE_WHITE,
-                                        },
-                                    )
-                                    .with_style(Style {
-                                        position_type: PositionType::Relative,
-                                        position: UiRect {
-                                            top: Val::Px(4.0),
-                                            left: Val::Px(8.0),
-                                            ..default()
-                                        },
-                                        ..default()
-                                    }),
-                                );
-                            }
-                        });
+                                .with_alignment(text_alignment),
+                                // The max size that it should fit in:
+                                text_2d_bounds: Text2dBounds {
+                                    size: Vec2::new(
+                                        text_bounds.x * layout.text_factor,
+                                        text_bounds.y * layout.text_factor,
+                                    ),
+                                },
+                                transform: Transform::from_translation(Vec3::new(0., 0., 1.0))
+                                    .with_scale(Vec3::new(
+                                        1. / layout.text_factor,
+                                        1. / layout.text_factor,
+                                        1.,
+                                    )),
+                                ..default()
+                            })
+                            .insert(TooltipStats);
+                    }
                 });
         }
     }
     // Remove old item info
     for (item_entity, mouse_interaction, _) in old_mouse_over_items_query.iter() {
         if !mouse_interaction.hovered {
-            commands.entity(item_entity).remove::<MouseOver>();
+            commands.entity(item_entity).remove::<MousedOver>();
             for item_info_entity in item_info_query.iter() {
                 commands.entity(item_info_entity).despawn_recursive()
             }
@@ -217,218 +249,86 @@ pub fn update_mouse_over_item_info_system(
     }
 }
 
+/// Update the position of the tooptip to move with the mouse and maybe flip around to the other
+/// side of the cursor if the tooltip would otherwise go off the screen.
 pub fn update_mouse_over_item_info_style_position_system(
+    layout: Res<LayoutData>,
     mouse: Res<Mouse>,
-    mut mouse_over_item_info_query: Query<&mut Style, With<MouseOverItemInfo>>,
+    mut queries: ParamSet<(
+        Query<(&mut Sprite, &mut Transform), With<TooltipBg>>,
+        Query<(&Text2dSize, &mut Transform), With<TooltipName>>,
+        Query<(&Text2dSize, &mut Transform), With<TooltipDescription>>,
+        Query<(&Text2dSize, &mut Transform), With<TooltipWearable>>,
+        Query<(&Text2dSize, &mut Transform), With<TooltipStats>>,
+    )>,
 ) {
-    for mut style in mouse_over_item_info_query.iter_mut() {
-        style.position = UiRect {
-            top: Val::Px(mouse.screen_pos_inverted.y),
-            left: Val::Px(mouse.screen_pos_inverted.x + 32.0),
-            ..default()
-        }
+    if queries.p0().get_single().is_err() {
+        return;
+    }
+    let size_name = queries.p1().single().0.size / layout.text_factor;
+    let size_description = queries.p2().single().0.size / layout.text_factor;
+    let size_wearable = queries
+        .p3()
+        .get_single()
+        .map(|(size, _)| size.size)
+        .unwrap_or(Vec2::splat(0.))
+        / layout.text_factor;
+    let size_stats = queries
+        .p4()
+        .get_single()
+        .map(|(size, _)| size.size)
+        .unwrap_or(Vec2::splat(0.))
+        / layout.text_factor;
+    let padding = 0.25;
+    let container_size = Vec2::new(
+        padding * 2.
+            + size_name
+                .x
+                .max(size_description.x)
+                .max(size_wearable.x)
+                .max(size_stats.x),
+        padding * 2. + size_stats.y + size_wearable.y + size_description.y + size_name.y,
+    );
+    let anchor = container_size * -0.5;
+
+    if let Ok((_, mut transform)) = queries.p4().get_single_mut() {
+        transform.translation.x = anchor.x + padding;
+        transform.translation.y = anchor.y + padding + size_stats.y * 0.5;
+    }
+    if let Ok((_, mut transform)) = queries.p3().get_single_mut() {
+        transform.translation.x = anchor.x + padding;
+        transform.translation.y = anchor.y + padding + size_stats.y + size_wearable.y * 0.5;
+    }
+    if let Ok((_, mut transform)) = queries.p2().get_single_mut() {
+        transform.translation.x = anchor.x + padding;
+        transform.translation.y =
+            anchor.y + padding + size_stats.y + size_wearable.y + size_description.y * 0.5;
+    }
+    if let Ok((_, mut transform)) = queries.p1().get_single_mut() {
+        transform.translation.x = anchor.x + padding;
+        transform.translation.y = anchor.y
+            + padding
+            + size_stats.y
+            + size_wearable.y
+            + size_description.y
+            + size_name.y * 0.5;
+    }
+
+    let enough_room_on_right =
+        layout.screen_dimens.x - mouse.position.x > container_size.x + 2. * padding;
+    let enough_room_on_bottom =
+        layout.screen_dimens.y - mouse.position.y > container_size.y + 2. * padding;
+    if let Ok((mut sprite, mut transform)) = queries.p0().get_single_mut() {
+        sprite.custom_size = Some(container_size);
+        transform.translation.x = if enough_room_on_right {
+            mouse.position.x + padding - anchor.x
+        } else {
+            mouse.position.x - padding - anchor.x - container_size.x
+        };
+        transform.translation.y = if enough_room_on_bottom {
+            mouse.position.y - padding + anchor.y + container_size.y
+        } else {
+            mouse.position.y + padding + anchor.y - container_size.y
+        };
     }
 }
-
-// References
-// 1. https://docs.rs/bevy/latest/bevy/ui/struct.Style.html
-
-// Old Code
-
-// pub fn check_mouse_over_item_system(
-//     mut commands: Commands,
-//     new_hover_query: Query<(Entity, &MouseInteractive), Without<MouseOver>>,
-//     old_hover_query: Query<(Entity, &MouseInteractive), With<MouseOver>>,
-//     mut mouse_over_event_writer: EventWriter<MouseOverEvent>,
-// ) {
-//     // Add and remove Item Info Component
-//     for (entity, interactive) in new_hover_query.iter() {
-//         if interactive.hovered {
-//             // debug!("new_hover_query - is_mouse_over_item: {:?}", is_mouse_over_item);
-//             commands
-//                 .entity(entity)
-//                 .insert(MouseOver { displayed: false }); // This isn't completing before the event is sent (sometimes)
-//             mouse_over_event_writer.send(MouseOverEvent {
-//                 state: MouseOverState::Started,
-//             })
-//         }
-//     }
-//     for (entity, interactive) in old_hover_query.iter() {
-//         if !interactive.hovered {
-//             // debug!("old_hover_query - is_mouse_over_item: {:?}", is_mouse_over_item);
-//             commands.entity(entity).remove::<MouseOver>();
-//             mouse_over_event_writer.send(MouseOverEvent {
-//                 state: MouseOverState::Ended,
-//             })
-//         }
-//     }
-// }
-
-// pub fn update_mouse_over_item_info_system(
-//     mut commands: Commands,
-//     mouse: Res<Mouse>,
-//     asset_server: Res<AssetServer>,
-//     mut mouse_over_items: Query<(&Item, &mut MouseOver)>,
-//     mouse_over_item_info_query: Query<Entity, With<MouseOverItemInfo>>,
-//     mut mouse_over_events: EventReader<MouseOverEvent>,
-// ) {
-//     for (item, mut mouse_over) in mouse_over_items.iter_mut() {
-//         if !mouse_over.displayed {
-//             commands
-//                 .spawn_bundle(NodeBundle {
-//                     style: Style {
-//                         position_type: PositionType::Absolute,
-//                         position: UiRect {
-//                             top: Val::Px(mouse.screen_pos_inverted.y),
-//                             left: Val::Px(mouse.screen_pos_inverted.x),
-//                             ..default()
-//                         },
-//                         ..default()
-//                     },
-//                     ..default()
-//                 })
-//                 .insert(Name::new("MouseOverItemInfo"))
-//                 .insert(MouseOverItemInfo {})
-//                 .with_children(|parent| {
-//                     // Name
-//                     parent.spawn_bundle(
-//                         TextBundle::from_section(
-//                             item.name.clone(),
-//                             TextStyle {
-//                                 font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-//                                 font_size: 20.0,
-//                                 color: Color::ANTIQUE_WHITE,
-//                             },
-//                         )
-//                             .with_style(Style {
-//                                 position_type: PositionType::Absolute,
-//                                 position: UiRect {
-//                                     top: Val::Px(-24.0),
-//                                     left: Val::Px(0.0),
-//                                     ..default()
-//                                 },
-//                                 ..default()
-//                             }),
-//                     );
-//                     // Description
-//                     parent.spawn_bundle(
-//                         TextBundle::from_section(
-//                             item.description.clone(),
-//                             TextStyle {
-//                                 font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-//                                 font_size: 20.0,
-//                                 color: Color::ANTIQUE_WHITE,
-//                             },
-//                         )
-//                             .with_style(Style {
-//                                 position_type: PositionType::Absolute,
-//                                 position: UiRect {
-//                                     top: Val::Px(-12.0),
-//                                     left: Val::Px(0.0),
-//                                     ..default()
-//                                 },
-//                                 ..default()
-//                             }),
-//                     );
-//                     // Wearable
-//                     if let Some((slot, _)) = item.wearable.clone() {
-//                         let slot_name: String;
-//                         match slot {
-//                             EquipmentSlot::Armour => {
-//                                 slot_name = "Armour".to_string();
-//                             }
-//                             EquipmentSlot::Helmet => {
-//                                 slot_name = "Helmet".to_string();
-//                             }
-//                             EquipmentSlot::Necklace => {
-//                                 slot_name = "Necklace".to_string();
-//                             }
-//                             EquipmentSlot::Shield => {
-//                                 slot_name = "Shield".to_string();
-//                             }
-//                             EquipmentSlot::Weapon => {
-//                                 slot_name = "Weapon".to_string();
-//                             }
-//                         }
-//                         parent.spawn_bundle(
-//                             TextBundle::from_section(
-//                                 slot_name,
-//                                 TextStyle {
-//                                     font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-//                                     font_size: 20.0,
-//                                     color: Color::ANTIQUE_WHITE,
-//                                 },
-//                             )
-//                                 .with_style(Style {
-//                                     position_type: PositionType::Absolute,
-//                                     position: UiRect {
-//                                         top: Val::Px(0.0),
-//                                         left: Val::Px(0.0),
-//                                         ..default()
-//                                     },
-//                                     ..default()
-//                                 }),
-//                         );
-//                     }
-//                     // Stat Bonuses
-//                     if let Some(stat_bonus) = item.stat_bonuses {
-//                         let mut stats: String = format!("| Stats: ");
-//                         if stat_bonus.proficiency > 0 {
-//                             stats.push_str(&*format!(
-//                                 "Combat Proficiency: {} | ",
-//                                 stat_bonus.proficiency
-//                             ));
-//                         }
-//                         if stat_bonus.damage > 0 {
-//                             stats.push_str(&*format!("Damage: {} | ", stat_bonus.damage));
-//                         }
-//                         if stat_bonus.damage_res > 0 {
-//                             stats.push_str(&*format!(
-//                                 "Damage Resistance: {} | ",
-//                                 stat_bonus.damage_res
-//                             ));
-//                         }
-//                         if stat_bonus.max_hp > 0 {
-//                             stats.push_str(&*format!("Max HP: {} | ", stat_bonus.proficiency));
-//                         }
-//
-//                         parent.spawn_bundle(
-//                             TextBundle::from_section(
-//                                 stats,
-//                                 TextStyle {
-//                                     font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-//                                     font_size: 20.0,
-//                                     color: Color::ANTIQUE_WHITE,
-//                                 },
-//                             )
-//                                 .with_style(Style {
-//                                     position_type: PositionType::Absolute,
-//                                     position: UiRect {
-//                                         top: Val::Px(12.0),
-//                                         left: Val::Px(0.0),
-//                                         ..default()
-//                                     },
-//                                     ..default()
-//                                 }),
-//                         );
-//                     }
-//                 });
-//         }
-//         mouse_over.displayed = true;
-//     }
-//     for event in mouse_over_events.iter() {
-//         // debug!("update_mouse_over_item_info_system, state: {:?}", event.state);
-//
-//         match event.state {
-//             MouseOverState::Started => {
-//                 // Do nothing, had the spawning code in here before but it wasn't working as I expected.
-//                 // It appears the component wasn't added to the entity before the event was received.
-//             }
-//             MouseOverState::Ended => {
-//                 for entity in mouse_over_item_info_query.iter() {
-//                     commands.entity(entity).despawn_recursive();
-//                 }
-//             }
-//         }
-//     }
-// }
