@@ -1,3 +1,6 @@
+![image](https://user-images.githubusercontent.com/77372584/187132899-5bfc5d74-efbe-4e23-a9d3-8ab93021d9ae.png)
+
+
 # Contributors
 - Music by Twitchywhalez [YouTube](https://www.youtube.com/channel/UCSjKBALUTiv8prOCSqdu3xA)/[BandCamp](https://twitchywhalez.bandcamp.com/)
 - Art by DarkDax [YouTube](https://www.youtube.com/darkdax) and InkeFaux
