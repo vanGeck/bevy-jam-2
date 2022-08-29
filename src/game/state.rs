@@ -123,7 +123,6 @@ pub fn despawn_gameplay_entities(
     audio.send(SoundEvent::KillAllMusic);
 }
 
-fn clear_gameplay_data(mut cmd: Commands, mut hero: ResMut<Hero>) {
 fn clear_gameplay_data(mut hero: ResMut<Hero>) {
     hero.combat_stats = Combatant {
         health: 20,

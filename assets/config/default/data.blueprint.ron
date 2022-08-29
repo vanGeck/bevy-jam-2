@@ -75,7 +75,7 @@
                 (
                     types: { Empty: 100, },                    
                     custom_loot:(
-                        items: [ RustySword, RustyArmor, Shield ],
+                        items: [ SwordRusty, ArmorRusty, Shield ],
                         chances: [ 100, 100, 65]
                         ),
                     custom_flavour: Armory,
@@ -159,7 +159,7 @@
                 (
                     types: { Empty: 100, },
                     custom_loot:(
-                        items: [ RustySword, RustyArmor, Shield ],
+                        items: [ SwordRusty, ArmorRusty, Shield ],
                         chances: [ 100, 100, 65]
                     ),
                     custom_flavour: Armory,
@@ -202,7 +202,7 @@
                 (
                     types: { Empty: 100, },
                     custom_loot:(
-                        items: [ Vial, RedHerb, PurpleHerb ],
+                        items: [ Vial, HerbRed, HerbViolet ],
                         chances: [ 100, 100, 60]
                     ),
                     custom_flavour: LairEntrance
