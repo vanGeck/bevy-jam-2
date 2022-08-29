@@ -26,7 +26,9 @@ use crate::positioning::{Coords, Pos};
 use crate::AppState;
 
 use super::combat::{Combatant, Enemy, Hero};
-use super::{consume_item, update_health_bar, update_hero_stats_display, Eyes, Iris, delete_item_system};
+use super::{
+    consume_item, delete_item_system, update_health_bar, update_hero_stats_display, Eyes, Iris,
+};
 
 pub struct GamePlugin;
 
@@ -146,8 +148,8 @@ pub fn eye_tracking_system(
             let white_pos = white.translation.truncate();
             let new_iris_trans = white.translation
                 + ((mouse.position - white_pos) / 100.0)
-                .clamp_length(0.0, 0.2)
-                .extend(1.0);
+                    .clamp_length(0.0, 0.2)
+                    .extend(1.0);
             iris.translation = new_iris_trans;
         }
     }
@@ -189,7 +191,9 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<
         item.1,
         Coords::new(Pos::new(3, 1), item.0),
     ));
-    item = items_db.try_get_item(ItemId::MasterworkSwordOfSpeed).unwrap();
+    item = items_db
+        .try_get_item(ItemId::MasterworkSwordOfSpeed)
+        .unwrap();
     spawn.send(SpawnItemEvent::without_anim(
         item.1,
         Coords::new(Pos::new(7, 0), item.0),

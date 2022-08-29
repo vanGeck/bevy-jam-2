@@ -3,9 +3,9 @@ use bevy::text::{Text2dBounds, Text2dSize};
 
 use crate::config::data_layout::LayoutData;
 use crate::game::{AssetStorage, EquipmentSlot, FontId, Item, TextureId};
-use crate::Mouse;
 use crate::mouse::MouseInteractive;
 use crate::positioning::Depth;
+use crate::Mouse;
 
 /// === Components ===
 
@@ -82,7 +82,7 @@ pub fn update_mouse_over_item_info_system(
                                     color: Color::ANTIQUE_WHITE,
                                 },
                             )
-                                .with_alignment(text_alignment),
+                            .with_alignment(text_alignment),
                             // The max size that it should fit in:
                             text_2d_bounds: Text2dBounds {
                                 size: Vec2::new(
@@ -111,7 +111,7 @@ pub fn update_mouse_over_item_info_system(
                                     color: Color::ANTIQUE_WHITE,
                                 },
                             )
-                                .with_alignment(text_alignment),
+                            .with_alignment(text_alignment),
                             // The max size that it should fit in:
                             text_2d_bounds: Text2dBounds {
                                 size: Vec2::new(
@@ -146,7 +146,7 @@ pub fn update_mouse_over_item_info_system(
                                         color: Color::ANTIQUE_WHITE,
                                     },
                                 )
-                                    .with_alignment(text_alignment),
+                                .with_alignment(text_alignment),
                                 // The max size that it should fit in:
                                 text_2d_bounds: Text2dBounds {
                                     size: Vec2::new(
@@ -179,7 +179,10 @@ pub fn update_mouse_over_item_info_system(
                             }
                             if stat_bonus.damage_bonus > 0 {
                                 stats_present = true;
-                                stats.push_str(&*format!("    | Damage: {}\n", stat_bonus.damage_bonus));
+                                stats.push_str(&*format!(
+                                    "    | Damage: {}\n",
+                                    stat_bonus.damage_bonus
+                                ));
                             }
                             if stat_bonus.damage_res > 0 {
                                 stats_present = true;
@@ -190,7 +193,10 @@ pub fn update_mouse_over_item_info_system(
                             }
                             if stat_bonus.max_health > 0 {
                                 stats_present = true;
-                                stats.push_str(&*format!("    | Max HP: {}\n", stat_bonus.proficiency));
+                                stats.push_str(&*format!(
+                                    "    | Max HP: {}\n",
+                                    stat_bonus.proficiency
+                                ));
                             }
                             if stats_present {
                                 Some(stats)
@@ -211,7 +217,7 @@ pub fn update_mouse_over_item_info_system(
                                         color: Color::ANTIQUE_WHITE,
                                     },
                                 )
-                                    .with_alignment(text_alignment),
+                                .with_alignment(text_alignment),
                                 // The max size that it should fit in:
                                 text_2d_bounds: Text2dBounds {
                                     size: Vec2::new(
@@ -277,10 +283,10 @@ pub fn update_mouse_over_item_info_style_position_system(
     let container_size = Vec2::new(
         padding * 2.
             + size_name
-            .x
-            .max(size_description.x)
-            .max(size_wearable.x)
-            .max(size_stats.x),
+                .x
+                .max(size_description.x)
+                .max(size_wearable.x)
+                .max(size_stats.x),
         padding * 2. + size_stats.y + size_wearable.y + size_description.y + size_name.y,
     );
     let anchor = container_size * -0.5;
@@ -308,8 +314,10 @@ pub fn update_mouse_over_item_info_style_position_system(
             + size_name.y * 0.5;
     }
 
-    let enough_room_on_right = layout.screen_dimens.x - mouse.position.x > container_size.x + 2. * padding;
-    let enough_room_on_bottom = layout.screen_dimens.y - mouse.position.y > container_size.y + 2. * padding;
+    let enough_room_on_right =
+        layout.screen_dimens.x - mouse.position.x > container_size.x + 2. * padding;
+    let enough_room_on_bottom =
+        layout.screen_dimens.y - mouse.position.y > container_size.y + 2. * padding;
     if let Ok((mut sprite, mut transform)) = queries.p0().get_single_mut() {
         sprite.custom_size = Some(container_size);
         transform.translation.x = if enough_room_on_right {

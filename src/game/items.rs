@@ -1,5 +1,6 @@
 use std::fmt::Formatter;
 
+use crate::game::item_info_system::MousedOver;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -221,7 +222,7 @@ pub fn consume_item(
 pub fn delete_item_system(
     mut commands: Commands,
     items: Query<(Entity, &MouseInteractive), With<Item>>,
-    mut tooltips: Query<Entity, With<MouseOverItemInfo>>,
+    mut tooltips: Query<Entity, With<MousedOver>>,
 ) {
     for (e, interactive) in items.iter() {
         if interactive.shift_clicked {
