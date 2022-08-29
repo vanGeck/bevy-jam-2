@@ -32,11 +32,11 @@ pub fn handle_sim_loot(
                     let new_free_coords =
                         find_free_space(&grid, dimens, &items_query, &same_tick_items);
                     if let Some(coords) = new_free_coords {
-                        spawn.send(SpawnItemEvent::new(item, coords, source));
+                        spawn.send(SpawnItemEvent::new(item, coords, source,false));
                     }
                 } else {
                     same_tick_items.push(coords);
-                    spawn.send(SpawnItemEvent::new(item, coords, source));
+                    spawn.send(SpawnItemEvent::new(item, coords, source,false));
                 }
             }
         }

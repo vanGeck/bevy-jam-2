@@ -1,6 +1,7 @@
+use std::fmt::Formatter;
+
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
-use std::fmt::Formatter;
 
 use crate::game::TextureId;
 use crate::mouse::MouseInteractive;
@@ -27,12 +28,12 @@ pub struct FallingItem {
 }
 
 impl FallingItem {
-    pub fn new(coords: Coords, source: Vec2, target: Vec2) -> Self {
+    pub fn new(coords: Coords, source: Vec2, target: Vec2, seconds: f32) -> Self {
         Self {
             coords,
             source,
             target,
-            timer: Timer::from_seconds(1.5, false),
+            timer: Timer::from_seconds(seconds, false),
         }
     }
 }
