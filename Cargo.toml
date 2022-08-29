@@ -30,7 +30,7 @@ version = "0.8.*"
 default-features = false
 # Now we have to add all default features we want back in:
 features = [
-    "dynamic",
+    #"dynamic",
     # These are the default features:
     # (re-enable whichever you like)
 
