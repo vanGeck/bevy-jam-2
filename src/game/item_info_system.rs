@@ -77,7 +77,7 @@ pub fn update_mouse_over_item_info_system(
                                     TextStyle {
                                         font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                         font_size: 20.0,
-                                        color: Color::WHITE,
+                                        color: Color::ANTIQUE_WHITE,
                                     },
                                 )
                                 .with_style(Style {
@@ -102,7 +102,7 @@ pub fn update_mouse_over_item_info_system(
                                     TextStyle {
                                         font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                         font_size: 16.0,
-                                        color: Color::WHITE,
+                                        color: Color::ANTIQUE_WHITE,
                                     },
                                 )
                                 .with_style(Style {
@@ -140,7 +140,7 @@ pub fn update_mouse_over_item_info_system(
                                         TextStyle {
                                             font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                             font_size: 16.0,
-                                            color: Color::WHITE,
+                                            color: Color::ANTIQUE_WHITE,
                                         },
                                     )
                                     .with_style(Style {
@@ -188,7 +188,7 @@ pub fn update_mouse_over_item_info_system(
                                         TextStyle {
                                             font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                                             font_size: 16.0,
-                                            color: Color::WHITE,
+                                            color: Color::ANTIQUE_WHITE,
                                         },
                                     )
                                     .with_style(Style {
@@ -297,7 +297,7 @@ pub fn update_mouse_over_item_info_style_position_system(
 //                             TextStyle {
 //                                 font: asset_server.load("fonts/FiraSans-Bold.ttf"),
 //                                 font_size: 20.0,
-//                                 color: Color::WHITE,
+//                                 color: Color::ANTIQUE_WHITE,
 //                             },
 //                         )
 //                             .with_style(Style {
@@ -317,7 +317,7 @@ pub fn update_mouse_over_item_info_style_position_system(
 //                             TextStyle {
 //                                 font: asset_server.load("fonts/FiraSans-Bold.ttf"),
 //                                 font_size: 20.0,
-//                                 color: Color::WHITE,
+//                                 color: Color::ANTIQUE_WHITE,
 //                             },
 //                         )
 //                             .with_style(Style {
@@ -356,7 +356,7 @@ pub fn update_mouse_over_item_info_style_position_system(
 //                                 TextStyle {
 //                                     font: asset_server.load("fonts/FiraSans-Bold.ttf"),
 //                                     font_size: 20.0,
-//                                     color: Color::WHITE,
+//                                     color: Color::ANTIQUE_WHITE,
 //                                 },
 //                             )
 //                                 .with_style(Style {
@@ -398,7 +398,7 @@ pub fn update_mouse_over_item_info_style_position_system(
 //                                 TextStyle {
 //                                     font: asset_server.load("fonts/FiraSans-Bold.ttf"),
 //                                     font_size: 20.0,
-//                                     color: Color::WHITE,
+//                                     color: Color::ANTIQUE_WHITE,
 //                                 },
 //                             )
 //                                 .with_style(Style {

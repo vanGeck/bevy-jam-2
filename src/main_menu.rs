@@ -3,20 +3,20 @@ use bevy::window::WindowMode;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
 use iyes_loopless::state::NextState;
 
+use crate::{AppState, DebugConfig, GAME_NAME};
 use crate::audio::sound_event::SoundEvent;
 use crate::config::data_layout::LayoutData;
+use crate::game::{AlbumId, AssetStorage, create_camera, FontId, MENU_ZOOM};
 use crate::game::create_backpack::create_layout_background;
 use crate::game::create_widget_feed::create_layout_feed;
 use crate::game::create_widget_grids::{create_layout_combine_button, create_layout_grids};
 use crate::game::create_widget_hero::create_layout_hero;
 use crate::game::create_widget_music::create_layout_music;
 use crate::game::create_widget_toasts::create_layout_toasts;
-use crate::game::{create_camera, AlbumId, AssetStorage, FontId, MENU_ZOOM};
 use crate::mouse::MouseInteractive;
 use crate::positioning::Depth;
 use crate::states::delete_all_entities;
 use crate::transition_state::MenuTransition;
-use crate::{AppState, DebugConfig, GAME_NAME};
 
 pub struct MainMenuPlugin;
 
@@ -37,6 +37,7 @@ impl Plugin for MainMenuPlugin {
                     .with_system(create_layout_combine_button)
                     .with_system(create_layout_hero)
                     .with_system(init_menu)
+                    .with_system(play_menu_music.run_if(should_play_music_right_away))
                     .into(),
             )
             .add_system_set(
@@ -149,11 +150,11 @@ pub fn init_menu(mut commands: Commands, assets: Res<AssetStorage>, layout: Res<
             screen_anchor.y + menu_screen_dimens.y * 0.8,
             Depth::Menu.z() + 10.,
         ))
-        .with_scale(Vec3::new(
-            MENU_ZOOM / layout.text_factor,
-            MENU_ZOOM / layout.text_factor,
-            1.,
-        )),
+            .with_scale(Vec3::new(
+                MENU_ZOOM / layout.text_factor,
+                MENU_ZOOM / layout.text_factor,
+                1.,
+            )),
         ..default()
     });
 }
@@ -166,11 +167,11 @@ pub fn clean_menu_entities(mut commands: Commands, query: Query<Entity, With<Men
 
 /// When running the game in the browser, the first half second is always quite stuttery.
 /// This is a timer to wait half a second before starting the music.
-pub struct MainMenuMusicTimer(Timer);
+pub struct MainMenuMusicTimer(Timer, bool);
 
 impl Default for MainMenuMusicTimer {
     fn default() -> Self {
-        MainMenuMusicTimer(Timer::from_seconds(1., false))
+        MainMenuMusicTimer(Timer::from_seconds(1., false), false)
     }
 }
 
@@ -181,5 +182,14 @@ pub fn music_countdown_finished(
 ) {
     if timer.0.tick(time.delta()).just_finished() {
         audio.send(SoundEvent::PlayAlbum(AlbumId::Ominous));
+        timer.1 = true;
     }
+}
+
+pub fn should_play_music_right_away(timer: Res<MainMenuMusicTimer>) -> bool {
+    timer.1
+}
+
+pub fn play_menu_music(mut audio: EventWriter<SoundEvent>) {
+    audio.send(SoundEvent::PlayAlbum(AlbumId::Ominous));
 }

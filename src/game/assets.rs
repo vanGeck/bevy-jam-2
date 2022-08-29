@@ -172,6 +172,7 @@ pub enum TextureId {
     UiPanelTexture,
     /// Large image for the menu screen
     Backpack,
+    MenuCaveBg,
     Overseer,
     OverseerEyesWhite,
     OverseerIris,

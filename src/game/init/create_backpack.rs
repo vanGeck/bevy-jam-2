@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::data_layout::LayoutData;
-use crate::game::{AssetStorage, CleanupOnGameplayEnd, TextureId};
+use crate::game::{AssetStorage, CleanupOnGameplayEnd, MENU_ZOOM, TextureId};
 use crate::main_menu::MenuBackpack;
 use crate::mouse::MouseInteractive;
 use crate::positioning::Depth;
@@ -11,6 +11,20 @@ pub fn create_layout_background(
     layout: Res<LayoutData>,
     assets: Res<AssetStorage>,
 ) {
+    let center = layout.screen_dimens * 0.5;
+    let menu_size = MENU_ZOOM * layout.screen_dimens;
+    commands
+        .spawn_bundle(SpriteBundle {
+            sprite: Sprite {
+                custom_size: Some(menu_size),
+                ..default()
+            },
+            texture: assets.texture(&TextureId::MenuCaveBg),
+            transform: Transform::from_xyz(center.x, center.y, Depth::Background.z()),
+            ..default()
+        })
+        .insert(CleanupOnGameplayEnd);
+
     let size = 1.2 * layout.screen_dimens.x.max(layout.screen_dimens.y);
     let pos_x = 0.5 * layout.screen_dimens.x;
     // Create the background backpack that will be visible during the game.
@@ -24,7 +38,7 @@ pub fn create_layout_background(
                 ..default()
             },
             texture_atlas: assets.atlas(&TextureId::Backpack),
-            transform: Transform::from_xyz(pos_x, -5. + size * 0.5, Depth::Background.z()),
+            transform: Transform::from_xyz(pos_x, -5. + size * 0.5, Depth::Background.z() + 10.),
             ..default()
         })
         .insert(CleanupOnGameplayEnd);

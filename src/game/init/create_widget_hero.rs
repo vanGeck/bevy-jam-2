@@ -50,12 +50,12 @@ pub fn create_layout_hero(
     let text_style = TextStyle {
         font: assets.font(&FontId::FiraSansMedium),
         font_size: 60.0,
-        color: Color::WHITE,
+        color: Color::ANTIQUE_WHITE,
     };
     let text_style_sm = TextStyle {
         font: assets.font(&FontId::FiraSansMedium),
         font_size: 60.0,
-        color: Color::WHITE,
+        color: Color::ANTIQUE_WHITE,
     };
 
     let text_alignment = TextAlignment {

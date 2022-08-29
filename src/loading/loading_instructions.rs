@@ -19,9 +19,15 @@ pub struct LoadingConfig {
 pub fn prepare_loading_config() -> LoadingConfig {
     let mut c = LoadingConfig::default();
 
+    // ==============================================================
+    // ================= Textures
+    // ==============================================================
+
     c.textures.insert(NotFound, "not_found.png".to_string());
     c.textures
         .insert(UiPanelTexture, "MyPanel2.png".to_string());
+    c.textures
+        .insert(MenuCaveBg, "menu_cave_bg.png".to_string());
     c.textures.insert(Overseer, "overseer.png".to_string());
     c.textures
         .insert(OverseerEyesWhite, "overseer_eyes_white.png".to_string());
@@ -82,6 +88,7 @@ pub fn prepare_loading_config() -> LoadingConfig {
     c.textures.insert(Shield, "Shield.png".to_string());
     c.textures
         .insert(ShieldMasterwork, "ShieldMasterwork.png".to_string());
+
 
     // ==============================================================
     // ================= SFX
@@ -159,6 +166,10 @@ pub fn prepare_loading_config() -> LoadingConfig {
     let mut vec = Vec::new();
     vec.push("water_dripping/drip1.ogg".to_string());
     c.sfx.insert(WaterDripping, vec);
+
+    // ==============================================================
+    // ================= Fonts
+    // ==============================================================
 
     c.fonts
         .insert(FiraSansLight, "FiraSans-Light.ttf".to_string());

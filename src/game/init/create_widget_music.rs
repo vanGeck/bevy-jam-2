@@ -63,7 +63,7 @@ pub fn create_layout_music(
             let text_style = TextStyle {
                 font: assets.font(&FontId::FiraSansMedium),
                 font_size: 60.0,
-                color: Color::WHITE,
+                color: Color::ANTIQUE_WHITE,
             };
             let text_alignment = TextAlignment {
                 horizontal: HorizontalAlign::Left,
