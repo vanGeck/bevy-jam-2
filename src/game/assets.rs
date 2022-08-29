@@ -6,6 +6,8 @@ use bevy_kira_audio::AudioSource;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
+use crate::{AudioConfig, DebugConfig};
+
 #[derive(Default, Debug)]
 pub struct AssetStorage {
     textures: HashMap<TextureId, Handle<Image>>,
@@ -13,6 +15,8 @@ pub struct AssetStorage {
     sounds: HashMap<SoundId, Vec<Handle<AudioSource>>>,
     music: HashMap<AlbumId, Vec<(Handle<AudioSource>, String)>>,
     fonts: HashMap<FontId, Handle<Font>>,
+    pub audio: Handle<AudioConfig>,
+    pub debug: Handle<DebugConfig>,
 }
 
 impl AssetStorage {
@@ -29,7 +33,7 @@ impl AssetStorage {
                 self.textures.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-        .clone()
+            .clone()
     }
 
     pub fn put_atlas(&mut self, asset_type: TextureId, asset: Handle<TextureAtlas>) {
@@ -44,7 +48,7 @@ impl AssetStorage {
                 self.atlases.get(&TextureId::NotFound)
             })
             .expect("Fallback asset also missing."))
-        .clone()
+            .clone()
     }
 
     pub fn put_sound(&mut self, sound_type: SoundId, asset: Handle<AudioSource>) {

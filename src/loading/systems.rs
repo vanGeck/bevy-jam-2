@@ -6,6 +6,7 @@ use bevy::asset::LoadState;
 use bevy::prelude::*;
 use iyes_loopless::prelude::NextState;
 
+use crate::{AppState, };
 use crate::config::config_audio::AudioConfig;
 use crate::config::config_debug::DebugConfig;
 use crate::config::config_sim::SimConfig;
@@ -15,23 +16,24 @@ use crate::config::data_layout::LayoutData;
 use crate::config::data_recipes::RecipesData;
 use crate::config::data_sim_texts::DungeonTexts;
 use crate::config::dungeon_layout::DungeonBlueprint;
-use crate::config::health_bar::HealthBarConfig;
 use crate::game::AssetStorage;
 use crate::loading::atlas_prefab::AtlasPrefab;
 use crate::loading::config::LoadingConfig;
-use crate::{AppState, WindowMode};
 
-pub fn load_configs(mut commands: Commands) {
-    commands.insert_resource(DebugConfig::load_from_file());
-    commands.insert_resource(AudioConfig::load_from_file());
+pub fn load_configs(mut commands: Commands, server: Res<AssetServer>, mut assets: ResMut<AssetStorage>,
+) {
+    // commands.insert_resource(DebugConfig::load_from_file());
+    // commands.insert_resource(AudioConfig::load_from_file());
     commands.insert_resource(ItemsData::load_from_file());
     commands.insert_resource(RecipesData::load_from_file());
     commands.insert_resource(DungeonTexts::load_from_file());
     commands.insert_resource(SimConfig::load_from_file());
     commands.insert_resource(EnemiesData::load_from_file());
-    commands.insert_resource(HealthBarConfig::load_from_file());
     commands.insert_resource(LayoutData::load_from_file());
     commands.insert_resource(DungeonBlueprint::load_from_file());
+
+    assets.audio = server.load("config/default/config.audio.ron");
+    assets.debug = server.load("config/default/config.debug.ron");
 }
 
 pub fn load_assets(
@@ -122,21 +124,22 @@ pub fn check_load_state(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     storage: Res<AssetStorage>,
-    config: Res<DebugConfig>,
-    mut windows: ResMut<Windows>,
 ) {
     match asset_server.get_group_load_state(storage.get_all_handle_ids()) {
         LoadState::Failed => {
             error!("Failed loading assets!");
         }
         LoadState::Loaded => {
-            windows.primary_mut().set_mode(if config.launch_fullscreen {
-                WindowMode::BorderlessFullscreen
-            } else {
-                WindowMode::Windowed
-            });
             commands.insert_resource(NextState(AppState::MainMenu));
         }
         _ => (),
     }
+}
+
+pub fn add_configs(mut commands: Commands,
+                   assets: Res<AssetStorage>,
+                   audio: Res<Assets<AudioConfig>>,
+                   debug: Res<Assets<DebugConfig>>) {
+    commands.insert_resource(audio.get(&assets.audio).cloned().expect("audio.ron wasn't loaded (yet)!"));
+    commands.insert_resource(debug.get(&assets.debug).cloned().expect("debug.ron wasn't loaded (yet)!"));
 }

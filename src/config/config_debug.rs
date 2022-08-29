@@ -2,13 +2,16 @@ use std::fs;
 use std::io::{Error, ErrorKind};
 use std::path::Path;
 
+use bevy::asset::{AssetLoader, BoxedFuture, LoadContext, LoadedAsset};
 use bevy::prelude::*;
+use bevy::reflect::TypeUuid;
 use serde::{Deserialize, Serialize};
 
 use crate::config::file_utils::{get_config_default_dir, get_config_override_dir};
 
-#[derive(Debug, Deserialize, Serialize, Default)]
+#[derive(Debug, Deserialize, Serialize, Default, Clone, TypeUuid)]
 #[serde(deny_unknown_fields)]
+#[uuid = "db168435-8fa5-40f8-908f-560f30e6b158"]
 pub struct DebugConfig {
     /// Filters logs using the [`EnvFilter`] format
     pub log_filter: String,
@@ -47,4 +50,25 @@ fn load_from_path(path: &Path) -> DebugConfig {
                 );
             DebugConfig::default()
         })
+}
+
+#[derive(Default)]
+pub struct DebugConfigLoader;
+
+impl AssetLoader for DebugConfigLoader {
+    fn load<'a>(
+        &'a self,
+        bytes: &'a [u8],
+        load_context: &'a mut LoadContext,
+    ) -> BoxedFuture<'a, Result<(), bevy::asset::Error>> {
+        Box::pin(async move {
+            let custom_asset = ron::de::from_bytes::<DebugConfig>(bytes)?;
+            load_context.set_default_asset(LoadedAsset::new(custom_asset));
+            Ok(())
+        })
+    }
+
+    fn extensions(&self) -> &[&str] {
+        &["debug.ron"]
+    }
 }

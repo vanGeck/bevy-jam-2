@@ -8,4 +8,3 @@ pub mod data_recipes;
 pub mod data_sim_texts;
 pub mod dungeon_layout;
 mod file_utils;
-pub mod health_bar;

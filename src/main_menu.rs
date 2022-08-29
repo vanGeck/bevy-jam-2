@@ -1,20 +1,21 @@
 use bevy::prelude::*;
+use bevy::window::WindowMode;
 use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet, IntoConditionalSystem};
 use iyes_loopless::state::NextState;
 
+use crate::{AppState, DebugConfig};
 use crate::audio::sound_event::SoundEvent;
+use crate::game::{AlbumId, create_camera};
 use crate::game::create_backpack::create_layout_background;
 use crate::game::create_widget_feed::create_layout_feed;
 use crate::game::create_widget_grids::{create_layout_combine_button, create_layout_grids};
 use crate::game::create_widget_hero::create_layout_hero;
 use crate::game::create_widget_music::create_layout_music;
 use crate::game::create_widget_toasts::create_layout_toasts;
-use crate::game::{create_camera, AlbumId};
 //use crate::hud::gold::setup_gold;
 use crate::mouse::MouseInteractive;
 use crate::states::delete_all_entities;
 use crate::transition_state::MenuTransition;
-use crate::{AppState, DebugConfig};
 
 pub struct MainMenuPlugin;
 
@@ -36,17 +37,18 @@ impl Plugin for MainMenuPlugin {
                 .with_system(play_menu_music)
                 .into(),
         )
-        .add_system_set(
-            ConditionSet::new()
-                .run_in_state(AppState::MainMenu)
-                .with_system(check_menu_bypass.run_if(should_check_bypass))
-                .with_system(track_backpack_hover)
-                .into(),
-        )
-        .add_exit_system_set(
-            AppState::MainMenu,
-            ConditionSet::new().run_in_state(AppState::MainMenu).into(),
-        );
+            .add_system_set(
+                ConditionSet::new()
+                    .run_in_state(AppState::MainMenu)
+                    .with_system(check_menu_bypass.run_if(should_check_bypass))
+                    .with_system(check_fullscreen.run_if(should_check_fullscreen))
+                    .with_system(track_backpack_hover)
+                    .into(),
+            )
+            .add_exit_system_set(
+                AppState::MainMenu,
+                ConditionSet::new().run_in_state(AppState::MainMenu).into(),
+            );
     }
 }
 
@@ -63,6 +65,24 @@ pub fn check_menu_bypass(
         config.skip_straight_to_game = false;
         query.single_mut().transition = MenuTransition::InactiveGame;
         commands.insert_resource(NextState(AppState::InGame));
+    }
+}
+
+pub fn should_check_fullscreen(config: Res<DebugConfig>) -> bool {
+    config.launch_fullscreen
+}
+
+pub fn check_fullscreen(
+    mut windows: ResMut<Windows>,
+    mut config: ResMut<DebugConfig>,
+) {
+    if config.launch_fullscreen {
+        config.launch_fullscreen = false;
+        windows.primary_mut().set_mode(if config.launch_fullscreen {
+            WindowMode::BorderlessFullscreen
+        } else {
+            WindowMode::Windowed
+        });
     }
 }
 
