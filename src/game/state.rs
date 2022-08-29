@@ -49,6 +49,7 @@ impl Plugin for GamePlugin {
                     proficiency: 1,
                     damage_res: 0,
                     damage_bonus: 0,
+                    negative_feedback: 0
                 },
             })
             .init_resource::<Enemy>()
@@ -130,6 +131,7 @@ fn clear_gameplay_data(mut hero: ResMut<Hero>) {
         proficiency: 1,
         damage_res: 0,
         damage_bonus: 0,
+        negative_feedback: 0
     };
 }
 

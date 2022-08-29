@@ -113,6 +113,7 @@ pub fn tick_dungeon(
                 enemy.name = new_enemy.name;
                 debug!("New Room: {}", room);
                 debug!("Enemy: id: {}, stats: {}", enemy.name, enemy.combat_stats);
+                hero.combat_stats.negative_feedback = 0;
             }
 
             if room.corridor {

@@ -49,6 +49,32 @@
             ],
         ),
         (
+            result: FlaskSkill,
+            ingredients: [
+                (
+                    item_id: EssenceVitality,
+                    quantity: 1
+                ),
+                (
+                    item_id: HerbGreen,
+                    quantity: 2
+                ),
+            ],
+        ),
+        (
+            result: FlaskSkill,
+            ingredients: [
+                (
+                    item_id: HerbRed,
+                    quantity: 2,
+                ),
+                (
+                    item_id: EssenceAlacrity,
+                    quantity: 1
+                ),
+            ],
+        ),
+        (
             result: FlaskToughness,
             ingredients: [
                 (
@@ -58,6 +84,32 @@
                 (
                     item_id: EssenceMight,
                     quantity: 1
+                ),
+            ],
+        ),
+        (
+            result: FlaskToughness,
+            ingredients: [
+                (
+                    item_id: HerbRed,
+                    quantity: 2
+                ),
+                (
+                    item_id: EssenceMight,
+                    quantity: 1
+                ),
+            ],
+        ),
+        (
+            result: FlaskToughness,
+            ingredients: [
+                (
+                    item_id: EssenceVitality,
+                    quantity: 1
+                ),
+                (
+                    item_id: HerbViolet,
+                    quantity: 2
                 ),
             ],
         ),
@@ -84,6 +136,32 @@
                 (
                     item_id: EssenceMight,
                     quantity: 1
+                ),
+            ],
+        ),
+        (
+            result: FlaskStrength,
+            ingredients: [
+                (
+                    item_id: HerbGreen,
+                    quantity: 2
+                ),
+                (
+                    item_id: EssenceMight,
+                    quantity: 1
+                ),
+            ],
+        ),
+        (
+            result: FlaskStrength,
+            ingredients: [
+                (
+                    item_id: EssenceAlacrity,
+                    quantity: 1
+                ),
+                (
+                    item_id: HerbViolet,
+                    quantity: 2
                 ),
             ],
         ),
