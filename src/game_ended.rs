@@ -48,8 +48,8 @@ fn draw_game_over_screen(
                 rect.center_top() + vec2(0.0, height / 2.0),
                 Align2::CENTER_CENTER,
                 match *result.current() {
-                    GameResult::Won => "YOU WON!",
-                    GameResult::Lost => "YOU LOST!",
+                    GameResult::Won => "The final enemy is dead! You won!",
+                    GameResult::Lost => "You lost!",
                 },
                 FontId::proportional(46.0),
                 text_col,
@@ -63,14 +63,6 @@ fn draw_game_over_screen(
                 Stroke::new(1.0, text_col),
             );
 
-            let start_btn = ui.put(
-                Rect::from_center_size(pos2(win_wi / 2., win_ht / 2.), vec2(280., 66.)),
-                egui::Button::new("Restart game"),
-            );
-            if start_btn.clicked() {
-                // audio.send(SoundEvent::Sfx(SoundId::Placeholder));
-                commands.insert_resource(NextState(AppState::InGame));
-            }
             let quit_btn = ui.put(
                 Rect::from_center_size(pos2(win_wi / 2., win_ht / 2. + 132.), vec2(280., 66.)),
                 egui::Button::new("Back to menu"),

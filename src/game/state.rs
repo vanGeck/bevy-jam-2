@@ -93,7 +93,10 @@ impl Plugin for GamePlugin {
             )
             .add_exit_system_set(
                 AppState::InGame,
-                ConditionSet::new().run_in_state(AppState::InGame).into(),
+                ConditionSet::new().run_in_state(AppState::InGame)
+                    // .with_system(despawn_gameplay_entities)
+                    .with_system(clear_gameplay_data)
+                    .into(),
             );
     }
 }
@@ -117,6 +120,19 @@ pub fn despawn_gameplay_entities(
         cmd.entity(e).despawn_recursive();
     }
     audio.send(SoundEvent::KillAllMusic);
+}
+
+fn clear_gameplay_data(
+    mut cmd: Commands,
+    mut hero: ResMut<Hero>,
+){
+    hero.combat_stats = Combatant {
+        health: 20,
+        max_health: 20,
+        proficiency: 1,
+        damage_res: 0,
+        damage_bonus: 0,
+    };
 }
 
 pub fn eye_tracking_system(
@@ -172,18 +188,17 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<
         item.1,
         Coords::new(Pos::new(3, 1), item.0),
     ));
-
-    item = items_db.try_get_item(ItemId::SwordRusty).unwrap();
-    spawn.send(SpawnItemEvent::without_anim(
-        item.1,
-        Coords::new(Pos::new(4, 0), item.0),
-    ));
-
-    item = items_db.try_get_item(ItemId::SwordRusty).unwrap();
-    spawn.send(SpawnItemEvent::without_anim(
-        item.1,
-        Coords::new(Pos::new(5, 0), item.0),
-    ));
+    // item = items_db.try_get_item(ItemId::SwordRusty).unwrap();
+    // spawn.send(SpawnItemEvent::without_anim(
+    //     item.1,
+    //     Coords::new(Pos::new(4, 0), item.0),
+    // ));
+    // 
+    // item = items_db.try_get_item(ItemId::SwordRusty).unwrap();
+    // spawn.send(SpawnItemEvent::without_anim(
+    //     item.1,
+    //     Coords::new(Pos::new(5, 0), item.0),
+    // ));
     //item = items_db.try_get_item(ItemId::ShieldRusty).unwrap();
     //spawn.send(SpawnItemEvent::without_anim(
     //    item.1,
