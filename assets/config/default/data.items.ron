@@ -93,6 +93,32 @@
             ),
         )),
         (((1, 1)), (
+            id: ScrollBasic8,
+            name: "Scroll of Basics",
+            description: "SHIFT+Click items to throw them away.",
+            texture_id: Scroll,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 0,
+                proficiency: 0,
+                damage_res: 0,
+            ),
+        )),
+        (((1, 1)), (
+            id: ScrollBasic9,
+            name: "Scroll of Basics",
+            description: "Mix those two potions together to create something much stronger. You'll need it in the next room...",
+            texture_id: Scroll,
+            stat_bonuses: (
+                health: 0,
+                max_health: 0,
+                damage_bonus: 0,
+                proficiency: 0,
+                damage_res: 0,
+            ),
+        )),
+        (((1, 1)), (
             id: ScrollKnowledge1,
             name: "Scroll of knowledge",
             description: "Did you know that goblins love to help out adventurers by taking care of their items?",

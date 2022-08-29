@@ -156,16 +156,15 @@ pub fn eye_tracking_system(
 }
 
 pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<ItemsData>) {
-    let item = items_db.try_get_item(ItemId::ScrollBasic5).unwrap();
-    spawn.send(SpawnItemEvent::without_anim(
-        item.1,
-        Coords::new(Pos::new(3, 3), item.0),
-    ));
-
     let mut item = items_db.try_get_item(ItemId::ScrollBasic7).unwrap();
     spawn.send(SpawnItemEvent::without_anim(
         item.1,
-        Coords::new(Pos::new(3, 4), item.0),
+        Coords::new(Pos::new(4, 3), item.0),
+    ));
+    item = items_db.try_get_item(ItemId::ScrollBasic8).unwrap();
+    spawn.send(SpawnItemEvent::without_anim(
+        item.1,
+        Coords::new(Pos::new(5, 3), item.0),
     ));
 
     item = items_db.try_get_item(ItemId::Vial).unwrap();
@@ -191,6 +190,13 @@ pub fn create_debug_items(mut spawn: EventWriter<SpawnItemEvent>, items_db: Res<
         item.1,
         Coords::new(Pos::new(3, 1), item.0),
     ));
+    // item = items_db
+    //     .try_get_item(ItemId::MasterworkSwordOfSpeed)
+    //     .unwrap();
+    // spawn.send(SpawnItemEvent::without_anim(
+    //     item.1,
+    //     Coords::new(Pos::new(7, 0), item.0),
+    // ));
     // item = items_db.try_get_item(ItemId::SwordRusty).unwrap();
     // spawn.send(SpawnItemEvent::without_anim(
     //     item.1,

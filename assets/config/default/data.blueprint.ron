@@ -101,8 +101,8 @@
                 (
                     types: { Empty: 100, },
                     custom_loot:(
-                        items: [ EssenceAlacrity, EssenceMight, HerbViolet],
-                        chances: [ 100, 100, 65]
+                        items: [ EssenceAlacrity, EssenceMight, ScrollBasic9],
+                        chances: [ 100, 100, 100]
                     ),
                     custom_flavour: AlchemyLab
                 ),

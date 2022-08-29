@@ -126,6 +126,8 @@ pub enum ItemId {
     ScrollBasic5,
     ScrollBasic6,
     ScrollBasic7,
+    ScrollBasic8,
+    ScrollBasic9,
     ScrollKnowledge1,
     ScrollKnowledge2,
     ScrollKnowledge3,
