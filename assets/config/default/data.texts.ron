@@ -108,12 +108,24 @@
         EnterZombie: [
             "The air is heady with the vile stench of rot. The recently deceased are on the move. A zombie encroaches on Sir Hoardalot while he is busy respeccing his talent tree!",
         ],
+        EnterOgreNecromancer: [
+            "The vile Ogre Necromancer is here, a hulking mass of evil! This is the final test!",
+        ],
         // Special rooms
         PlantRoom: [
             "This room is alive with a myriad of blossoming plants sprouting from all surfaces!",
         ],
         AlchemyLab: [
             "This room sems to be an alchemy lab, there's flasks and vials everywhere! Better stock up...",
+        ],
+        Armory: [
+            "This seems to have been and armory at some point, a long time ago. Maybe there's still something worth looting?", 
+        ],
+        UndeadEntrance: [
+            "This part of the dungeon reeks with the stench of decay. You're bound to run into undead sooner than later now!",
+        ],
+        LairEntrance: [
+            "There are bodies and skeletons piled up all around this area. The walls are covered with magic symbols painted in blood. You haven't felt this uncomfortable since the pants incident in Goblin Academy."
         ]
     },
 )

@@ -66,14 +66,19 @@
             depth: 1,
             default_loot: ( // DropTable
                 items: [ HerbGreen, HerbRed, HerbViolet, Vial ],
-                chances: [ 20, 30, 20, 30 ]
+                chances: [ 20, 30, 10, 35 ]
             ),
             segments: [ // Room contents defined here
                 (
                     types: { Start : 100, }
                 ),
                 (
-                    types: { Empty: 100, },
+                    types: { Empty: 100, },                    
+                    custom_loot:(
+                        items: [ RustySword, RustyArmor, Shield ],
+                        chances: [ 100, 100, 65]
+                        ),
+                    custom_flavour: Armory,
                 ),
                 (
                     types: { Fight: 100, },
@@ -115,10 +120,96 @@
                 ),
                 (
                     types: { Fight: 100, },
-                    enemies: { GoblinShieldbearer: 50, GoblinBrat: 50 }
+                    enemies: { Zombie: 25, GoblinSwordsman:50, GoblinShieldbearer: 25 }
                 ),
                 (
                     types: {End: 100, },
+                )
+            ]
+        ),
+        ( // FloorBlueprint
+            depth: 2,
+            default_loot: ( // DropTable
+                items: [ HerbGreen, HerbRed, HerbViolet, Vial ],
+                chances: [ 20, 30, 20, 40 ]
+            ),
+            segments: [ // Room contents defined here
+                (
+                    types: { Start : 100, }
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_flavour: UndeadEntrance,
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { Zombie: 100, }
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ HerbRed, Vial, HerbViolet ],
+                        chances: [ 100, 100, 65]
+                    )
+                ),
+                (
+                    types: { Fight: 70, Corridor:30 },
+                    enemies: { GoblinBrat: 30, Zombie:50, GoblinShieldbearer: 20 }
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ RustySword, RustyArmor, Shield ],
+                        chances: [ 100, 100, 65]
+                    ),
+                    custom_flavour: Armory,
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { GoblinShieldbearer: 50, GoblinSwordsman: 50 }
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ FlaskSkill, Vial, HerbViolet ],
+                        chances: [ 100, 100, 100]
+                    ),
+                    custom_flavour: AlchemyLab
+                ),
+                (
+                    types: { Empty: 75, Fight: 25, },
+                    enemies: { Zombie: 50, Skeleton: 50 }
+                ),
+                (
+                    types: { Corridor: 100, },
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ Vial, Vial, HerbGreen ],
+                        chances: [ 100, 100, 60]
+                    ),
+                    custom_flavour: AlchemyLab
+                ),
+                (
+                    types: { Empty: 25, Fight: 75, },
+                    enemies: { Zombie: 50, Skeleton: 50 }
+                ),
+                (
+                    types: { Fight: 100, },
+                    enemies: { Zombie: 50, Skeleton: 50 }
+                ),
+                (
+                    types: { Empty: 100, },
+                    custom_loot:(
+                        items: [ Vial, RedHerb, PurpleHerb ],
+                        chances: [ 100, 100, 60]
+                    ),
+                    custom_flavour: LairEntrance
+                ),
+                ( // Final boss
+                    types: {Fight: 100, },
+                    enemoes: { OgreNecromancer : 100 }
                 )
             ]
         )

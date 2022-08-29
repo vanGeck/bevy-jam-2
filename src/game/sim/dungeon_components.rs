@@ -95,9 +95,13 @@ pub enum TextType {
     EnterGoblinShieldBearer,
     EnterSkeleton,
     EnterZombie,
+    EnterOgreNecromancer,
     // special room flavours
     PlantRoom,
     AlchemyLab,
+    Armory,
+    UndeadEntrance,
+    LairEntrance,
 }
 
 impl TextType {

@@ -7,7 +7,7 @@
             combat_stats: (
                 health: 5,
                 max_health: 5,
-                proficiency: 1,
+                proficiency: 0,
                 damage_res: 0,
                 damage_bonus: 0,
             ),
@@ -19,8 +19,8 @@
                 ],
                 chances: [
                     30,
-                    20,
-                    20
+                    10,
+                    15
                 ]
             ),
         ),
@@ -45,8 +45,8 @@
                 chances: [
                     80,
                     40,
-                    40,
-                    40,
+                    30,
+                    30,
                 ]
             ),
         ),
@@ -70,9 +70,9 @@
                 ],
                 chances: [
                     66,
-                    40,
                     50,
-                    30,
+                    20,
+                    20,
                 ]
             ),
         ),
@@ -85,20 +85,100 @@
                 max_health: 8,
                 proficiency: 2,
                 damage_res: 2,
-                damage_bonus: -1,
+                damage_bonus: -2,
             ),
             drop_table: (
                 items: [
                     ShieldRusty,
                     Vial,
+                    HerbRed,
                     HerbViolet,
                     HerbGreen,
                 ],
                 chances: [
-                    60,
+                    66,
+                    50,
+                    30, 
+                    30,
+                    30,
+                ]
+            ),
+        ),
+        (
+            enemy_id: Skeleton,
+            name: "Skeleton",
+            enter_combat_text: EnterSkeleton,
+            combat_stats: (
+                health: 12,
+                max_health: 12,
+                proficiency: 1,
+                damage_res: 2,
+                damage_bonus: 1,
+            ),
+            drop_table: (
+                items: [
+                    ShieldRusty,
+                    Vial,
+                    AxeRusty,
+                    SwordRusty,
+                    HerbGreen,
+                ],
+                chances: [
                     40,
                     50,
                     30,
+                    30,
+                    40,
+                ]
+            ),
+        ),
+        (
+            enemy_id: Zombie,
+            name: "Zombie",
+            enter_combat_text: EnterZombie,
+            combat_stats: (
+                health: 12,
+                max_health: 12,
+                proficiency: -1,
+                damage_res: 3,
+                damage_bonus: -1,
+            ),
+            drop_table: (
+                items: [
+                    ArmorRusty,
+                    Vial,
+                    AxeRusty,
+                    HerbRed,
+                    HerbRed,
+                ],
+                chances: [
+                    40,
+                    50,
+                    20,
+                    60,
+                    30,
+                ]
+            ),
+        ),
+        (
+            enemy_id: OgreNecormancer,
+            name: "Ogre Necromancer",
+            enter_combat_text: EnterOgreNecromancer,
+            combat_stats: (
+                health: 30,
+                max_health: 30,
+                proficiency: 2,
+                damage_res: 3,
+                damage_bonus: 4,
+            ),
+            drop_table: (
+                items: [
+                    HerbRed,
+                    HerbRed,
+                ],
+                chances: [
+                    40,
+                    50,
                 ]
             ),
         ),

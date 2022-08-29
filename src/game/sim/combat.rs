@@ -58,6 +58,9 @@ pub enum EnemyId {
     GoblinBrat,
     GoblinShieldbearer,
     GoblinSwordsman,
+    Skeleton,
+    Zombie,
+    OgreNecormancer,
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
