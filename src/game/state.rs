@@ -25,7 +25,9 @@ use crate::mouse::Mouse;
 use crate::positioning::{Coords, Pos};
 use crate::AppState;
 
+use super::backpack::BackpackPlugin;
 use super::combat::{Combatant, Enemy, Hero};
+use super::create_backpack::create_backpack_data;
 use super::{
     consume_item, delete_item_system, update_health_bar, update_hero_stats_display, Eyes, Iris,
 };
@@ -63,6 +65,7 @@ impl Plugin for GamePlugin {
                     .with_system(init_dungeon)
                     .with_system(create_debug_items)
                     //.with_system(test_slice)
+                    .with_system(create_backpack_data)
                     .into(),
             )
             .add_system_set(
@@ -102,7 +105,8 @@ impl Plugin for GamePlugin {
                     // .with_system(despawn_gameplay_entities)
                     .with_system(clear_gameplay_data)
                     .into(),
-            );
+            )
+            .add_plugin(BackpackPlugin);
     }
 }
 
@@ -265,6 +269,4 @@ fn test_slice(
     } else {
         error!("texture missing");
     }
-
-    return;
 }
