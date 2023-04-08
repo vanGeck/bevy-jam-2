@@ -19,6 +19,7 @@ pub struct SpawnItemEvent {
     /// in the inventory without any animations.
     source: Option<Vec2>,
     combine: bool,
+    backpack: Option<usize>,
 }
 
 impl SpawnItemEvent {
@@ -28,6 +29,7 @@ impl SpawnItemEvent {
             coords,
             source: Some(source),
             combine,
+            backpack: None,
         }
     }
     /// Use this for items that already exist in the backpack at the start of the game.
@@ -37,6 +39,17 @@ impl SpawnItemEvent {
             coords,
             source: None,
             combine: false,
+            backpack: None,
+        }
+    }
+    /// Use this for items that should be spawned to specific backpack
+    pub fn with_backpack(item: Item, coords: Coords, source: Vec2, backpack: usize) -> Self {
+        SpawnItemEvent {
+            item,
+            coords,
+            source: Some(source),
+            combine: false,
+            backpack: Some(backpack),
         }
     }
 }
@@ -48,7 +61,7 @@ pub fn spawn_item(
     assets: Res<AssetStorage>,
     grid: Res<GridData>,
 ) {
-    let backpack_id = match backpack_in_use.get_single() {
+    let default_backpack_id = match backpack_in_use.get_single() {
         Ok(BackpackInUse(backpack_id)) => *backpack_id,
         Err(e) => {
             error!(
@@ -59,14 +72,15 @@ pub fn spawn_item(
         }
     };
 
-    for SpawnItemEvent {
-        item,
-        coords,
-        source,
-        combine,
-    } in events.iter()
-    {
-        trace!("Received SpawnItemEvent( {:?}, {:?} )", item, coords);
+    for evt in events.iter() {
+        debug!("Received {:?}", evt);
+        let SpawnItemEvent {
+            item,
+            coords,
+            source,
+            combine,
+            backpack,
+        } = evt;
         if let Some(source) = source {
             // Spawn the animating item.
             commands
@@ -90,6 +104,7 @@ pub fn spawn_item(
                 .insert(CleanupOnGameplayEnd);
         }
         // Spawn the silhouette.
+        let backpack_id = backpack.unwrap_or(default_backpack_id);
         let mut builder = commands.spawn();
         builder
             .insert_bundle(SpriteBundle {
@@ -147,12 +162,15 @@ pub fn animate_falling_item(
     }
 }
 
-pub fn find_free_space(
+pub fn find_free_space<'a, I>(
     grid: &GridData,
     dimens: Dimens,
-    items_query: &Query<&Coords, With<Item>>, // is there any way to call this function without this query? it forces you to have the exact same query in whichever query you're calling this function from. - Jacques
-    same_tick_items: &[Coords],               // Pass this an emtpy vec if not multiple spawn
-) -> Option<Coords> {
+    items_query: &'a I,
+    same_tick_items: &[Coords], // Pass this an emtpy vec if not multiple spawn
+) -> Option<Coords>
+where
+    &'a I: IntoIterator<Item = &'a Coords>,
+{
     for y in 0..grid.inventory.dimens.y {
         for x in 0..grid.inventory.dimens.x {
             let coords = Coords {
@@ -160,7 +178,7 @@ pub fn find_free_space(
                 dimens,
             };
 
-            let overlap_conflict = items_query.iter().any(|item| coords.overlaps(item))
+            let overlap_conflict = items_query.into_iter().any(|item| coords.overlaps(item))
                 || same_tick_items.iter().any(|item| coords.overlaps(item));
             let bound_conflict = !grid.inventory.encloses(&coords);
             if !overlap_conflict && !bound_conflict {

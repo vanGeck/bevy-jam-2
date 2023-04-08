@@ -48,9 +48,7 @@ pub fn init_dungeon(
         running: true,
         combat_state: CombatState::Init,
     };
-    state.current_level = Option::from(generate_level(
-        &mut commands,
-    ));
+    state.current_level = Option::from(generate_level(&mut commands));
     commands.insert_resource(state);
 }
 
@@ -70,6 +68,11 @@ pub fn init_dungeon(
 //     state.combat_state = CombatState::Init;
 // }
 
+pub struct JumpTimepointEvent {
+    pub from: usize,
+    pub to: usize,
+}
+
 pub fn tick_dungeon(
     mut msg_events: EventWriter<SimMessageEvent>,
     mut loot_events: EventWriter<SimLootEvent>,
@@ -83,6 +86,7 @@ pub fn tick_dungeon(
     input: Res<Input<KeyCode>>,
     mut cmd: Commands,
     mut victory: ResMut<State<GameResult>>,
+    mut jump: EventWriter<JumpTimepointEvent>,
 ) {
     let mut just_resumed = false;
     if !state.running {
@@ -97,16 +101,14 @@ pub fn tick_dungeon(
         if just_resumed {
             state.msg_cooldown.reset();
         }
-        // let cbt_state = state.combat_state.clone();
-        let cur_timepoint_idx = state.cur_timepoint_idx.clone() as usize;
-        // let max_depth = (&state.max_depth).clone();
-        if 0 == cur_timepoint_idx as usize {
-            state.cur_timepoint_idx = 1;
-        } else {
-            state.cur_timepoint_idx = 0;
-        }
+        let cur_timepoint_idx = state.cur_timepoint_idx;
+        state.cur_timepoint_idx = 1 - cur_timepoint_idx;
         let level = state.current_level.as_ref().unwrap();
-        info!("timepoint: {}", level.timepoints[state.cur_timepoint_idx as usize]);
+        jump.send(JumpTimepointEvent {
+            from: level.timepoints[cur_timepoint_idx as usize].timepoint as usize,
+            to: level.timepoints[state.cur_timepoint_idx as usize].timepoint as usize,
+        });
+        info!("{}", level.timepoints[state.cur_timepoint_idx as usize]);
         halt_dungeon_sim(state);
     }
 }
