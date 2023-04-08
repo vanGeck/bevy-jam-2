@@ -37,7 +37,13 @@ impl AssetLoader for ItemsDataLoader {
         load_context: &'a mut LoadContext,
     ) -> BoxedFuture<'a, Result<(), bevy::asset::Error>> {
         Box::pin(async move {
-            let custom_asset = ron::de::from_bytes::<ItemsData>(bytes)?;
+            let mut custom_asset = ron::de::from_bytes::<ItemsData>(bytes)?;
+            // HACK: force every items occupy one grid
+            custom_asset.items = custom_asset
+                .items
+                .into_iter()
+                .map(|(_, item)| (Dimens::unit(), item))
+                .collect();
             load_context.set_default_asset(LoadedAsset::new(custom_asset));
             Ok(())
         })
