@@ -12,6 +12,7 @@ pub use self::spawn_item_system::*;
 pub use self::state::*;
 
 pub mod assets;
+pub mod backpack;
 pub mod camera;
 pub mod combining_system;
 pub mod components;

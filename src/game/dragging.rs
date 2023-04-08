@@ -54,6 +54,7 @@ pub fn check_drag_begin(
                 .spawn_bundle(SpriteBundle {
                     sprite: Sprite {
                         color: Color::rgba(1., 1., 1., 0.5),
+                        // BOGAY: this affects the placeholder follows the mouse cursor
                         custom_size: Some(coords.dimens.as_vec2()),
                         ..default()
                     },

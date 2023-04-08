@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::config::data_layout::LayoutData;
+use crate::game::backpack::BackpackInUse;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, TextureId, MENU_ZOOM};
 use crate::main_menu::MenuBackpack;
 use crate::mouse::MouseInteractive;
@@ -57,4 +58,9 @@ pub fn create_layout_background(
         .insert(MenuBackpack::default())
         .insert(MouseInteractive::new(Vec2::splat(size), true))
         .insert(CleanupOnGameplayEnd);
+}
+
+pub fn create_backpack_data(mut commands: Commands) {
+    const INIT_BACKPACK_ID: usize = 0;
+    commands.spawn().insert(BackpackInUse(INIT_BACKPACK_ID));
 }

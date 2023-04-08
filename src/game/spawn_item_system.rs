@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use super::backpack::BackpackInUse;
+use crate::game::backpack::Backpack;
 use crate::game::items::Item;
 use crate::game::{AssetStorage, CleanupOnGameplayEnd, FallingItem, Silhouette};
 use crate::mouse::MouseInteractive;
@@ -42,9 +44,21 @@ impl SpawnItemEvent {
 pub fn spawn_item(
     mut commands: Commands,
     mut events: EventReader<SpawnItemEvent>,
+    backpack_in_use: Query<&BackpackInUse>,
     assets: Res<AssetStorage>,
     grid: Res<GridData>,
 ) {
+    let backpack_id = match backpack_in_use.get_single() {
+        Ok(BackpackInUse(backpack_id)) => *backpack_id,
+        Err(e) => {
+            error!(
+                "There should be only one BadInUse component in game.\n{}",
+                e
+            );
+            return;
+        }
+    };
+
     for SpawnItemEvent {
         item,
         coords,
@@ -58,6 +72,7 @@ pub fn spawn_item(
             commands
                 .spawn_bundle(SpriteBundle {
                     sprite: Sprite {
+                        // BOGAY: affects falling item
                         custom_size: Some(coords.dimens.as_vec2()),
                         ..default()
                     },
@@ -79,6 +94,7 @@ pub fn spawn_item(
         builder
             .insert_bundle(SpriteBundle {
                 sprite: Sprite {
+                    // BOGAY: this affects silhouette size, of course
                     custom_size: Some(coords.dimens.as_vec2()),
                     ..default()
                 },
@@ -94,7 +110,8 @@ pub fn spawn_item(
             .insert(item.clone())
             .insert(*coords)
             .insert(MouseInteractive::new(coords.dimens.as_vec2(), true))
-            .insert(CleanupOnGameplayEnd);
+            .insert(CleanupOnGameplayEnd)
+            .insert(Backpack(backpack_id));
         if source.is_some() {
             builder.insert(Silhouette);
         }
