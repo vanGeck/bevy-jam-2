@@ -8,6 +8,8 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+use super::dungeon_components::{TimePointLevel, TimePoint};
+
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct LevelBlueprint {
     pub depth: i32,
@@ -38,78 +40,94 @@ pub enum RoomType {
     End,
 }
 
-pub fn generate_level(
-    blueprint: &LevelBlueprint,
-    mut _cmd: &mut Commands,
-    enemies_data: &Res<EnemiesData>,
-) -> DungeonLevel {
-    let mut rooms = Vec::<Room>::new();
-    let mut enemies = Vec::<Enemy>::new();
-    let mut loot = Vec::<DropTable>::new();
-    let mut rng = rand::thread_rng();
-
-    for segment in &blueprint.segments {
-        let room_type = choose_room_type(&segment.types, &mut rng);
-        match room_type {
-            RoomType::Empty => {
-                let mut r = generate_empty();
-                if let Some(flavour) = segment.custom_flavour.clone() {
-                    r.flavour = Option::<TextType>::from(flavour);
-                }
-                rooms.push(r);
-                enemies.push(Enemy::default());
-                if let Some(custom) = &segment.custom_loot {
-                    let clone = custom.clone();
-                    loot.push(clone);
-                } else {
-                    info!("Pushing default loot to an empty room.");
-                    loot.push(blueprint.default_loot.clone());
-                }
-            }
-            RoomType::Fight => {
-                if let Some(enemy_opts) = &segment.enemies {
-                    enemies.push(get_enemy(
-                        &enemies_data,
-                        choose_monster_type(&enemy_opts, &mut rng),
-                    ));
-                } else {
-                    error!("Room type is >Fight<, but there's no enemy list supplied!");
-                    enemies.push(Enemy::default());
-                }
-                rooms.push(generate_fight());
-                loot.push(blueprint.default_loot.clone())
-            }
-            RoomType::Corridor => {
-                rooms.push(generate_corridor());
-                enemies.push(Enemy::default());
-                loot.push(blueprint.default_loot.clone())
-            }
-            RoomType::Start => {
-                rooms.push(generate_first_room());
-                enemies.push(Enemy::default());
-                loot.push(blueprint.default_loot.clone())
-            }
-            RoomType::End => {
-                rooms.push(generate_last_room());
-                enemies.push(Enemy::default());
-                loot.push(blueprint.default_loot.clone())
-            }
-        }
-    }
-
-    info!("Dungeon generation results: ");
-    for s in 0..rooms.len() {
-        rooms[s].print_diag_name();
-    }
-    info!("New depth: {}", &blueprint.depth);
-
-    DungeonLevel {
-        depth: blueprint.depth.clone(),
-        rooms,
-        enemies,
-        loot,
-    }
+fn gen_timepoint(time: i32) -> TimePoint {
+    TimePoint { timepoint: time, flavour: None}
 }
+
+pub fn generate_level(
+    mut _cmd: &mut Commands,
+) -> TimePointLevel {
+    let mut timepoints = Vec::<TimePoint>::new();
+    let mut t = gen_timepoint(400);
+    timepoints.push(t);
+    let mut t = gen_timepoint(0);
+    timepoints.push(t);
+    
+    TimePointLevel { timenum: 2, timepoints }
+}
+
+// pub fn generate_level(
+//     blueprint: &LevelBlueprint,
+//     mut _cmd: &mut Commands,
+//     enemies_data: &Res<EnemiesData>,
+// ) -> DungeonLevel {
+//     let mut rooms = Vec::<Room>::new();
+//     let mut enemies = Vec::<Enemy>::new();
+//     let mut loot = Vec::<DropTable>::new();
+//     let mut rng = rand::thread_rng();
+
+//     for segment in &blueprint.segments {
+//         let room_type = choose_room_type(&segment.types, &mut rng);
+//         match room_type {
+//             RoomType::Empty => {
+//                 let mut r = generate_empty();
+//                 if let Some(flavour) = segment.custom_flavour.clone() {
+//                     r.flavour = Option::<TextType>::from(flavour);
+//                 }
+//                 rooms.push(r);
+//                 enemies.push(Enemy::default());
+//                 if let Some(custom) = &segment.custom_loot {
+//                     let clone = custom.clone();
+//                     loot.push(clone);
+//                 } else {
+//                     info!("Pushing default loot to an empty room.");
+//                     loot.push(blueprint.default_loot.clone());
+//                 }
+//             }
+//             RoomType::Fight => {
+//                 if let Some(enemy_opts) = &segment.enemies {
+//                     enemies.push(get_enemy(
+//                         &enemies_data,
+//                         choose_monster_type(&enemy_opts, &mut rng),
+//                     ));
+//                 } else {
+//                     error!("Room type is >Fight<, but there's no enemy list supplied!");
+//                     enemies.push(Enemy::default());
+//                 }
+//                 rooms.push(generate_fight());
+//                 loot.push(blueprint.default_loot.clone())
+//             }
+//             RoomType::Corridor => {
+//                 rooms.push(generate_corridor());
+//                 enemies.push(Enemy::default());
+//                 loot.push(blueprint.default_loot.clone())
+//             }
+//             RoomType::Start => {
+//                 rooms.push(generate_first_room());
+//                 enemies.push(Enemy::default());
+//                 loot.push(blueprint.default_loot.clone())
+//             }
+//             RoomType::End => {
+//                 rooms.push(generate_last_room());
+//                 enemies.push(Enemy::default());
+//                 loot.push(blueprint.default_loot.clone())
+//             }
+//         }
+//     }
+
+//     info!("Dungeon generation results: ");
+//     for s in 0..rooms.len() {
+//         rooms[s].print_diag_name();
+//     }
+//     info!("New depth: {}", &blueprint.depth);
+
+//     DungeonLevel {
+//         depth: blueprint.depth.clone(),
+//         rooms,
+//         enemies,
+//         loot,
+//     }
+// }
 
 // The choose_x_type methods should be remade to use generics
 // I don't understand rust's generics enough - Festus

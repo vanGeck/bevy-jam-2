@@ -63,11 +63,38 @@ impl Room {
 }
 
 #[derive(Clone)]
+pub struct TimePoint {
+    pub timepoint: i32,
+    pub flavour: Option<TextType>,
+}
+
+impl Default for TimePoint {
+    fn default() -> Self {
+        TimePoint {
+            timepoint: 0,
+            flavour: None,
+        }
+    }
+}
+
+impl std::fmt::Display for TimePoint {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "timepoint: {}", self.timepoint)
+    }
+}
+
+#[derive(Clone)]
 pub struct DungeonLevel {
     pub depth: i32,
     pub rooms: Vec<Room>,
     pub enemies: Vec<Enemy>,
     pub loot: Vec<DropTable>,
+}
+
+#[derive(Clone)]
+pub struct TimePointLevel {
+    pub timenum: i32,
+    pub timepoints: Vec<TimePoint>,
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Copy, Clone)]
