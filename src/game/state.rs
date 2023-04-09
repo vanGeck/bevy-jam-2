@@ -28,8 +28,10 @@ use crate::AppState;
 use super::backpack::BackpackPlugin;
 use super::combat::{Combatant, Enemy, Hero};
 use super::create_backpack::create_backpack_data;
+use super::dungeon_sim::JumpTimepointEvent;
 use super::{
-    consume_item, delete_item_system, update_health_bar, update_hero_stats_display, Eyes, Iris,
+    consume_item, delete_item_system, update_health_bar, update_hero_stats_display, EvolutionEvent,
+    EvolutionPlugin, Eyes, Iris,
 };
 
 pub struct GamePlugin;
@@ -41,6 +43,7 @@ impl Plugin for GamePlugin {
             .add_event::<AddFeedItemEvent>()
             .add_event::<SimMessageEvent>()
             .add_event::<SimLootEvent>()
+            .add_event::<JumpTimepointEvent>()
             .add_plugin(bevy_ninepatch::NinePatchPlugin::<()>::default())
             .init_resource::<Player>()
             .insert_resource(TimedEffectTicker {
@@ -65,7 +68,6 @@ impl Plugin for GamePlugin {
                     .with_system(init_dungeon)
                     .with_system(create_debug_items)
                     //.with_system(test_slice)
-                    .with_system(create_backpack_data)
                     .into(),
             )
             .add_system_set(
@@ -106,7 +108,8 @@ impl Plugin for GamePlugin {
                     .with_system(clear_gameplay_data)
                     .into(),
             )
-            .add_plugin(BackpackPlugin);
+            .add_plugin(BackpackPlugin)
+            .add_plugin(EvolutionPlugin);
     }
 }
 

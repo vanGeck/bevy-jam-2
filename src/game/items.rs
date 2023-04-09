@@ -1,6 +1,5 @@
 use std::fmt::Formatter;
 
-use crate::game::item_info_system::MousedOver;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -146,6 +145,28 @@ pub enum ItemId {
     ScrollKnowledge1,
     ScrollKnowledge2,
     ScrollKnowledge3,
+    // ^ don't delete now for backward compatibility
+    StoneTool,
+    BronzeTool,
+    IronTool,
+    SteelTool,
+    SteamPower,
+    ElectronicTechnology,
+    Religion,
+    Chiefdom,
+    Feudal,
+    Centralization,
+    Democracy,
+    Theocracy,
+    Empire,
+    Totalitarian,
+    PermanentMember,
+    Wheat,
+    Alcohol,
+    Meat,
+    Fish,
+    GatheringAndHunting,
+    Fishery,
 }
 
 impl std::fmt::Display for ItemId {

@@ -1,9 +1,9 @@
 use bevy::prelude::*;
-use iyes_loopless::prelude::ConditionSet;
+use iyes_loopless::prelude::{AppLooplessStateExt, ConditionSet};
 
 use crate::states::AppState;
 
-use super::{dungeon_sim::DungeonState, Item};
+use super::{create_backpack::create_backpack_data, dungeon_sim::DungeonState, Item};
 
 pub struct BackpackPlugin;
 
@@ -12,6 +12,13 @@ impl Plugin for BackpackPlugin {
         // manually manage events
         // see more: https://bevy-cheatbook.github.io/patterns/manual-event-clear.html#manual-event-clearing
         app.init_resource::<Events<SwitchBackpackEvent>>()
+            .add_enter_system_set(
+                AppState::InGame,
+                ConditionSet::new()
+                    .run_in_state(AppState::InGame)
+                    .with_system(create_backpack_data)
+                    .into(),
+            )
             .add_system_set(
                 ConditionSet::new()
                     .run_in_state(AppState::InGame)
@@ -47,7 +54,8 @@ pub fn to_debug_backpack_switching(
                 return;
             }
         };
-        ew_switch_backpack.send(SwitchBackpackEvent(1 - backpack_id));
+        // HACK: hard-coded bad!
+        ew_switch_backpack.send(SwitchBackpackEvent(400 - backpack_id));
     }
 }
 
