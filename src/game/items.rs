@@ -158,6 +158,7 @@ pub enum ItemId {
     Centralization,
     Democracy,
     Theocracy,
+    Monarchy,
     Empire,
     Totalitarian,
     PermanentMember,
@@ -167,6 +168,12 @@ pub enum ItemId {
     Fish,
     GatheringAndHunting,
     Fishery,
+    Writing,
+    Book,
+    Printing,
+    Currency,
+    Trading,
+    Industrialization,
 }
 
 impl std::fmt::Display for ItemId {

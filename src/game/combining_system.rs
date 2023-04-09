@@ -102,6 +102,18 @@ fn contains<'a>(items: impl IntoIterator<Item = &'a &'a Item>, id: ItemId) -> bo
     items.into_iter().find(|it| it.id == id).is_some()
 }
 
+fn increase_or_unlock(original: usize, add: usize, unlock: bool) -> usize {
+    if original > 0 {
+        original + add
+    } else {
+        if unlock {
+            1
+        } else {
+            0
+        }
+    }
+}
+
 fn calculate_items_after_evolution<'a, T>(
     // this should be items put inside 改變物品格s
     items: &'a T,
@@ -130,39 +142,257 @@ where
     .next()
     .map(|(_, point)| point)
     .unwrap_or(0);
+    let population = count_by_id(items, ItemId::Wheat) * 100
+        + count_by_id(items, ItemId::Meat) * 120
+        + count_by_id(items, ItemId::Fish) * 150;
 
     // update wheat
     v.push((
         get_item(ItemId::Wheat),
-        count_by_id(items, ItemId::Wheat) + tool_points,
+        increase_or_unlock(count_by_id(items, ItemId::Wheat), tool_points, true),
     ));
     // update alcohol
     v.push((
         get_item(ItemId::Alcohol),
-        count_by_id(items, ItemId::Wheat) / 3,
+        increase_or_unlock(
+            count_by_id(items, ItemId::Alcohol),
+            count_by_id(items, ItemId::Wheat) / 3,
+            count_by_id(items, ItemId::Wheat) > 2,
+        ),
     ));
     // update meat
     v.push((
         get_item(ItemId::Meat),
-        count_by_id(items, ItemId::GatheringAndHunting)
-            + count_by_id(items, ItemId::Meat)
-            + tool_points,
+        increase_or_unlock(
+            count_by_id(items, ItemId::Meat),
+            tool_points,
+            count_by_id(items, ItemId::GatheringAndHunting) > 0,
+        ),
     ));
     // update fish
     v.push((
         get_item(ItemId::Fish),
-        count_by_id(items, ItemId::Fishery) + count_by_id(items, ItemId::Fish) + tool_points,
+        increase_or_unlock(
+            count_by_id(items, ItemId::Fish),
+            tool_points,
+            count_by_id(items, ItemId::Fishery) > 0,
+        ),
     ));
 
     // update stone tool
     v.push((
         get_item(ItemId::StoneTool),
-        count_by_id(items, ItemId::StoneTool) + count_by_id(items, ItemId::Chiefdom),
+        increase_or_unlock(
+            count_by_id(items, ItemId::StoneTool),
+            count_by_id(items, ItemId::Chiefdom),
+            false,
+        ),
     ));
     // update bronze tool
     v.push((
         get_item(ItemId::BronzeTool),
-        count_by_id(items, ItemId::BronzeTool) + count_by_id(items, ItemId::Religion),
+        increase_or_unlock(
+            count_by_id(items, ItemId::BronzeTool),
+            count_by_id(items, ItemId::Religion),
+            count_by_id(items, ItemId::StoneTool) > 1,
+        ),
+    ));
+    // update iron tool
+    v.push((
+        get_item(ItemId::IronTool),
+        increase_or_unlock(
+            count_by_id(items, ItemId::IronTool),
+            count_by_id(items, ItemId::Feudal),
+            count_by_id(items, ItemId::BronzeTool) > 2,
+        ),
+    ));
+    // update steel tool
+    v.push((
+        get_item(ItemId::SteelTool),
+        increase_or_unlock(
+            count_by_id(items, ItemId::SteelTool),
+            count_by_id(items, ItemId::Democracy) | count_by_id(items, ItemId::Centralization),
+            count_by_id(items, ItemId::IronTool) > 3,
+        ),
+    ));
+    // update steam tool
+    v.push((
+        get_item(ItemId::SteamPower),
+        increase_or_unlock(
+            count_by_id(items, ItemId::SteamPower),
+            count_by_id(items, ItemId::Theocracy)
+                | count_by_id(items, ItemId::Empire)
+                | count_by_id(items, ItemId::Totalitarian)
+                | count_by_id(items, ItemId::PermanentMember),
+            count_by_id(items, ItemId::SteelTool) > 5,
+        ),
+    ));
+    // update eletronic tool
+    v.push((
+        get_item(ItemId::ElectronicTechnology),
+        increase_or_unlock(
+            count_by_id(items, ItemId::ElectronicTechnology),
+            0,
+            count_by_id(items, ItemId::SteamPower) > 5,
+        ),
+    ));
+
+    v.push((
+        get_item(ItemId::Chiefdom),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Chiefdom),
+            count_by_id(items, ItemId::Wheat) / 3,
+            count_by_id(items, ItemId::Wheat) > 2,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::Religion),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Religion),
+            0,
+            count_by_id(items, ItemId::Alcohol) > 0
+                && count_by_id(items, ItemId::Fish) > 0
+                && count_by_id(items, ItemId::Meat) > 0,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::Theocracy),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Theocracy),
+            0,
+            count_by_id(items, ItemId::Religion) > 1
+                && count_by_id(items, ItemId::Book) > 1
+                && population > 2000,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::Feudal),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Feudal),
+            0,
+            count_by_id(items, ItemId::Chiefdom) > 0
+                && count_by_id(items, ItemId::Writing) > 0
+                && population > 1000,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::Monarchy),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Monarchy),
+            count_by_id(items, ItemId::Chiefdom) / 5,
+            count_by_id(items, ItemId::Chiefdom) > 1 && population > 2000,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::Empire),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Empire),
+            0,
+            count_by_id(items, ItemId::Monarchy) > 1
+                && count_by_id(items, ItemId::Centralization) > 0
+                && count_by_id(items, ItemId::Book) > 0
+                && population > 2000,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::Centralization),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Centralization),
+            0,
+            count_by_id(items, ItemId::Monarchy) > 1 && population > 3000,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::Totalitarian),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Totalitarian),
+            0,
+            count_by_id(items, ItemId::Centralization) > 0
+                && count_by_id(items, ItemId::Printing) > 0
+                && count_by_id(items, ItemId::SteamPower) > 0
+                && population > 2000,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::Democracy),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Democracy),
+            0,
+            count_by_id(items, ItemId::Trading) > 0
+                && count_by_id(items, ItemId::Book) > 0
+                && count_by_id(items, ItemId::Wheat) > 1,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::PermanentMember),
+        increase_or_unlock(
+            count_by_id(items, ItemId::PermanentMember),
+            0,
+            count_by_id(items, ItemId::Democracy) > 0
+                && count_by_id(items, ItemId::Trading) > 2
+                && population > 2000,
+        ),
+    ));
+
+    // update writing
+    v.push((
+        get_item(ItemId::Writing),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Writing),
+            count_by_id(items, ItemId::StoneTool),
+            count_by_id(items, ItemId::Religion) > 0 && count_by_id(items, ItemId::StoneTool) > 0,
+        ),
+    ));
+    // update book
+    v.push((
+        get_item(ItemId::Book),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Book),
+            count_by_id(items, ItemId::BronzeTool),
+            count_by_id(items, ItemId::Monarchy) > 0 && count_by_id(items, ItemId::BronzeTool) > 0,
+        ),
+    ));
+    // update printing
+    v.push((
+        get_item(ItemId::Printing),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Printing),
+            count_by_id(items, ItemId::IronTool),
+            count_by_id(items, ItemId::Monarchy) > 0 && count_by_id(items, ItemId::IronTool) > 0,
+        ),
+    ));
+
+    v.push((
+        get_item(ItemId::Currency),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Currency),
+            count_by_id(items, ItemId::BronzeTool),
+            count_by_id(items, ItemId::Feudal) > 0 && count_by_id(items, ItemId::BronzeTool) > 0,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::GatheringAndHunting),
+        increase_or_unlock(count_by_id(items, ItemId::GatheringAndHunting), 0, false),
+    ));
+    v.push((
+        get_item(ItemId::Fishery),
+        increase_or_unlock(count_by_id(items, ItemId::Fishery), 0, false),
+    ));
+    v.push((
+        get_item(ItemId::Trading),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Trading),
+            0,
+            count_by_id(items, ItemId::Monarchy) > 0 && count_by_id(items, ItemId::Currency) > 4,
+        ),
+    ));
+    v.push((
+        get_item(ItemId::Industrialization),
+        increase_or_unlock(
+            count_by_id(items, ItemId::Industrialization),
+            0,
+            count_by_id(items, ItemId::SteamPower) > 4,
+        ),
     ));
 
     // filter items that appear zero times
